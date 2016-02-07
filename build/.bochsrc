@@ -1,0 +1,5 @@
+boot: floppy
+floppya: 1_44=../build/image.img, status=inserted
+megs: 128
+display_library: x, options="gui_debug"
+clock: sync=realtime
