@@ -1,5 +1,5 @@
-#ifndef GDT_H
-#define GDT_H
+#ifndef INTR_GDT_H
+#define INTR_GDT_H
 
 void gdt_init();
 
