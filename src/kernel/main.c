@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <intr/gdt.h>
+#include <intr/idt.h>
 #include <intr/cpuid.h>
 #include <io/output.h>
 
@@ -8,9 +9,8 @@ void main() {
     io_putstr("Welcome!\n");
     gdt_init();
     cpuid_init();
-    io_putstr("Hello World!");
-    io_attr(0x4);
-    io_putstr(" ;)\n");
-    io_attr(0x2);
-    io_putint(0x12345678, 16, 0, 0);
+    idt_init();
+    asm volatile("sti");
+    io_putstr("Hello World!\n");
+    while(1);
 }
