@@ -1,5 +1,6 @@
 #include <intr/idt.h>
 #include <intr/gdt.h>
+#include <intr/pic.h>
 #include <io/output.h>
 
 /*
@@ -69,6 +70,21 @@ void idt_init() {
     io_putstr(".\n");
 }
 
+void idt_interrupts(uint8_t enable) {
+    if (enable) {
+        io_putstr("Enabling interrupts ... ");
+        asm volatile("sti");
+    } else {
+        io_putstr("Disabling interrupts ... ");
+        asm volatile("cli");
+    }
+    io_attr(IO_GREEN);
+    io_putstr("ok");
+    io_attr(IO_DEFAULT);
+    io_putstr(".\n");
+}
+
 void idt_handle_interrupt() {
     io_putstr("Interrupt!\n");
+    pic_send_eoi(0);
 }
