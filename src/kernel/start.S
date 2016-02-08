@@ -15,10 +15,11 @@ _start: // kernel entry point
         mov $kernel_stack, %esp // set the kernel stack (see label below)
         call main // call into our C code
 
-_stop:
+.global halt
+halt:
         cli // disable interrupts
         hlt // halt CPU
-        jmp _stop
+        jmp halt
 
 // stack
 .section .bss

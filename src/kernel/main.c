@@ -3,6 +3,7 @@
 #include <intr/cpuid.h>
 #include <intr/idt.h>
 #include <intr/pic.h>
+#include <intr/isr.h>
 #include <io/output.h>
 
 void main() {
@@ -12,7 +13,7 @@ void main() {
     cpuid_init();
     idt_init();
     pic_init();
-    idt_interrupts(1);
+    isr_interrupts(1);
     io_putstr("Hello World!\n");
     while(1);
 }

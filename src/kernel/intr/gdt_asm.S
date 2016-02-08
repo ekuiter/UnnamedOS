@@ -6,7 +6,7 @@ gdt_flush:
 // fedcba9876543210
 // a            bc
 // a being the index of the segment in the GDT, b whether we're in GDT (0) or IDT (1) and c the ring of the segment.
-// So 0x08 means 0000000000001000, a is 1, b is 0 and c is 0; so 0x08 describes the 2nd entry of the GDT (our code segment which is in ring 0).
+// So 0x08 means 0000000000001000, a is 1, b is 0 and c is 0; so 0x0008 describes the 2nd entry of the GDT (our code segment which is in ring 0).
 
 gdt_flush_code_segment:
         ljmp $0x0008, $gdt_flush_data_segment
@@ -19,7 +19,7 @@ gdt_flush_code_segment:
 gdt_flush_data_segment:
         mov $0x0010, %ax // To flush the data (DS), stack (SS), extra (ES) and general purpose (FS/GS) segment registers, we can
         mov %ax, %ds     // just load our segment selector directly with mov. We use 0x10 because it means 0000000000010000,
-        mov %ax, %es     // a is 2, b is 0 and c is 0; so 0x10 describes the 3rd entry of the GDT (our data segment which is in ring 0).
+        mov %ax, %es     // a is 2, b is 0 and c is 0; so 0x0010 describes the 3rd entry of the GDT (our data segment which is in ring 0).
         mov %ax, %fs
         mov %ax, %gs
         mov %ax, %ss

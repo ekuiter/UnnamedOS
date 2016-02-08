@@ -14,6 +14,8 @@
 #define PIC2_CMD  0xA0
 #define PIC2_DATA 0xA1
 #define PIC_EOI   0x20
+#define INT_IRQ0  0x20
+#define INT_IRQ8  0x28
 
 void pic_init() {
     io_putstr("PIC init ... ");
@@ -23,7 +25,7 @@ void pic_init() {
     // 70-77: IRQ8-15 (PIC2)
     // We will now "bend" the mapping "IRQ -> interrupt vector" to prevent those conflicts
     // by re-initializing the master and slave PICs and setting the following interrupt vectors:
-    uint8_t irq0 = 0x20, irq8 = 0x28;
+    uint8_t irq0 = INT_IRQ0, irq8 = INT_IRQ8;
     // PIC 1 (master) (we use io_wait in case of slow PICs)
     outb(PIC1_CMD,  0x11); io_wait(); // ICW1: Initialize PIC1 + send ICW4
     outb(PIC1_DATA, irq0); io_wait(); // ICW2: IRQ0 interrupt vector
@@ -48,8 +50,8 @@ void pic_init() {
 }
 
 // EOI = "end of interrupt", a signal that we are ready to process new interrupts
-void pic_send_eoi(uint8_t irq) {
-    if (irq >= 0x08) // for IRQ8-15 (issued by slave), we need to send EOIs to the master and slave PIC
+void pic_send_eoi(uint8_t intr) {
+    if (intr - INT_IRQ0 >= 0x08) // for IRQ8-15 (issued by slave), we need to send EOIs to the master and slave PIC
         outb(PIC2_CMD, PIC_EOI);
     outb(PIC1_CMD, PIC_EOI);
 }
