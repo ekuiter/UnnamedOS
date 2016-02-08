@@ -9,7 +9,6 @@
 .int    MB_CHECKSUM
 
 .section .text
-.extern main
 
 .global _start
 _start: // kernel entry point

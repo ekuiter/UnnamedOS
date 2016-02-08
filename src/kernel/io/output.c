@@ -13,7 +13,7 @@
 #define IO_MEM ((uint8_t*) 0xb8000)
 
 static uint8_t* video = IO_MEM;
-static uint8_t attr = 0x07;
+static uint8_t attr = IO_DEFAULT;
 static size_t cursor = 0;
 
 static void io_setchar(uint8_t c, size_t pos) {
@@ -57,9 +57,14 @@ uint16_t io_putint(uint32_t n, uint8_t radix, int8_t pad, uint8_t pad_char) {
     char buf[buf_len], digits[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     char* cur = &buf[buf_len - 1]; // cur points to the last element
     *cur-- = '\0';
-    for (; n != 0; n /= radix) { // cycle digits backwards
-        *cur-- = digits[n % radix]; // choose a digit to display
+    if (n == 0) {
+        *cur-- = '0';
         pad--;
+    } else {
+        for (; n != 0; n /= radix) { // cycle digits backwards
+            *cur-- = digits[n % radix]; // choose a digit to display
+            pad--;
+        }
     }
     uint16_t count = 0;
     for (; pad > 0; pad--)

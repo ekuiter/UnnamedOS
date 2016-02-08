@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#define IO_DEFAULT 0x07
+#define IO_GREEN   0x02
+#define IO_RED     0x04
+
 void io_attr(uint8_t new_attr);
 void io_cursor(size_t new_cursor);
 uint16_t io_putchar(uint8_t c);

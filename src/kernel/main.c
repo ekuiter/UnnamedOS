@@ -1,10 +1,13 @@
 #include <stdint.h>
 #include <intr/gdt.h>
+#include <intr/cpuid.h>
 #include <io/output.h>
 
 void main() {
-    gdt_init();
     io_clear();
+    io_putstr("Welcome!\n");
+    gdt_init();
+    cpuid_init();
     io_putstr("Hello World!");
     io_attr(0x4);
     io_putstr(" ;)\n");
