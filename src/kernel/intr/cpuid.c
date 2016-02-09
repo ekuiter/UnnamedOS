@@ -1,5 +1,5 @@
+#include <common.h>
 #include <intr/cpuid.h>
-#include <io/output.h>
 
 /*
  * CPUID - info on the CPU

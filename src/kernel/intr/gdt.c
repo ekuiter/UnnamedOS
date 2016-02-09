@@ -1,6 +1,3 @@
-#include <intr/gdt.h>
-#include <io/output.h>
-
 /*
  * Global Descriptor Table - defines memory segments (here: a flat memory model)
  *
@@ -11,6 +8,9 @@
  * https://en.wikibooks.org/wiki/X86_Assembly/Global_Descriptor_Table
  * https://stackoverflow.com/questions/23978486/far-jump-in-gdt-in-bootloader/23979175#23979175
  */
+
+#include <common.h>
+#include <intr/gdt.h>
 
 #define GDT_ENTRIES 5
 

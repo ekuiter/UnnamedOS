@@ -1,11 +1,12 @@
-#include <io/output.h>
-
 /*
  * Output to Screen
  *
  * http://wiki.osdev.org/Printing_to_Screen
  * http://wiki.osdev.org/Text_UI
  */
+
+#include <common.h>
+#include <io/output.h>
 
 #define IO_COLS 80
 #define IO_ROWS 25

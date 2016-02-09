@@ -1,8 +1,3 @@
-#ifndef IO_PORT_H
-#define IO_PORT_H
-
-#include <stdint.h>
-
 /*
  * I/O ports
  *
@@ -10,6 +5,11 @@
  * http://wiki.osdev.org/Inline_Assembly
  * http://wiki.osdev.org/Inline_Assembly/Examples
  */
+
+#ifndef IO_PORT_H
+#define IO_PORT_H
+
+#include <stdint.h>
 
 inline void outb(uint16_t port, uint8_t val) {
     // syntax: outb <val, here %0>, <port, here %1>

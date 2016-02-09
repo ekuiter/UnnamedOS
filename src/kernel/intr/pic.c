@@ -1,13 +1,12 @@
-#include <intr/pic.h>
-#include <io/output.h>
-#include <io/port.h>
-
 /*
  * Programmable Interrupt Controller - manages IRQs (hardware interrupts)
  *
  * http://wiki.osdev.org/8259_PIC
  * http://www.lowlevel.eu/wiki/PIC
  */
+
+#include <common.h>
+#include <intr/pic.h>
 
 #define PIC1_CMD  0x20
 #define PIC1_DATA 0x21

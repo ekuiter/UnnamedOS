@@ -1,7 +1,3 @@
-#include <intr/isr.h>
-#include <intr/pic.h>
-#include <io/output.h>
-
 /*
  * Interrupt Service Routine - handles IRQs, exceptions and syscalls
  *
@@ -9,6 +5,10 @@
  * http://www.lowlevel.eu/wiki/ISR
  * http://wiki.osdev.org/Exceptions
  */
+
+#include <common.h>
+#include <intr/isr.h>
+#include <intr/pic.h>
 
 #define IS_EXCEPTION(intr) (intr <= 0x1F)
 #define IS_IRQ(intr)       (intr >= 0x20 && intr <= 0x2F)
@@ -36,21 +36,6 @@ void isr_interrupts(uint8_t enable) {
     io_putstr("ok");
     io_attr(IO_DEFAULT);
     io_putstr(".\n");
-}
-
-#define panic(s) _panic(s, __FILE__, __LINE__)
-#define assert(exp) ((exp) ? (void) 0 : panic("Assert failed"))
-
-extern void halt();
-
-void _panic(char* msg, char* file, uint32_t line) {
-    io_attr(IO_RED);
-    io_putstr(msg);
-    io_putstr(" at ");
-    io_putstr(file);
-    io_putchar(':');
-    io_putint(line, 10, 0, 0);
-    halt();
 }
 
 // ESP points to the CPU state, returns a (possibly new) ESP to allow switching tasks

@@ -1,7 +1,3 @@
-#include <intr/idt.h>
-#include <intr/gdt.h>
-#include <io/output.h>
-
 /*
  * Interrupt Descriptor Table - defines interrupt vectors
  *
@@ -11,6 +7,10 @@
  * http://wiki.osdev.org/Interrupt_Service_Routines
  * http://wiki.osdev.org/Selector
  */
+
+#include <common.h>
+#include <intr/idt.h>
+#include <intr/gdt.h>
 
 #define IDT_ENTRIES 256
 
