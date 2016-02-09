@@ -62,7 +62,7 @@ static void idt_load() {
 }
 
 void idt_init() {
-    io_putstr("IDT init ... ");
+    print("IDT init ... ");
     ISR_INIT(0x00); ISR_INIT(0x01); ISR_INIT(0x02); ISR_INIT(0x03);
     ISR_INIT(0x04); ISR_INIT(0x05); ISR_INIT(0x06); ISR_INIT(0x07);
     ISR_INIT(0x08); ISR_INIT(0x09); ISR_INIT(0x0A); ISR_INIT(0x0B);
@@ -77,8 +77,5 @@ void idt_init() {
     ISR_INIT(0x2C); ISR_INIT(0x2D); ISR_INIT(0x2E); ISR_INIT(0x2F);
     ISR_INIT(0x30);
     idt_load();
-    io_attr(IO_GREEN);
-    io_putstr("ok");
-    io_attr(IO_DEFAULT);
-    io_putstr(".\n");
+    println("%2aok%a.");
 }

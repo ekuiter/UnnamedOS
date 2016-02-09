@@ -34,11 +34,7 @@ extern uint32_t cpuid_check();
 extern cpuid_result_t* cpuid_call(uint32_t function, cpuid_result_t* res);
 
 static void cpuid_dump(cpuid_result_t* res) {
-    io_putstr("EAX: ");  io_putint(res->eax, 16, 8, '0');
-    io_putstr(" EBX: "); io_putint(res->ebx, 16, 8, '0');
-    io_putstr(" ECX: "); io_putint(res->ecx, 16, 8, '0');
-    io_putstr(" EDX: "); io_putint(res->edx, 16, 8, '0');
-    io_putchar('\n');
+    println("EAX=%08x,EBX=%08x,ECX=%08x,EDX=%08x", res->eax, res->ebx, res->ecx, res->edx);
 }
 
 void cpuid_vendor(cpuid_result_t* res) {
@@ -47,7 +43,7 @@ void cpuid_vendor(cpuid_result_t* res) {
     *(uint32_t*) &buf[1] = res->edx;
     *(uint32_t*) &buf[2] = res->ecx;
     buf[3] = '\0';
-    io_putstr((char*) buf);
+    print("%s", buf);
 }
 
 void cpuid_name(cpuid_result_t* res) {
@@ -78,44 +74,34 @@ void cpuid_name(cpuid_result_t* res) {
 static cpuid_result_t res;
 
 void cpuid_init() {
-    io_putstr("CPUID init ... ");
+    print("CPUID init ... ");
     if (cpuid_check()) {
-        io_attr(IO_GREEN);
-        io_putstr("ok");
-        io_attr(IO_DEFAULT);
-        io_putstr(". ");
+        print("%2aok%a. ");
         cpuid_name(cpuid_call(CPUID_NAME1, &res));
         cpuid_name(cpuid_call(CPUID_NAME2, &res));
         cpuid_name(cpuid_call(CPUID_NAME3, &res));
-        io_putstr(" by ");
+        print(" by ");
         cpuid_vendor(cpuid_call(CPUID_VENDOR, &res));
         cpuid_features_t* features = (cpuid_features_t*) cpuid_call(CPUID_FEATURES, &res);
-        if (features->sse)     io_putstr(", SSE");
-        if (features->sse2)    io_putstr(", SSE2");
-        if (features->sse3)    io_putstr(", SSE3");
-        if (features->ssse3)   io_putstr(", SSSE3");
-        if (features->sse41)   io_putstr(", SSE4.1");
-        if (features->sse42)   io_putstr(", SSE4.2");
-        if (features->fpu)     io_putstr(", FPU");
-        if (features->pae)     io_putstr(", PAE");
-        if (features->mmx)     io_putstr(", MMX");
-        if (features->vme)     io_putstr(", VME");
-        if (features->apic)    io_putstr(", APIC");
-        if (features->acpi)    io_putstr(", ACPI");
-        if (features->pse)     io_putstr(", PSE");
-        if (features->pse36)   io_putstr(", PSE-36");
-        if (features->clflush) io_putstr(", CLFLUSH");
-        if (features->htt) {
-            io_putstr(", hyperthreading with ");
-            io_putint(features->processors, 10, 0, 0);
-            io_putstr(" processor(s)");
-        } else
-            io_putstr(", no hyperthreading");
-        io_putstr(".\n");
-    } else {
-        io_attr(IO_RED);
-        io_putstr("fail");
-        io_attr(IO_DEFAULT);
-        io_putstr(".\n");
-    }
+        if (features->sse)     print(", SSE");
+        if (features->sse2)    print(", SSE2");
+        if (features->sse3)    print(", SSE3");
+        if (features->ssse3)   print(", SSSE3");
+        if (features->sse41)   print(", SSE4.1");
+        if (features->sse42)   print(", SSE4.2");
+        if (features->fpu)     print(", FPU");
+        if (features->pae)     print(", PAE");
+        if (features->mmx)     print(", MMX");
+        if (features->vme)     print(", VME");
+        if (features->apic)    print(", APIC");
+        if (features->acpi)    print(", ACPI");
+        if (features->pse)     print(", PSE");
+        if (features->pse36)   print(", PSE-36");
+        if (features->clflush) print(", CLFLUSH");
+        if (features->htt)
+            println(", hyperthreading with %d processor(s).", features->processors);
+        else
+            println(", no hyperthreading.");
+    } else
+        println("%4afail%a.");
 }

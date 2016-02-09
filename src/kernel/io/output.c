@@ -3,6 +3,8 @@
  *
  * http://wiki.osdev.org/Printing_to_Screen
  * http://wiki.osdev.org/Text_UI
+ * https://www.eskimo.com/~scs/cclass/int/sx11b.html
+ * https://www.eskimo.com/~scs/cclass/int/sx11c.html
  */
 
 #include <common.h>
@@ -12,6 +14,7 @@
 #define IO_ROWS 25
 #define IO_CHARS (IO_COLS * IO_ROWS)
 #define IO_MEM ((uint8_t*) 0xb8000)
+#define IS_DIGIT(c) (c >= '0' && c <= '9')
 
 static uint8_t* video = IO_MEM;
 static uint8_t attr = IO_DEFAULT;
@@ -77,4 +80,61 @@ void io_clear() {
     io_cursor(0);
     for (int i = 0; i < IO_CHARS; i++)
         io_putchar('\0');
+}
+
+// Variadic print function, takes format strings like "0x%08x" and any arguments. Arguments are "automagically"
+// promoted (char, short to int, float to double) so that every argument following fmt is 4 bytes in size (apart
+// from uint64_t and double which are not supported by this implementation, so we ignore them). That means we can
+// interpret &fmt as a uint32_t pointer (arg) and increment it (++arg) to access all the additional arguments,
+// doing essentially what the macros va_start, va_arg and va_end would do if we had stdarg.h.
+static void vprint(char* fmt, uint32_t* arg) {
+    for (char* cur = fmt; *cur != '\0'; cur++) { // iterate over format string
+        if (*cur != '%') // output non-% characters normally
+            io_putchar(*cur);
+        else { // process format specifiers
+            int8_t pad = 0; // default values for integer padding
+            uint8_t pad_char = ' ';
+            if (*++cur == '0') { // if %0..., pad with zeroes
+                pad_char = '0';
+                cur++;
+            }
+            for (; IS_DIGIT(*cur); cur++) // convert pad string into integer
+                pad = pad * 10 + (*cur - '0'); // powers of ten, (c - '0') converts a single digit to int
+            switch (*cur) { // %d outputs decimal, %x hexadecimal numbers and so on
+                case 'd': // decimal
+                    io_putint(*++arg, 10, pad, pad_char);
+                    break;
+                case 'x': // hexadecimal
+                    io_putint(*++arg, 16, pad, pad_char);
+                    break;
+                case 'b': // binary
+                    io_putint(*++arg, 2, pad, pad_char);
+                    break;
+                case 'o': // octal
+                    io_putint(*++arg, 8, pad, pad_char);
+                    break;
+                case 'c': // single character
+                    io_putchar((uint8_t) *++arg);
+                    break;
+                case 's': // 0-terminated string
+                    io_putstr((char*) *++arg);
+                    break;
+                case 'a': // attribute byte
+                    io_attr(pad == 0 ? IO_DEFAULT : pad);
+                    break;
+                case '%': // escaped %
+                    io_putchar('%');
+                    break;
+            }
+        }
+    }
+}
+
+void print(char* fmt, ...) {
+    vprint(fmt, (uint32_t*) &fmt);
+}
+
+void println(char* fmt, ...) {
+    vprint(fmt, (uint32_t*) &fmt);
+    io_putchar('\n');
 }

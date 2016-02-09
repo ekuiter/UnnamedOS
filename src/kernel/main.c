@@ -7,22 +7,16 @@
 
 void main() {
     io_clear();
-    io_putstr("Welcome!\n");
+    println("%15aWelcome!%a");
     gdt_init();
     cpuid_init();
     idt_init();
     pic_init();
     isr_interrupts(1);
-    io_putstr("Hello World!\n");
     while(1);
 }
 
 void _panic(char* msg, char* file, uint32_t line) {
-    io_attr(IO_RED);
-    io_putstr(msg);
-    io_putstr(" at ");
-    io_putstr(file);
-    io_putchar(':');
-    io_putint(line, 10, 0, 0);
+    print("%4a%s at %s:%d", msg, file, line);
     halt();
 }

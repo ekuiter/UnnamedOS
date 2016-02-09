@@ -17,7 +17,7 @@
 #define INT_IRQ8  0x28
 
 void pic_init() {
-    io_putstr("PIC init ... ");
+    print("PIC init ... ");
     // interrupt vectors before:
     // 00-1F: Exceptions
     // 08-0F: IRQ0-7  (PIC1) - conflicts with exceptions!
@@ -42,10 +42,7 @@ void pic_init() {
     // 20-27: IRQ0-7  (PIC1) - no more conflicts, all IRQs 0-15 are in a row
     // 28-2F: IRQ8-15 (PIC2)
     // 30-FF: freely usable (syscalls)
-    io_attr(IO_GREEN);
-    io_putstr("ok");
-    io_attr(IO_DEFAULT);
-    io_putstr(".\n");
+    println("%2aok%a.");
 }
 
 // EOI = "end of interrupt", a signal that we are ready to process new interrupts

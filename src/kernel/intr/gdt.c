@@ -56,7 +56,7 @@ static void gdt_load() {
 extern void gdt_flush();
 
 void gdt_init() {
-    io_putstr("GDT init ... ");
+    print("GDT init ... ");
     gdt_init_entry(0, 0, 0);       // null descriptor
     gdt_init_entry(1, 0, 0xFFFFF); // RING0 code segment (see gdt_flush_code_segment in gdt_asm.S)
     gdt_init_entry(2, 0, 0xFFFFF); // RING0 data segment (see gdt_flush_data_segment in gdt_asm.S)
@@ -70,10 +70,7 @@ void gdt_init() {
     gdt[4].ac = 0; gdt[4].rw = 1; gdt[4].dc = 0; gdt[4].ex = 0; gdt[4].dt = 1; gdt[4].dpl = 3; gdt[4].pr = 1; gdt[4].sz = 1; gdt[4].gr = 1;
     gdt_load();
     gdt_flush();
-    io_attr(IO_GREEN);
-    io_putstr("ok");
-    io_attr(IO_DEFAULT);
-    io_putstr(".\n");
+    println("%2aok%a.");
 }
 
 uint16_t gdt_get_selector(size_t entry) {

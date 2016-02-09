@@ -26,16 +26,13 @@ typedef struct {
 
 void isr_interrupts(uint8_t enable) {
     if (enable) {
-        io_putstr("Enabling interrupts ... ");
+        print("Enabling interrupts ... ");
         asm volatile("sti");
     } else {
-        io_putstr("Disabling interrupts ... ");
+        print("Disabling interrupts ... ");
         asm volatile("cli");
     }
-    io_attr(IO_GREEN);
-    io_putstr("ok");
-    io_attr(IO_DEFAULT);
-    io_putstr(".\n");
+    println("%2aok%a.");
 }
 
 // ESP points to the CPU state, returns a (possibly new) ESP to allow switching tasks
@@ -44,31 +41,21 @@ uint32_t isr_handle_interrupt(uint32_t esp) {
     if (IS_EXCEPTION(cpu->intr)) {
         switch (cpu->intr) {
             default:
-                io_attr(IO_RED);
-                io_putstr("EX");
-                io_putint(cpu->intr, 16, 2, '0');
-                io_putstr(" (EIP=");
-                io_putint(cpu->eip, 16, 8, '0');
-                panic(")");
+                print("%4aEX%02x (EIP=%08x)", cpu->intr, cpu->eip);
+                panic("");
         }
     } else if (IS_IRQ(cpu->intr)) {
         switch (cpu->intr) {
             case INT_TIMER: break;
             default:
-                io_attr(IO_GREEN);
-                io_putstr("IRQ");
-                io_putint(cpu->intr - INT_IRQ0, 16, 2, '0');
-                io_attr(IO_DEFAULT);
+                print("%2aIRQ%02x%a", cpu->intr - INT_IRQ0);
         }
         pic_send_eoi(cpu->intr);
     } else if (IS_SYSCALL(cpu->intr)) {
         switch (cpu->eax) {
             case 0: break;
             default:
-                io_attr(IO_RED);
-                io_putstr("SYS");
-                io_putint(cpu->eax, 16, 8, '0');
-                io_attr(IO_DEFAULT);
+                print("%4aSYS%08x%a", cpu->eax);
         }
     }
     return esp;
