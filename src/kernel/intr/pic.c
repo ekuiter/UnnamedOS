@@ -42,7 +42,7 @@ void pic_init() {
     // 20-27: IRQ0-7  (PIC1) - no more conflicts, all IRQs 0-15 are in a row
     // 28-2F: IRQ8-15 (PIC2)
     // 30-FF: freely usable (syscalls)
-    println("%2aok%a.");
+    println("%2aok%a. IRQ0=INT%02x, IRQ8=INT%02x.", irq0, irq8);
 }
 
 // EOI = "end of interrupt", a signal that we are ready to process new interrupts

@@ -9,10 +9,11 @@
 #include <common.h>
 #include <intr/isr.h>
 #include <intr/pic.h>
+#include <intr/pit.h>
 
-#define IS_EXCEPTION(intr) (intr <= 0x1F)
-#define IS_IRQ(intr)       (intr >= 0x20 && intr <= 0x2F)
-#define IS_SYSCALL(intr)   (intr == 0x30)
+#define IS_EXCEPTION(intr) ((intr) <= 0x1F)
+#define IS_IRQ(intr)       ((intr) >= 0x20 && intr <= 0x2F)
+#define IS_SYSCALL(intr)   ((intr) == 0x30)
 #define INT_IRQ0  0x20
 #define INT_TIMER INT_IRQ0
 
@@ -41,12 +42,13 @@ uint32_t isr_handle_interrupt(uint32_t esp) {
     if (IS_EXCEPTION(cpu->intr)) {
         switch (cpu->intr) {
             default:
-                print("%4aEX%02x (EIP=%08x)", cpu->intr, cpu->eip);
-                panic("");
+                panic("%4aEX%02x (EIP=%08x)", cpu->intr, cpu->eip);
         }
     } else if (IS_IRQ(cpu->intr)) {
         switch (cpu->intr) {
-            case INT_TIMER: break;
+            case INT_TIMER:
+                pit_irq();
+                break;
             default:
                 print("%2aIRQ%02x%a", cpu->intr - INT_IRQ0);
         }

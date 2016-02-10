@@ -7,6 +7,10 @@
 #define IO_GREEN   0x02
 #define IO_RED     0x04
 
+#define IO_COLS 80
+#define IO_ROWS 25
+#define IO_COORD(x, y) ((y) * IO_COLS + (x))
+
 void io_attr(uint8_t new_attr);
 void io_cursor(size_t new_cursor);
 uint16_t io_putchar(uint8_t c);

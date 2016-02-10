@@ -10,11 +10,9 @@
 #include <common.h>
 #include <io/output.h>
 
-#define IO_COLS 80
-#define IO_ROWS 25
 #define IO_CHARS (IO_COLS * IO_ROWS)
 #define IO_MEM ((uint8_t*) 0xb8000)
-#define IS_DIGIT(c) (c >= '0' && c <= '9')
+#define IS_DIGIT(c) ((c) >= '0' && (c) <= '9')
 
 static uint8_t* video = IO_MEM;
 static uint8_t attr = IO_DEFAULT;

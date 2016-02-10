@@ -4,6 +4,7 @@
  * http://wiki.osdev.org/I/O_ports
  * http://wiki.osdev.org/Inline_Assembly
  * http://wiki.osdev.org/Inline_Assembly/Examples
+ * http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
  */
 
 #ifndef IO_PORT_H

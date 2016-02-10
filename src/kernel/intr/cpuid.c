@@ -33,9 +33,11 @@ typedef struct {
 extern uint32_t cpuid_check();
 extern cpuid_result_t* cpuid_call(uint32_t function, cpuid_result_t* res);
 
+#if 0 // prevent Wunused-function
 static void cpuid_dump(cpuid_result_t* res) {
     println("EAX=%08x,EBX=%08x,ECX=%08x,EDX=%08x", res->eax, res->ebx, res->ecx, res->edx);
 }
+#endif
 
 void cpuid_vendor(cpuid_result_t* res) {
     uint32_t buf[4];
@@ -103,5 +105,5 @@ void cpuid_init() {
         else
             println(", no hyperthreading.");
     } else
-        println("%4afail%a.");
+        println("%4afail%a. CPUID not available.");
 }
