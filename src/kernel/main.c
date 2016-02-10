@@ -15,10 +15,12 @@ void main() {
     pic_init();
     pit_init(20);
     isr_interrupts(1);
+    speaker_test();
     //print("%d", 1/0);
+
     while(1) {
-        io_cursor(IO_COORD(IO_COLS - 6, IO_ROWS - 1));
-        print("%6d", pit_seconds());
+        io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
+        pit_time();
         pit_sleep(1000);
     }
 }
