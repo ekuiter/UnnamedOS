@@ -5,6 +5,7 @@
 #include <intr/pic.h>
 #include <intr/pit.h>
 #include <intr/isr.h>
+#include <io/ps2.h>
 
 void main() {
     io_clear();
@@ -14,10 +15,11 @@ void main() {
     idt_init();
     pic_init();
     pit_init(20);
+    ps2_init();
     isr_interrupts(1);
-    speaker_test();
+    //speaker_test();
     //print("%d", 1/0);
-
+    
     while(1) {
         io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
         pit_time();

@@ -56,7 +56,7 @@ void pit_init(uint32_t new_freq) {
         freq = new_freq;
         println("%2aok%a. Frequency=%dHz.", freq);
     } else
-        println("%4afail%a. Frequency must be > 19Hz and < 0.59MHz.");
+        println("%4afail%a. Frequency must be > 18Hz and < 0.59MHz.");
 }
 
 void pit_irq() {
@@ -81,11 +81,15 @@ void pit_time() {
 // we disable GCC's optimization here to prevent the idling loop from being optimized away
 __attribute__((optimize("O0"))) void pit_sleep(uint32_t ms) {
     uint32_t wait_until = ticks + MS_TO_TICKS(ms, freq);
-    while (ticks != wait_until);
+    // We do not use < here because wait_until might have overflowed, e.g. wait_until=0xFF, ticks=0xFF00 and in that
+    while (ticks != wait_until); // case wait_until < ticks would not wait and terminate immediately.
 }
 
 void speaker_on(uint32_t freq) {
-    pit_init_channel(2, MODE_SQUARE_WAVE, freq);
+    if (!pit_init_channel(2, MODE_SQUARE_WAVE, freq)) {
+        println("%4aSpeaker frequency must be > 18Hz and < 0.59MHz%a");
+        return;
+    }
     uint8_t state = inb(PIT_SPEAKER);
     outb(PIT_SPEAKER, state | SPEAKER_ON | SPEAKER_CHANNEL2);
 }
@@ -104,12 +108,20 @@ void speaker_play(uint32_t freq, uint32_t ms) {
 }
 
 void speaker_test() {
-    speaker_play(523, 200);
-    speaker_play(587, 200);
-    speaker_play(659, 200);
-    speaker_play(698, 200);
-    speaker_play(784, 200);
-    speaker_play(880, 200);
-    speaker_play(988, 200);
-    speaker_play(1047, 200);
+    while (1) {
+        speaker_play(523, 200);
+        speaker_play(587, 200);
+        speaker_play(659, 200);
+        speaker_play(698, 200);
+        speaker_play(784, 200);
+        speaker_play(880, 200);
+        speaker_play(988, 200);
+        speaker_play(1047, 200);
+        speaker_play(988, 200);
+        speaker_play(880, 200);
+        speaker_play(784, 200);
+        speaker_play(698, 200);
+        speaker_play(659, 200);
+        speaker_play(587, 200);
+    }
 }
