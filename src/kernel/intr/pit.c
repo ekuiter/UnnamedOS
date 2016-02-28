@@ -50,16 +50,7 @@ static uint8_t pit_init_channel(uint8_t channel, uint8_t mode, uint32_t freq) {
     return 1;
 }
 
-void pit_init(uint32_t new_freq) {
-    print("PIT init ... ");
-    if (pit_init_channel(0, MODE_RATE, new_freq)) {
-        freq = new_freq;
-        println("%2aok%a. Frequency=%dHz.", freq);
-    } else
-        println("%4afail%a. Frequency must be > 18Hz and < 0.59MHz.");
-}
-
-void pit_irq() {
+static cpu_state_t* pit_handler(cpu_state_t* cpu) {
     ticks++;
     if (ticks % freq == 0) { // every "freq" ticks a second is gone (because 1Hz = 1/s)
         seconds++;
@@ -72,6 +63,17 @@ void pit_irq() {
             }
         }
     }
+    return cpu;
+}
+
+void pit_init(uint32_t new_freq) {
+    print("PIT init ... ");
+    isr_register_handler(ISR_IRQ(0), pit_handler);
+    if (pit_init_channel(0, MODE_RATE, new_freq)) {
+        freq = new_freq;
+        println("%2aok%a. Frequency=%dHz.", freq);
+    } else
+        println("%4afail%a. Frequency must be > 18Hz and < 0.59MHz.");
 }
 
 void pit_time() {
@@ -80,9 +82,42 @@ void pit_time() {
 
 // we disable GCC's optimization here to prevent the idling loop from being optimized away
 __attribute__((optimize("O0"))) void pit_sleep(uint32_t ms) {
-    uint32_t wait_until = ticks + MS_TO_TICKS(ms, freq);
-    // We do not use < here because wait_until might have overflowed, e.g. wait_until=0xFF, ticks=0xFF00 and in that
-    while (ticks != wait_until); // case wait_until < ticks would not wait and terminate immediately.
+    uint32_t wait_until = ticks + MS_TO_TICKS(ms, freq); // If wait_until has overflowed, we
+    while (wait_until < ticks); // wait until ticks overflows, then it approaches
+    while (ticks < wait_until); // wait_until from the "bottom" as expected.
+    // (I used != before but when using timeouts and not an idling loop, the
+    // wait_until moment can easily be missed when doing "heavier" tasks like I/O
+    // polling. > and < are more robust in that regard.)
+    // Alternative implementation with timeouts from below:
+    // pit_timeout_t timeout = pit_make_timeout(ms); // This implementation works,
+    // while (!pit_timed_out(&timeout)); // but is slower and not as straightforward.
+}
+
+pit_timeout_t pit_make_timeout(uint32_t ms) { // timeout constructor
+    pit_timeout_t timeout = { // avoid ticks + INT_MAX, this overflows to ticks + 0,
+        .wait_until = ticks + MS_TO_TICKS(ms, freq), // waiting NOT AT ALL.
+        .state = PS2_WAITING_UNTIL_OVERFLOW // We start by waiting until ticks overflows.
+    };
+    return timeout;
+}
+
+int8_t pit_timed_out(pit_timeout_t* timeout) {   
+    switch (timeout->state) { // simple state machine mimicking pit_sleep's
+        case PS2_WAITING_UNTIL_OVERFLOW: // behaviour in a more "asynchronous" style
+            if (!(timeout->wait_until < ticks)) // like pit_sleep's 1st while
+                timeout->state = PS2_WAITING_UNTIL_TIMEOUT;
+            return 0;
+        case PS2_WAITING_UNTIL_TIMEOUT:
+            if (!(ticks < timeout->wait_until)) { // like pit_sleep's 2nd while
+                timeout->state = PS2_TIMED_OUT;
+                return 1;
+            }
+            return 0;
+        case PS2_TIMED_OUT:
+            return 1;
+        default:
+            return -1;
+    }
 }
 
 void speaker_on(uint32_t freq) {

@@ -12,8 +12,6 @@
 #include <intr/idt.h>
 #include <intr/gdt.h>
 
-#define IDT_ENTRIES 256
-
 #define ISR_INIT(nr) extern void isr_intr_##nr(); \
   idt_init_entry_isr(nr, &isr_intr_##nr)
 

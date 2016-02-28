@@ -13,9 +13,10 @@
             <in>pit.c</in>
           </df>
           <df name="io">
+            <in>keyboard.c</in>
+            <in>mouse.c</in>
             <in>output.c</in>
             <in>ps2.c</in>
-            <in>ps2.h</in>
           </df>
           <in>main.c</in>
         </df>
@@ -42,7 +43,7 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0"
-                 commonFlags="-mtune=pentium -march=pentium -g -O2 -std=gnu99 -ffreestanding"/>
+                 commonFlags="-m32 -mtune=pentium -march=pentium -g -O2 -std=gnu99 -ffreestanding"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -121,13 +122,24 @@
           </incDir>
         </cTool>
       </item>
+      <item path="src/kernel/io/keyboard.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/kernel/io/mouse.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
       <item path="src/kernel/io/output.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="src/kernel/io/ps2.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="src/kernel/io/ps2.h" ex="false" tool="3" flavor2="0">
+      <item path="src/kernel/io/ps2.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/intr</pElem>
+          </incDir>
+        </cTool>
       </item>
       <item path="src/kernel/main.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">

@@ -4,21 +4,17 @@
  * http://wiki.osdev.org/%228042%22_PS/2_Controller
  * http://wiki.osdev.org/Keyboard_Controller
  * http://www.lowlevel.eu/wiki/Keyboard_Controller
- * http://wiki.osdev.org/PS/2_Mouse
- * http://wiki.osdev.org/Mouse_Input
- * http://lowlevel.eu/wiki/PS/2-Maus
- * 
  */
 
 #include <common.h>
 #include <io/ps2.h>
+#include <intr/pit.h>
+#include <io/keyboard.h>
+#include <io/mouse.h>
 
 // the controller's I/O ports
 #define PS2_DATA           0x60 // write device commands, read device/PS/2 results
 #define PS2_CMD            0x64 // write PS/2 commands, read ps2_status_t
-
-// device port indication (see header file)
-#define ANY_PORT              0 // don't care about the port used
 
 // PS/2 commands
 #define TEST_PS2           0xAA
@@ -42,13 +38,17 @@
 
 // device commands
 #define DEVICE_RESET       0xFF
+#define DEVICE_IDENTIFY    0xF2
 #define DEVICE_ENABLE      0xF4
 #define DEVICE_DISABLE     0xF5
-#define DEVICE_IDENTIFY    0xF2
 
 // device results
 #define DEVICE_ACK         0xFA
 #define DEVICE_TEST_PASSED 0xAA
+
+#define PS2_TIMEOUT        1000
+#define HAS_PORT1             1 // every PS/2 controller has port 1, but port 2
+#define HAS_PORT2          port2_supported // needs to be detected first
 
 typedef union {
     struct {
@@ -56,49 +56,57 @@ typedef union {
         uint8_t inbuf_full   : 1; // clear if we are allowed to send data
         uint8_t system       : 1; // set if system passed POST tests
         uint8_t cmd_data     : 1; // whether sent value is data or command
-        uint8_t reserved     : 1;
+        uint8_t              : 1;
         uint8_t outbuf_port2 : 1; // whether port 2 sent data
         uint8_t timeout_err  : 1;
         uint8_t parity_err   : 1;
-    } bits;
+    } __attribute__((packed)) bits;
     uint8_t byte;
 } ps2_status_t;
 
 typedef union {
     struct {
-        uint8_t port1_intr   : 1; // whether port 1 fires IRQ1
-        uint8_t port2_intr   : 1; // whether port 2 fires IRQ12
-        uint8_t system       : 1; // set if system passed POST tests
-        uint8_t reserved     : 1;
-        uint8_t port1_clock  : 1; // whether port 1 clock is disabled
-        uint8_t port2_clock  : 1; // whether port 2 clock is disabled
-        uint8_t port1_transl : 1; // whether port 1 translates scancode sets
-        uint8_t reserved2    : 1;
-    } bits;
-    uint8_t byte;
-} ps2_config_t;
-
-typedef union {
-    struct {
         uint8_t reset        : 1; // whether port 1 fires IRQ1
         uint8_t a20_gate     : 1; // whether port 2 fires IRQ12
-        uint8_t reserved     : 2;
+        uint8_t              : 2;
         uint8_t outbuf_port1 : 1; // whether port 1 sent data
         uint8_t outbuf_port2 : 1; // whether port 2 sent data
-        uint8_t reserved2    : 2;
-    } bits;
+        uint8_t              : 2;
+    } __attribute__((packed)) bits;
     uint8_t byte;
 } ps2_output_port_t;
 
+#define DEVICE_TYPE_NUMBER 6
+#define IS_MOUSE(port_type) \
+    (port_type == MOUSE || port_type == MOUSE_SCROLL || port_type == MOUSE_5BUTTON)
+#define IS_KEYBOARD(port_type) \
+    (port_type == KEYBOARD_TRANSL1 || port_type == KEYBOARD_TRANSL2 || port_type == KEYBOARD)
+
+typedef enum { // low byte = 1st byte sent, high byte = 2nd byte sent (if any)
+    MOUSE            = 0x0000, MOUSE_SCROLL     = 0x0003,
+    MOUSE_5BUTTON    = 0x0004, KEYBOARD_TRANSL1 = 0x41AB,
+    KEYBOARD_TRANSL2 = 0xC1AB, KEYBOARD         = 0x83AB
+} ps2_device_type_t;
+
+ps2_device_type_t device_type_indices[] = {
+    MOUSE, MOUSE_SCROLL, MOUSE_5BUTTON, KEYBOARD_TRANSL1, KEYBOARD_TRANSL2, KEYBOARD
+};
+
+const char* device_types[] = {
+    "Mouse", "Mouse (s)", "Mouse (5)", "Keyboard (t)", "Keyboard (t)", "Keyboard"
+};
+
+static uint8_t init_done = 0;
 static uint8_t port2_supported = 1; // let's assume that port 2 (IRQ12) is supported
+static ps2_error_t err = 0; // timeout error (we often ignore this)
 
 static inline uint8_t ps2_ready() {
     return !((ps2_status_t) inb(PS2_CMD)).bits.inbuf_full;
 }
 
-static inline int8_t ps2_available(uint8_t port) {
+static inline int8_t ps2_available(ps2_port_t port) {
     ps2_status_t status = (ps2_status_t) inb(PS2_CMD);
-    if (port == ANY_PORT) // whether data is ready for us to fetch (on any port)
+    if (port == PS2_ANY_PORT) // whether data is ready for us to fetch (on any port)
         return status.bits.outbuf_full;
     if (port == PS2_PORT_1) // we are only interested in data sent from port 1
         return status.bits.outbuf_full && !status.bits.outbuf_port2;
@@ -107,123 +115,207 @@ static inline int8_t ps2_available(uint8_t port) {
     return -1;
 }
 
-static inline void ps2_write(uint8_t io_port, uint8_t command) {
-    while (!ps2_ready()); // wait until PS/2 controller accepts input
-    outb(io_port, command);
-}
-
-static inline uint8_t ps2_read(uint8_t port) {
-    while (!ps2_available(port)); // wait until PS/2 controller holds data for port
-    return inb(PS2_DATA);
-}
-
-static inline uint8_t ps2_valid_port(uint8_t port) {
-    if ((port != PS2_PORT_1 && port != PS2_PORT_2) || (port == PS2_PORT_2 && !port2_supported)) {
-        println("%4aPS/2 port %d not supported%a", port);
+static inline uint8_t ps2_write(uint8_t io_port, uint8_t command) {
+    pit_timeout_t timeout = pit_make_timeout(PS2_TIMEOUT);
+    // wait until PS/2 controller accepts input or a timeout occurs
+    while (!ps2_ready() && !pit_timed_out(&timeout));
+    if (pit_timed_out(&timeout)) {
+        println("%4aPS/2 write timeout (%02x,%02x)%a", io_port, command);
         return 0;
     }
+    outb(io_port, command);
     return 1;
 }
 
-static void ps2_flush() {
-    while (ps2_available(ANY_PORT))
-        ps2_read(ANY_PORT); // discard any data stuck in PS/2 controller
+static inline uint8_t ps2_read(ps2_port_t port, ps2_error_t* err) {
+    pit_timeout_t timeout = pit_make_timeout(PS2_TIMEOUT);
+    // wait until PS/2 controller holds data for port or a timeout occurs
+    while (!ps2_available(port) && !pit_timed_out(&timeout));
+    if (pit_timed_out(&timeout)) {
+        println("%4aPS/2 port %d read timeout%a", port);
+        *err = PS2_TIMEOUT_ERR;
+        return 0;
+    }
+    *err = 0;
+    return inb(PS2_DATA);
 }
 
-static ps2_config_t ps2_read_config() {
-    ps2_write(PS2_CMD, READ_CONFIG);
-    return (ps2_config_t) ps2_read(ANY_PORT);
+ps2_config_t ps2_read_config() {
+    ps2_write(PS2_CMD, READ_CONFIG); // we tell the controller to send us
+    return (ps2_config_t) ps2_read(PS2_ANY_PORT, &err); // the config byte
 }
 
-static void ps2_write_config(ps2_config_t config) {
+void ps2_write_config(ps2_config_t config) {
     ps2_write(PS2_CMD, WRITE_CONFIG);
     ps2_write(PS2_DATA, config.byte);
 }
 
-static uint8_t ps2_test(uint8_t test_command, uint8_t test_result, const char* name) {
+static uint8_t ps2_test(uint8_t test_command, uint8_t expected_result, const char* name) {
     ps2_write(PS2_CMD, test_command);
-    if (ps2_read(ANY_PORT) != test_result) {
-        println("%4afail%a. %s test failed.", name);
+    uint8_t res = ps2_read(PS2_ANY_PORT, &err);
+    if (res != expected_result) {
+        print("%4awarning%a. %s test failed (%02x). ", name, res);
         return 0;
-    }
+    } else return 1;
+}
+
+static inline uint8_t ps2_valid_port(ps2_port_t port) {
+    if ((port != PS2_PORT_1 && port != PS2_PORT_2) || (port == PS2_PORT_2 && !HAS_PORT2)) {
+        println("%4aPS/2 port %d not supported%a", port);
+        return 0;
+    } else return 1;
+}
+
+static uint8_t ps2_wait_for_ack(ps2_port_t port) {
+    return ps2_read_device(port, &err) == DEVICE_ACK;
+}
+
+void ps2_flush() {
+    while (ps2_available(PS2_ANY_PORT))
+        ps2_read(PS2_ANY_PORT, &err); // discard any data stuck in PS/2 controller
+}
+
+static uint8_t ps2_write_device_no_ack(ps2_port_t port, uint8_t command) {
+    if (!ps2_valid_port(port)) return 0;
+    if (port == PS2_PORT_2)
+        ps2_write(PS2_CMD, SEND_TO_PORT_2);
+    ps2_write(PS2_DATA, command);
     return 1;
 }
 
-static void ps2_reset_device(uint8_t port) {
-    ps2_write_device(port, DEVICE_RESET);
-    while (ps2_read_device(port) != DEVICE_TEST_PASSED); // TODO: might be an infinite loop!
+uint8_t ps2_write_device(ps2_port_t port, uint8_t command) {
+    if (!ps2_write_device_no_ack(port, command))
+        return 0;
+    return ps2_wait_for_ack(port);
 }
 
-static void ps2_detect_device(uint8_t port) {
-    ps2_write_device(port, DEVICE_DISABLE);
-    while (ps2_read_device(port) != DEVICE_ACK); // TODO: see above
+uint8_t ps2_read_device(ps2_port_t port, ps2_error_t* err) {
+    if (!ps2_valid_port(port)) {
+        *err = PS2_INVALID_PORT_ERR;
+        return 0;
+    }
+    return ps2_read(port, err);
+}
+
+static uint8_t ps2_reset_device(ps2_port_t port) {
+    ps2_write_device_no_ack(port, DEVICE_RESET);
+    pit_timeout_t timeout = pit_make_timeout(PS2_TIMEOUT);
+    while (ps2_read_device(port, &err) != DEVICE_TEST_PASSED && !pit_timed_out(&timeout));
+    if (pit_timed_out(&timeout)) {
+        print("%4afail%a. Port %d reset failed. ", port);
+        return 0;
+    } else return 1;
+}
+
+static ps2_device_type_t ps2_detect_device(ps2_port_t port) {    
     ps2_write_device(port, DEVICE_IDENTIFY);
-    while (ps2_read_device(port) != DEVICE_ACK); // TODO: see above
-    //while (1) println("%02x", ps2_read_device(port)); // TODO: add timeout
-    ps2_write_device(port, DEVICE_ENABLE);
-    while (ps2_read_device(port) != DEVICE_ACK); // TODO: see above
+    uint16_t device_type = 0;
+    ps2_error_t err;
+    uint8_t res = ps2_read_device(port, &err);
+    if (!err)
+        device_type = res;
+    res = ps2_read_device(port, &err);
+    if (!err)
+        device_type = device_type | (res << 8);
+    return (ps2_device_type_t) device_type;
 }
 
-void ps2_init() {
-    print("PS/2 init ... ");
-    // We assume the PS/2 controller exists and USB Legacy Support is still active.
-    
+static const char* ps2_device_type_str(ps2_device_type_t device_type) {
+    uint32_t idx = 0;
+    for (; idx < DEVICE_TYPE_NUMBER; idx++)
+        if (device_type_indices[idx] == device_type)
+            break;
+    if (idx == DEVICE_TYPE_NUMBER)
+        return "invalid device type";
+    return device_types[idx];
+}
+
+static void ps2_init_device(ps2_port_t port, ps2_device_type_t device_type) {
+    if (IS_KEYBOARD(device_type))
+        keyboard_init(port);
+    else if (IS_MOUSE(device_type))
+        mouse_init(port);
+    else
+        println("%4ainvalid device type (%04x)%a", device_type);
+}
+
+static void ps2_init_controller() {
     ps2_write(PS2_CMD, DISABLE_PORT_1); // start by disabling devices,
     ps2_write(PS2_CMD, DISABLE_PORT_2); // preventing interference
     ps2_flush();
     
     ps2_config_t config = ps2_read_config();
     if (!config.bits.port2_clock) // ought to be 1 because we disabled port 2 above
-        port2_supported = 0;
+        HAS_PORT2 = 0;
     // disable IRQ1, IRQ12 (for now) and scancode translation
     config.bits.port1_intr = config.bits.port2_intr = config.bits.port1_transl = 0;
     ps2_write_config(config);
     
-    if (!ps2_test(TEST_PS2, TEST_PS2_PASSED, "PS/2")) return;
+    ps2_test(TEST_PS2, TEST_PS2_PASSED, "PS/2");
     
-    if (port2_supported) {
+    if (HAS_PORT2) {
         // we are not sure yet if port 2 is supported,
         ps2_write(PS2_CMD, ENABLE_PORT_2); // so let's find out by enabling it
         ps2_config_t config = ps2_read_config();
         if (config.bits.port2_clock) // ought to be 0 because we just enabled port 2
-            port2_supported = 0;
+            HAS_PORT2 = 0;
         else // we know for sure port 2 is supported, so let's disable it again
             ps2_write(PS2_CMD, DISABLE_PORT_2);
     }
     
-    if (                   !ps2_test(TEST_PORT_1, TEST_PORT_PASSED, "Port 1")) return;
-    if (port2_supported && !ps2_test(TEST_PORT_2, TEST_PORT_PASSED, "Port 2")) return;
+    if (HAS_PORT1) ps2_test(TEST_PORT_1, TEST_PORT_PASSED, "Port 1");
+    if (HAS_PORT2) ps2_test(TEST_PORT_2, TEST_PORT_PASSED, "Port 2");
+    if (HAS_PORT1) ps2_write(PS2_CMD, ENABLE_PORT_1);
+    if (HAS_PORT2) ps2_write(PS2_CMD, ENABLE_PORT_2);
     
-    config = ps2_read_config(); // initialization is finished,
-    ps2_write(PS2_CMD, ENABLE_PORT_1); // so we enable devices and IRQs again
-    config.bits.port1_intr = 1;
-    if (port2_supported) {
-        ps2_write(PS2_CMD, ENABLE_PORT_2);
-        config.bits.port2_intr = 1;
-    }
+    config = ps2_read_config(); // controller init is done, so we enable devices/IRQs again   
+    if (HAS_PORT1) config.bits.port1_intr = 1;
+    if (HAS_PORT2) config.bits.port2_intr = 1;
     ps2_write_config(config);
-    
-                         ps2_reset_device(PS2_PORT_1);
-    if (port2_supported) ps2_reset_device(PS2_PORT_2);
-    ps2_flush(); // clear output buffers (most likely mouse ID)
-    
-    ps2_detect_device(PS2_PORT_1);
-    ps2_detect_device(PS2_PORT_2);
-    // TODO: start appropriate drivers
-    
-    println("%2aok%a. Dual-channel %s.", port2_supported ? "supported" : "not supported");
 }
 
-void ps2_write_device(uint8_t port, uint8_t command) {
-    if (!ps2_valid_port(port)) return;
-    if (port == PS2_PORT_2)
-        ps2_write(PS2_CMD, SEND_TO_PORT_2);
-    ps2_write(PS2_DATA, command);
+static void ps2_init_devices() {
+    if (HAS_PORT1) ps2_reset_device(PS2_PORT_1);
+    if (HAS_PORT2) ps2_reset_device(PS2_PORT_2);
+    ps2_flush(); // clear output buffer (most likely mouse ID)
+    if (HAS_PORT1) ps2_write_device(PS2_PORT_1, DEVICE_DISABLE);    
+    ps2_flush();
+    if (HAS_PORT2) ps2_write_device(PS2_PORT_2, DEVICE_DISABLE);    
+    ps2_flush();
+    //if (HAS_PORT1) port1_type = ps2_detect_device(PS2_PORT_1);
+    //if (HAS_PORT2) port2_type = ps2_detect_device(PS2_PORT_2);
+    if (HAS_PORT1) ps2_init_device(PS2_PORT_1, KEYBOARD);
+    if (HAS_PORT2) ps2_init_device(PS2_PORT_2, MOUSE);
+    if (HAS_PORT1) ps2_write_device(PS2_PORT_1, DEVICE_ENABLE);
+    if (HAS_PORT2) ps2_write_device(PS2_PORT_2, DEVICE_ENABLE);
+    init_done = 1;
+    ps2_flush();
 }
 
-uint8_t ps2_read_device(uint8_t port) {
-    if (!ps2_valid_port(port)) return 0;
-    return ps2_read(port);
+static cpu_state_t* ps2_handler(cpu_state_t* cpu) {
+    if (!init_done) return cpu; // do not interfere with polling code
+    if (cpu->intr == ISR_IRQ(12) && !HAS_PORT2) {
+        println("%4aIRQ12: not a PS/2 device%a");
+        return cpu;
+    }
+    uint8_t data = inb(PS2_DATA);
+    if (cpu->intr == ISR_IRQ(1))
+        keyboard_handler(data); // To simplify things, we assume port 1 to be
+    else if (cpu->intr == ISR_IRQ(12)) // a keyboard and port 2 to be a mouse.
+        mouse_handler(data);
+    return cpu;
+}
+
+void ps2_init() {
+    print("PS/2 init ... ");
+    isr_register_handler(ISR_IRQ(1), ps2_handler);
+    isr_register_handler(ISR_IRQ(12), ps2_handler);
+    // We assume the PS/2 controller exists and USB Legacy Support is still active.
+    // Disable IRQs and translation, self-test the controller and ports, and
+    ps2_init_controller(); // determine whether port 2 is available.
+    ps2_init_devices(); // Reset, detect and initialize the devices.
+    println("%2aok%a. %s channel, keyboard%s.",
+            HAS_PORT2 ? "Dual" : "Single", HAS_PORT2 ? " and mouse" : "");
 }
 
 void ps2_reboot() {
