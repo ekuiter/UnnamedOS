@@ -12,6 +12,6 @@
 void mouse_init(ps2_port_t port) {
 }
 
-void mouse_handler(uint8_t data) {
+void mouse_handle_data(uint8_t data) {
     print("%5a%02x%a ", data);
 }

@@ -11,4 +11,9 @@ Run the following commands in the `src` directory:
 
 **Implemented features**
 
-- GDT
+- flat memory model (GDT)
+- printf-esque output
+- CPU info (CPUID)
+- interrupts (IDT, PIC, ISRs)
+- system clock & speaker driver (PIT)
+- keyboard driver (PS/2)

@@ -20,6 +20,5 @@ typedef cpu_state_t* (*isr_handler_t)(cpu_state_t* cpu);
 
 void isr_interrupts(uint8_t enable);
 void isr_register_handler(uint8_t intr, isr_handler_t handler);
-void isr_remove_handler(uint8_t intr);
 
 #endif

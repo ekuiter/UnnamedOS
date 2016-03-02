@@ -76,26 +76,6 @@ typedef union {
     uint8_t byte;
 } ps2_output_port_t;
 
-#define DEVICE_TYPE_NUMBER 6
-#define IS_MOUSE(port_type) \
-    (port_type == MOUSE || port_type == MOUSE_SCROLL || port_type == MOUSE_5BUTTON)
-#define IS_KEYBOARD(port_type) \
-    (port_type == KEYBOARD_TRANSL1 || port_type == KEYBOARD_TRANSL2 || port_type == KEYBOARD)
-
-typedef enum { // low byte = 1st byte sent, high byte = 2nd byte sent (if any)
-    MOUSE            = 0x0000, MOUSE_SCROLL     = 0x0003,
-    MOUSE_5BUTTON    = 0x0004, KEYBOARD_TRANSL1 = 0x41AB,
-    KEYBOARD_TRANSL2 = 0xC1AB, KEYBOARD         = 0x83AB
-} ps2_device_type_t;
-
-ps2_device_type_t device_type_indices[] = {
-    MOUSE, MOUSE_SCROLL, MOUSE_5BUTTON, KEYBOARD_TRANSL1, KEYBOARD_TRANSL2, KEYBOARD
-};
-
-const char* device_types[] = {
-    "Mouse", "Mouse (s)", "Mouse (5)", "Keyboard (t)", "Keyboard (t)", "Keyboard"
-};
-
 static uint8_t init_done = 0;
 static uint8_t port2_supported = 1; // let's assume that port 2 (IRQ12) is supported
 static ps2_error_t err = 0; // timeout error (we often ignore this)
@@ -166,10 +146,6 @@ static inline uint8_t ps2_valid_port(ps2_port_t port) {
     } else return 1;
 }
 
-static uint8_t ps2_wait_for_ack(ps2_port_t port) {
-    return ps2_read_device(port, &err) == DEVICE_ACK;
-}
-
 void ps2_flush() {
     while (ps2_available(PS2_ANY_PORT))
         ps2_read(PS2_ANY_PORT, &err); // discard any data stuck in PS/2 controller
@@ -186,7 +162,7 @@ static uint8_t ps2_write_device_no_ack(ps2_port_t port, uint8_t command) {
 uint8_t ps2_write_device(ps2_port_t port, uint8_t command) {
     if (!ps2_write_device_no_ack(port, command))
         return 0;
-    return ps2_wait_for_ack(port);
+    return ps2_read_device(port, &err) == DEVICE_ACK;
 }
 
 uint8_t ps2_read_device(ps2_port_t port, ps2_error_t* err) {
@@ -205,38 +181,6 @@ static uint8_t ps2_reset_device(ps2_port_t port) {
         print("%4afail%a. Port %d reset failed. ", port);
         return 0;
     } else return 1;
-}
-
-static ps2_device_type_t ps2_detect_device(ps2_port_t port) {    
-    ps2_write_device(port, DEVICE_IDENTIFY);
-    uint16_t device_type = 0;
-    ps2_error_t err;
-    uint8_t res = ps2_read_device(port, &err);
-    if (!err)
-        device_type = res;
-    res = ps2_read_device(port, &err);
-    if (!err)
-        device_type = device_type | (res << 8);
-    return (ps2_device_type_t) device_type;
-}
-
-static const char* ps2_device_type_str(ps2_device_type_t device_type) {
-    uint32_t idx = 0;
-    for (; idx < DEVICE_TYPE_NUMBER; idx++)
-        if (device_type_indices[idx] == device_type)
-            break;
-    if (idx == DEVICE_TYPE_NUMBER)
-        return "invalid device type";
-    return device_types[idx];
-}
-
-static void ps2_init_device(ps2_port_t port, ps2_device_type_t device_type) {
-    if (IS_KEYBOARD(device_type))
-        keyboard_init(port);
-    else if (IS_MOUSE(device_type))
-        mouse_init(port);
-    else
-        println("%4ainvalid device type (%04x)%a", device_type);
 }
 
 static void ps2_init_controller() {
@@ -282,17 +226,15 @@ static void ps2_init_devices() {
     ps2_flush();
     if (HAS_PORT2) ps2_write_device(PS2_PORT_2, DEVICE_DISABLE);    
     ps2_flush();
-    //if (HAS_PORT1) port1_type = ps2_detect_device(PS2_PORT_1);
-    //if (HAS_PORT2) port2_type = ps2_detect_device(PS2_PORT_2);
-    if (HAS_PORT1) ps2_init_device(PS2_PORT_1, KEYBOARD);
-    if (HAS_PORT2) ps2_init_device(PS2_PORT_2, MOUSE);
+    if (HAS_PORT1) keyboard_init(PS2_PORT_1); // To simplify things, we assume port 1
+    if (HAS_PORT2) mouse_init(PS2_PORT_2); // is a keyboard and port 2 a mouse.
     if (HAS_PORT1) ps2_write_device(PS2_PORT_1, DEVICE_ENABLE);
     if (HAS_PORT2) ps2_write_device(PS2_PORT_2, DEVICE_ENABLE);
     init_done = 1;
     ps2_flush();
 }
 
-static cpu_state_t* ps2_handler(cpu_state_t* cpu) {
+static cpu_state_t* ps2_handle_interrupt(cpu_state_t* cpu) {
     if (!init_done) return cpu; // do not interfere with polling code
     if (cpu->intr == ISR_IRQ(12) && !HAS_PORT2) {
         println("%4aIRQ12: not a PS/2 device%a");
@@ -300,22 +242,22 @@ static cpu_state_t* ps2_handler(cpu_state_t* cpu) {
     }
     uint8_t data = inb(PS2_DATA);
     if (cpu->intr == ISR_IRQ(1))
-        keyboard_handler(data); // To simplify things, we assume port 1 to be
-    else if (cpu->intr == ISR_IRQ(12)) // a keyboard and port 2 to be a mouse.
-        mouse_handler(data);
+        keyboard_handle_data(data);
+    else if (cpu->intr == ISR_IRQ(12))
+        mouse_handle_data(data);
     return cpu;
 }
 
 void ps2_init() {
     print("PS/2 init ... ");
-    isr_register_handler(ISR_IRQ(1), ps2_handler);
-    isr_register_handler(ISR_IRQ(12), ps2_handler);
+    isr_register_handler(ISR_IRQ(1), ps2_handle_interrupt);
+    isr_register_handler(ISR_IRQ(12), ps2_handle_interrupt);
     // We assume the PS/2 controller exists and USB Legacy Support is still active.
     // Disable IRQs and translation, self-test the controller and ports, and
     ps2_init_controller(); // determine whether port 2 is available.
-    ps2_init_devices(); // Reset, detect and initialize the devices.
-    println("%2aok%a. %s channel, keyboard%s.",
-            HAS_PORT2 ? "Dual" : "Single", HAS_PORT2 ? " and mouse" : "");
+    ps2_init_devices(); // Reset and initialize the devices.
+    println("%2aok%a. %s channel, keyboard %s.",
+            HAS_PORT2 ? "Dual" : "Single", HAS_PORT2 ? "and mouse" : "only");
 }
 
 void ps2_reboot() {

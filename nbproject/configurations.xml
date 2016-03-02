@@ -19,6 +19,7 @@
             <in>ps2.c</in>
           </df>
           <in>main.c</in>
+          <in>string.c</in>
         </df>
       </df>
     </df>
@@ -147,6 +148,13 @@
             <pElem>src/kernel</pElem>
             <pElem>src/kernel/io</pElem>
             <pElem>src/kernel/intr</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/string.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
       </item>

@@ -50,7 +50,7 @@ static uint8_t pit_init_channel(uint8_t channel, uint8_t mode, uint32_t freq) {
     return 1;
 }
 
-static cpu_state_t* pit_handler(cpu_state_t* cpu) {
+static cpu_state_t* pit_handle_interrupt(cpu_state_t* cpu) {
     ticks++;
     if (ticks % freq == 0) { // every "freq" ticks a second is gone (because 1Hz = 1/s)
         seconds++;
@@ -68,7 +68,7 @@ static cpu_state_t* pit_handler(cpu_state_t* cpu) {
 
 void pit_init(uint32_t new_freq) {
     print("PIT init ... ");
-    isr_register_handler(ISR_IRQ(0), pit_handler);
+    isr_register_handler(ISR_IRQ(0), pit_handle_interrupt);
     if (pit_init_channel(0, MODE_RATE, new_freq)) {
         freq = new_freq;
         println("%2aok%a. Frequency=%dHz.", freq);

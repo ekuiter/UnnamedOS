@@ -38,14 +38,6 @@ void isr_register_handler(uint8_t intr, isr_handler_t handler) {
     handlers[intr] = handler;
 }
 
-void isr_remove_handler(uint8_t intr) {
-    if (intr >= IDT_ENTRIES) {
-        println("%4ainterrupt vector %d not allowed%a", intr);
-        return;
-    }
-    handlers[intr] = 0;
-}
-
 // cpu has two functions here - as a pointer (CPU state) and as a value (ESP):
 // cpu points to the CPU state and is the ESP pushed in isr_asm.S (the former
 // stack pointer which points to the current task's CPU state, beginning with GS).
