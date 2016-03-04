@@ -241,6 +241,8 @@ static cpu_state_t* ps2_handle_interrupt(cpu_state_t* cpu) {
         return cpu;
     }
     uint8_t data = inb(PS2_DATA);
+    if (data == DEVICE_ACK) // ignore when we send commands to
+        return cpu; // the device while scanning is enabled
     if (cpu->intr == ISR_IRQ(1))
         keyboard_handle_data(data);
     else if (cpu->intr == ISR_IRQ(12))

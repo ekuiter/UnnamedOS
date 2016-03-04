@@ -100,6 +100,14 @@ static void vprint(char* fmt, uint32_t* arg) {
                 pad = pad * 10 + (*cur - '0'); // powers of ten, (c - '0') converts a single digit to int
             switch (*cur) { // %d outputs decimal, %x hexadecimal numbers and so on
                 case 'd': // decimal
+                    if (*++arg & 0x80000000) { // is negative
+                        io_putchar('-');
+                        pad--;
+                        *arg = -*arg;
+                    }
+                    io_putint(*arg, 10, pad, pad_char);
+                    break;
+                case 'u': // decimal
                     io_putint(*++arg, 10, pad, pad_char);
                     break;
                 case 'x': // hexadecimal

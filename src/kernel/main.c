@@ -7,10 +7,19 @@
 #include <intr/isr.h>
 #include <io/ps2.h>
 #include <io/keyboard.h>
+#include <io/mouse.h>
 
 static void handle_keyboard_event(keyboard_event_t e) {
     if (e.ascii && e.pressed)
         print("%9a%c%a", e.ascii);
+}
+
+static void handle_mouse_event(mouse_event_t e) {
+    io_cursor(IO_COORD(e.screen_x, e.screen_y));
+    if (e.left || e.right || e.middle)
+        print("%6a%c%a", 219);
+    else
+        print("%9a%c%a", 219);
 }
 
 void main() {
@@ -26,6 +35,7 @@ void main() {
     //speaker_test();
     //print("%d", 1/0);
     keyboard_register_handler(handle_keyboard_event);
+    mouse_register_handler(handle_mouse_event);
     while(1);
     while(1) {
         io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));

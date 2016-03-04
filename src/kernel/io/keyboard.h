@@ -3,7 +3,6 @@
 
 #include <io/ps2.h>
 
-
 #define KEY(name)   keyboard_get_keycode(name)
 #define KEY_UNKNOWN 0xFF // keycode for unknown keys
 
@@ -21,7 +20,7 @@ typedef struct {
 
 typedef void (*keyboard_handler_t)(keyboard_event_t event);
 
-void keyboard_init(ps2_port_t port);
+void keyboard_init(ps2_port_t _port);
 uint8_t keyboard_get_keycode(char* name);
 void keyboard_register_handler(keyboard_handler_t _handler);
 void keyboard_handle_data(uint8_t data);

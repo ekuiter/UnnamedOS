@@ -100,6 +100,8 @@ static uint8_t (*current_layout)[KEYCODE_NUMBER] = qwertz_layout;
 static keyboard_handler_t handler; // which function to call when a key event occurs
 
 static uint8_t keyboard_scancode_set(uint8_t scancode_set) {
+    if (scancode_set > 3)
+        return 0; // there is no scancode set 4, ...
     ps2_write_device(port, SCANCODE_SET);
     ps2_write_device(port, scancode_set);
     if (scancode_set == 0) { // read scancode set rather than write
@@ -236,10 +238,14 @@ static uint8_t keyboard_get_ascii_from_keycode(uint8_t (*layout)[KEYCODE_NUMBER]
 }
 
 // called when a scancode has been received (makecode = key pressed)
-static void keyboard_process_scancode(uint8_t is_makecode) {
+static void keyboard_process_scancode(uint8_t is_makecode) {    
     event.keycode = keyboard_get_keycode_from_scancode(scancode_buf, scancode_len);
     event.pressed = is_makecode;
-    keyboard_set_key_pressed(event.keycode, event.pressed);
+    // the pause key never sends a breakcode and we don't need lock breakcodes
+    // (in bochs they are not even sent, maybe because of the LED toggling)
+    if (event.keycode != KEY("PAUSE") && event.keycode != KEY("SCROLL") &&
+        event.keycode != KEY("NUM")   && event.keycode != KEY("CAPS"))
+        keyboard_set_key_pressed(event.keycode, event.pressed);
     event.ascii = keyboard_get_ascii_from_keycode(current_layout, event.keycode, event.flags);
     
     // handle modifier keys
@@ -251,19 +257,13 @@ static void keyboard_process_scancode(uint8_t is_makecode) {
                         keyboard_get_key_pressed(KEY("R GUI"));
     event.flags.alt   = keyboard_get_key_pressed(KEY("L ALT"))  ||
                         keyboard_get_key_pressed(KEY("R ALT"));
-    if (is_makecode) {
-        if (event.keycode == KEY("SCROLL")) {
-            event.flags.scroll_lock = !event.flags.scroll_lock;
-            keyboard_leds(SCROLL, -1);
-        }
-        if (event.keycode == KEY("NUM")) {
-            event.flags.num_lock = !event.flags.num_lock;
-            keyboard_leds(NUM, -1);
-        }
-        if (event.keycode == KEY("CAPS")) {
-            event.flags.caps_lock = !event.flags.caps_lock;
-            keyboard_leds(CAPS, -1);
-        }
+    if (event.pressed) {
+        if (event.keycode == KEY("SCROLL"))
+            keyboard_leds(SCROLL, event.flags.scroll_lock = !event.flags.scroll_lock);
+        if (event.keycode == KEY("NUM"))
+            keyboard_leds(NUM,    event.flags.num_lock    = !event.flags.num_lock);
+        if (event.keycode == KEY("CAPS"))
+            keyboard_leds(CAPS,   event.flags.caps_lock   = !event.flags.caps_lock);
     }
     
     if (handler) handler(event); // call our event handler if there is one
@@ -288,7 +288,7 @@ void keyboard_register_handler(keyboard_handler_t _handler) {
 }
 
 // called by the PS/2 driver with a scancode byte
-void keyboard_handle_data(uint8_t data) {
+void keyboard_handle_data(uint8_t data) {   
     if (keyboard_state == BREAK_RECEIVED) // ignore the BREAK_CODE byte
         scancode_len--; // so we can easily convert breakcodes to keycodes
     scancode_buf[scancode_len++] = data; // save scancode byte
