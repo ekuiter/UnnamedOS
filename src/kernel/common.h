@@ -13,6 +13,12 @@
 }
 #define assert(exp) ((exp) ? (void) 0 : panic("Assert failed"))
 
+#define bochs_break() { \
+    outw(0x8A00, 0x8A00); \
+    outw(0x8A00, 0x8AE0); \
+}
+
 extern void halt();
+extern uint16_t bochs_log(uint8_t c);
 
 #endif

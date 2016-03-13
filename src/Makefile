@@ -13,7 +13,7 @@ endif
 kernel:
 	$(MAKE) -C kernel
 run: all
-	cd ../build; /usr/local/bin/bochs -q
+	cd ../build; /usr/local/bin/bochs -q -rc .debugrc
 count:
 	wc -l $(shell find -E ./ -regex '.*(c|cpp|S|h)')
 create:

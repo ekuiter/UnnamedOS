@@ -16,4 +16,5 @@ Run the following commands in the `src` directory:
 - CPU info (CPUID)
 - interrupts (IDT, PIC, ISRs)
 - system clock & speaker driver (PIT)
-- keyboard driver (PS/2)
+- keyboard & mouse driver (PS/2)
+- multiboot info

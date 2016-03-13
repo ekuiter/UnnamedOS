@@ -1,4 +1,5 @@
 #include <common.h>
+#include <intr/multiboot.h>
 #include <intr/gdt.h>
 #include <intr/cpuid.h>
 #include <intr/idt.h>
@@ -22,9 +23,10 @@ static void handle_mouse_event(mouse_event_t e) {
         print("%9a%c%a", 219);
 }
 
-void main() {
-    io_clear(); // clear any messages GRUB left us
+void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
+    io_clear(io_putchar); // clear any messages GRUB left us
     println("%15aWelcome!%a");
+    multiboot_init(mb_info, mb_magic); // Multiboot - info passed by bootloader
     gdt_init(); // Global Descriptor Table - flat memory model
     cpuid_init(); // CPUID - gather information about the CPU
     idt_init(); // Interrupt Descriptor Table - set up ISRs
@@ -33,7 +35,6 @@ void main() {
     isr_interrupts(1); // enable interrupts
     ps2_init(); // PS/2 Controller - mouse, keyboard and speaker control
     //speaker_test();
-    //print("%d", 1/0);
     keyboard_register_handler(handle_keyboard_event);
     mouse_register_handler(handle_mouse_event);
     while(1);

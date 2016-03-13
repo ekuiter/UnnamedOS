@@ -9,6 +9,7 @@
             <in>gdt.c</in>
             <in>idt.c</in>
             <in>isr.c</in>
+            <in>multiboot.c</in>
             <in>pic.c</in>
             <in>pit.c</in>
           </df>
@@ -107,6 +108,14 @@
           </incDir>
         </cTool>
       </item>
+      <item path="src/kernel/intr/multiboot.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel</pElem>
+            <pElem>src/kernel/io</pElem>
+          </incDir>
+        </cTool>
+      </item>
       <item path="src/kernel/intr/pic.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
@@ -145,8 +154,8 @@
       <item path="src/kernel/main.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
-            <pElem>src/kernel</pElem>
             <pElem>src/kernel/io</pElem>
+            <pElem>src/kernel</pElem>
             <pElem>src/kernel/intr</pElem>
           </incDir>
         </cTool>

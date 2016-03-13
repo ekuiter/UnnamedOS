@@ -45,16 +45,17 @@ uint16_t io_putchar(uint8_t c) {
     return 1;
 }
 
-uint16_t io_putstr(char* s) {
+uint16_t io_putstr(char* s, putchar_func_t putchar_func) {
     uint16_t count = 0;
     while (*s != '\0')
-        count += io_putchar(*s++);
+        count += putchar_func(*s++);
     return count;
 }
 
-uint16_t io_putint(uint32_t n, uint8_t radix, int8_t pad, uint8_t pad_char) {
+uint16_t io_putint(uint32_t n, uint8_t radix, int8_t pad, uint8_t pad_char,
+        putchar_func_t putchar_func) {
     if (radix < 2 || radix > 36)
-        return io_putstr("radix invalid");
+        return io_putstr("radix invalid", putchar_func);
     uint8_t buf_len = sizeof(n) * 8 + 1; // max. string length is "bits of n + \0 character"
     char buf[buf_len], digits[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     char* cur = &buf[buf_len - 1]; // cur points to the last element
@@ -70,14 +71,14 @@ uint16_t io_putint(uint32_t n, uint8_t radix, int8_t pad, uint8_t pad_char) {
     }
     uint16_t count = 0;
     for (; pad > 0; pad--)
-        count += io_putchar(pad_char); // put padding characters
-    return count + io_putstr(cur + 1);
+        count += putchar_func(pad_char); // put padding characters
+    return count + io_putstr(cur + 1, putchar_func);
 }
 
-void io_clear() {
+void io_clear(putchar_func_t putchar_func) {
     io_cursor(0);
     for (int i = 0; i < IO_CHARS; i++)
-        io_putchar('\0');
+        putchar_func('\0');
 }
 
 // Variadic print function, takes format strings like "0x%08x" and any arguments. Arguments are "automagically"
@@ -85,10 +86,10 @@ void io_clear() {
 // from uint64_t and double which are not supported by this implementation, so we ignore them). That means we can
 // interpret &fmt as a uint32_t pointer (arg) and increment it (++arg) to access all the additional arguments,
 // doing essentially what the macros va_start, va_arg and va_end would do if we had stdarg.h.
-static void vprint(char* fmt, uint32_t* arg) {
+static void vprint(char* fmt, uint32_t* arg, putchar_func_t putchar_func) {
     for (char* cur = fmt; *cur != '\0'; cur++) { // iterate over format string
         if (*cur != '%') // output non-% characters normally
-            io_putchar(*cur);
+            putchar_func(*cur);
         else { // process format specifiers
             int8_t pad = 0; // default values for integer padding
             uint8_t pad_char = ' ';
@@ -101,35 +102,35 @@ static void vprint(char* fmt, uint32_t* arg) {
             switch (*cur) { // %d outputs decimal, %x hexadecimal numbers and so on
                 case 'd': // decimal
                     if (*++arg & 0x80000000) { // is negative
-                        io_putchar('-');
+                        putchar_func('-');
                         pad--;
                         *arg = -*arg;
                     }
-                    io_putint(*arg, 10, pad, pad_char);
+                    io_putint(*arg, 10, pad, pad_char, putchar_func);
                     break;
                 case 'u': // decimal
-                    io_putint(*++arg, 10, pad, pad_char);
+                    io_putint(*++arg, 10, pad, pad_char, putchar_func);
                     break;
                 case 'x': // hexadecimal
-                    io_putint(*++arg, 16, pad, pad_char);
+                    io_putint(*++arg, 16, pad, pad_char, putchar_func);
                     break;
                 case 'b': // binary
-                    io_putint(*++arg, 2, pad, pad_char);
+                    io_putint(*++arg, 2, pad, pad_char, putchar_func);
                     break;
                 case 'o': // octal
-                    io_putint(*++arg, 8, pad, pad_char);
+                    io_putint(*++arg, 8, pad, pad_char, putchar_func);
                     break;
                 case 'c': // single character
-                    io_putchar((uint8_t) *++arg);
+                    putchar_func((uint8_t) *++arg);
                     break;
                 case 's': // 0-terminated string
-                    io_putstr((char*) *++arg);
+                    io_putstr((char*) *++arg, putchar_func);
                     break;
                 case 'a': // attribute byte
                     io_attr(pad == 0 ? IO_DEFAULT : pad);
                     break;
                 case '%': // escaped %
-                    io_putchar('%');
+                    putchar_func('%');
                     break;
             }
         }
@@ -137,10 +138,19 @@ static void vprint(char* fmt, uint32_t* arg) {
 }
 
 void print(char* fmt, ...) {
-    vprint(fmt, (uint32_t*) &fmt);
+    vprint(fmt, (uint32_t*) &fmt, io_putchar);
 }
 
 void println(char* fmt, ...) {
-    vprint(fmt, (uint32_t*) &fmt);
+    vprint(fmt, (uint32_t*) &fmt, io_putchar);
     io_putchar('\n');
+}
+
+void fprint(putchar_func_t putchar_func, char* fmt, ...) {
+    vprint(fmt, (uint32_t*) &fmt, putchar_func);
+}
+
+void fprintln(putchar_func_t putchar_func, char* fmt, ...) {
+    vprint(fmt, (uint32_t*) &fmt, putchar_func);
+    putchar_func('\n');
 }
