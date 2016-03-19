@@ -45,17 +45,28 @@ void isr_register_handler(uint8_t intr, isr_handler_t handler) {
 // switch tasks (then we need to make sure that ESP points to a valid CPU state).
 // If we don't want to switch tasks, we just return the ESP unchanged.
 cpu_state_t* isr_handle_interrupt(cpu_state_t* cpu) {
-    if (handlers[cpu->intr])
-        cpu = handlers[cpu->intr](cpu); // execute a handler if registered
+    uint32_t intr = cpu->intr; // save intr so we might change the cpu state
+    if (handlers[intr])
+        cpu = handlers[intr](cpu); // execute a handler if registered
     else {
-        if (IS_EXCEPTION(cpu->intr))
-            panic("%4aEX%02x (EIP=%08x)", cpu->intr, cpu->eip);
-        if (IS_IRQ(cpu->intr))
-            print("%2aIRQ%d%a", cpu->intr - ISR_IRQ(0));
-        if (IS_SYSCALL(cpu->intr))
+        if (IS_EXCEPTION(intr))
+            panic("%4aEX%02x (EIP=%08x)", intr, cpu->eip);
+        if (IS_IRQ(intr))
+            print("%2aIRQ%d%a", intr - ISR_IRQ(0));
+        if (IS_SYSCALL(intr))
             print("%4aSYS%08x%a", cpu->eax);
     }
-    if (IS_IRQ(cpu->intr))
-        pic_send_eoi(cpu->intr);
+    if (IS_IRQ(intr))
+        pic_send_eoi(intr);
     return cpu;
+}
+
+void isr_dump_cpu(cpu_state_t* cpu) {
+    fprintln(bochs_log, 
+            "uss=%08x usp=%08x efl=%08x  cs=    %04x eip=%08x err=%08x int=%08x "
+            "eax=%08x ecx=%08x edx=%08x\nebx=%08x esp=%08x ebp=%08x esi=%08x "
+            "edi=%08x  ds=    %04x  es=    %04x  fs=    %04x  gs=    %04x",
+            cpu->user_ss, cpu->user_esp, cpu->eflags, cpu->cs, cpu->eip,
+            cpu->error, cpu->intr, cpu->eax, cpu->ecx, cpu->edx, cpu->ebx,
+            cpu->esp, cpu->ebp, cpu->esi, cpu->edi, cpu->ds, cpu->es, cpu->fs, cpu->gs);
 }

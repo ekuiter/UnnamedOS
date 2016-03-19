@@ -30,8 +30,11 @@ void io_attr(uint8_t new_attr) {
     attr = new_attr;
 }
 
-void io_cursor(size_t new_cursor) {
-    cursor = new_cursor;
+size_t io_cursor(int32_t new_cursor) {
+    size_t old_cursor = cursor;
+    if (new_cursor >= 0)
+        cursor = new_cursor;
+    return old_cursor;
 }
 
 uint16_t io_putchar(uint8_t c) {

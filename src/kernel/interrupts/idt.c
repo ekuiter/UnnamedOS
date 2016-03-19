@@ -51,7 +51,7 @@ static void idt_init_entry(size_t entry, uintptr_t func, uint32_t selector, idt_
 }
 
 static void idt_init_entry_isr(size_t entry, void (*func)()) {
-    idt_init_entry(entry, (uintptr_t) func, gdt_get_selector(1), INTR_32, 0, 0, 1);
+    idt_init_entry(entry, (uintptr_t) func, gdt_get_selector(GDT_RING0_CODE_SEG), INTR_32, 0, 0, 1);
 }
 
 static void idt_load() {

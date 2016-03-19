@@ -32,6 +32,11 @@
           <df name="mem">
             <in>gdt.c</in>
           </df>
+          <df name="tasks">
+            <in>schedule.c</in>
+            <in>task.c</in>
+            <in>tss.c</in>
+          </df>
         </df>
       </df>
     </df>
@@ -120,17 +125,27 @@
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/lib</pElem>
             <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/tasks</pElem>
             <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/kernel/tasks">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel/lib</pElem>
           </incDir>
         </cTool>
       </folder>
       <item path="src/kernel/boot/main.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel/hardware</pElem>
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/hardware/cpu</pElem>
-            <pElem>src/kernel/interrupts</pElem>
-            <pElem>src/kernel/hardware</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -191,6 +206,7 @@
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/lib</pElem>
             <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/tasks</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -229,6 +245,32 @@
       </item>
       <item path="src/kernel/mem/gdt.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/schedule.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/task.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/tss.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
         </cTool>
       </item>
     </conf>

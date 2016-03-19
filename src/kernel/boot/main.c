@@ -1,14 +1,19 @@
 #include <common.h>
 #include <boot/multiboot.h>
-#include <mem/gdt.h>
 #include <hardware/cpu/cpuid.h>
-#include <interrupts/idt.h>
-#include <interrupts/pic.h>
-#include <hardware/pit.h>
-#include <interrupts/isr.h>
-#include <hardware/io/ps2.h>
 #include <hardware/io/keyboard.h>
 #include <hardware/io/mouse.h>
+#include <hardware/io/ps2.h>
+#include <hardware/pit.h>
+#include <interrupts/idt.h>
+#include <interrupts/isr.h>
+#include <interrupts/pic.h>
+#include <mem/gdt.h>
+#include <tasks/task.h>
+
+static void main2(), a(), b();
+static task_t main2_task, a_task, b_task;
+static task_stack_t main2_stack[STACK_SIZE], a_stack[0x400], b_stack[0x400];
 
 static void handle_keyboard_event(keyboard_event_t e) {
     if (e.ascii && e.pressed)
@@ -16,11 +21,9 @@ static void handle_keyboard_event(keyboard_event_t e) {
 }
 
 static void handle_mouse_event(mouse_event_t e) {
-    io_cursor(IO_COORD(e.screen_x, e.screen_y));
-    if (e.left || e.right || e.middle)
-        print("%6a%c%a", 219);
-    else
-        print("%9a%c%a", 219);
+    size_t old_cursor = io_cursor(IO_COORD(e.screen_x, e.screen_y));
+    print(e.left || e.right || e.middle ? "%6a%c%a" : "%9a%c%a", 219);
+    io_cursor(old_cursor);
 }
 
 void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
@@ -36,10 +39,32 @@ void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
     ps2_init(); // PS/2 Controller - mouse, keyboard and speaker control
     keyboard_register_handler(handle_keyboard_event);
     mouse_register_handler(handle_mouse_event);
-    while(1);
+    // hand over further initialization to multitasking-land main2
+    task_create(&main2_task, (uintptr_t) main2, main2_stack, sizeof(main2_stack), 0, 0);
+    asm volatile("hlt"); // stop execution until the scheduler calls main2
+}
+
+static void main2() {
+    task_create(&a_task, (uintptr_t) a, a_stack, sizeof(a_stack), 0, 0);
+    task_create(&b_task, (uintptr_t) b, b_stack, sizeof(b_stack), 0, 0);
     while(1) {
-        io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
-        pit_time();
+        size_t old_cursor = io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
+        pit_dump_time();
+        io_cursor(old_cursor);
         pit_sleep(1000);
+    }
+}
+
+static void a() {
+    while (1) {
+        print("A");
+        pit_sleep(50);
+    }
+}
+
+static void b() {
+    while (1) {
+        print("B");
+        pit_sleep(50);
     }
 }

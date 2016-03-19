@@ -9,6 +9,7 @@
 
 #include <common.h>
 #include <hardware/pit.h>
+#include <tasks/schedule.h>
 
 #define PIT_CHANNEL(c)   (0x40 + (c))
 #define PIT_INIT         0x43
@@ -57,6 +58,7 @@ static cpu_state_t* pit_handle_interrupt(cpu_state_t* cpu) {
             }
         }
     }
+    cpu = schedule(cpu); // returns a new stack pointer if a task change is due
     return cpu;
 }
 
@@ -70,7 +72,7 @@ void pit_init(uint32_t new_freq) {
         println("%4afail%a. Frequency must be > 18Hz and < 0.59MHz.");
 }
 
-void pit_time() {
+void pit_dump_time() {
     print("%02d:%02d:%02d", hours, minutes, seconds);
 }
 
@@ -90,24 +92,24 @@ __attribute__((optimize("O0"))) void pit_sleep(uint32_t ms) {
 pit_timeout_t pit_make_timeout(uint32_t ms) { // timeout constructor
     pit_timeout_t timeout = { // avoid ticks + INT_MAX, this overflows to ticks + 0,
         .wait_until = ticks + MS_TO_TICKS(ms, freq), // waiting NOT AT ALL.
-        .state = PS2_WAITING_UNTIL_OVERFLOW // We start by waiting until ticks overflows.
+        .state = PIT_WAITING_UNTIL_OVERFLOW // We start by waiting until ticks overflows.
     };
     return timeout;
 }
 
 int8_t pit_timed_out(pit_timeout_t* timeout) {   
     switch (timeout->state) { // simple state machine mimicking pit_sleep's
-        case PS2_WAITING_UNTIL_OVERFLOW: // behaviour in a more "asynchronous" style
+        case PIT_WAITING_UNTIL_OVERFLOW: // behaviour in a more "asynchronous" style
             if (!(timeout->wait_until < ticks)) // like pit_sleep's 1st while
-                timeout->state = PS2_WAITING_UNTIL_TIMEOUT;
+                timeout->state = PIT_WAITING_UNTIL_TIMEOUT;
             return 0;
-        case PS2_WAITING_UNTIL_TIMEOUT:
+        case PIT_WAITING_UNTIL_TIMEOUT:
             if (!(ticks < timeout->wait_until)) { // like pit_sleep's 2nd while
-                timeout->state = PS2_TIMED_OUT;
+                timeout->state = PIT_TIMED_OUT;
                 return 1;
             }
             return 0;
-        case PS2_TIMED_OUT:
+        case PIT_TIMED_OUT:
             return 1;
         default:
             return -1;
