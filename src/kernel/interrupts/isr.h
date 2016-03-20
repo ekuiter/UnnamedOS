@@ -9,7 +9,9 @@
 
 // registers pushed in idt_isr (see isr_asm.S)
 typedef struct {
+    // segment registers
     uint16_t gs, : 16, fs, : 16, es, : 16, ds, : 16;
+    // We do not use the ESP pushed here by pusha at all because popa ignores it.
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax, intr, error, eip;
     uint16_t cs, : 16;
     union { // EFLAGS register - contains control and status flags
@@ -20,6 +22,7 @@ typedef struct {
         } __attribute__((packed)) bits;
         uint32_t dword;
     } eflags;
+    // These are only pushed when we came from userspace and only then also popped.
     uint32_t user_esp, user_ss;
 } __attribute__((packed)) cpu_state_t;
 

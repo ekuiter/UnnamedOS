@@ -13,7 +13,8 @@
 
 static void main2(), a(), b();
 static task_t main2_task, a_task, b_task;
-static task_stack_t main2_stack[STACK_SIZE], a_stack[0x400], b_stack[0x400];
+static task_stack_t main2_stack[STACK_SIZE], a_user_stack[0x400],
+        a_kernel_stack[0x400], b_user_stack[0x400], b_kernel_stack[0x400];
 
 static void handle_keyboard_event(keyboard_event_t e) {
     if (e.ascii && e.pressed)
@@ -40,13 +41,15 @@ void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
     keyboard_register_handler(handle_keyboard_event);
     mouse_register_handler(handle_mouse_event);
     // hand over further initialization to multitasking-land main2
-    task_create(&main2_task, (uintptr_t) main2, main2_stack, sizeof(main2_stack), 0, 0);
+    task_create_kernel(&main2_task, (uintptr_t) main2, main2_stack, sizeof(main2_stack));
     asm volatile("hlt"); // stop execution until the scheduler calls main2
 }
 
 static void main2() {
-    task_create(&a_task, (uintptr_t) a, a_stack, sizeof(a_stack), 0, 0);
-    task_create(&b_task, (uintptr_t) b, b_stack, sizeof(b_stack), 0, 0);
+    task_create_user(&a_task, (uintptr_t) a, a_kernel_stack, sizeof(a_kernel_stack),
+            a_user_stack, sizeof(a_user_stack));
+    task_create_user(&b_task, (uintptr_t) b, b_kernel_stack, sizeof(b_kernel_stack),
+            b_user_stack, sizeof(b_user_stack));
     while(1) {
         size_t old_cursor = io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
         pit_dump_time();

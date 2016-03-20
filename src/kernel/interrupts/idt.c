@@ -13,7 +13,7 @@
 #include <mem/gdt.h>
 
 #define ISR_INIT(nr) extern void isr_intr_##nr(); \
-  idt_init_entry_isr(nr, &isr_intr_##nr)
+  idt_init_entry_isr(nr, &isr_intr_##nr, 0)
 
 // the IDTR register pointing to the IDT
 typedef struct {
@@ -50,8 +50,8 @@ static void idt_init_entry(size_t entry, uintptr_t func, uint32_t selector, idt_
     idt[entry].pr        = pr;
 }
 
-static void idt_init_entry_isr(size_t entry, void (*func)()) {
-    idt_init_entry(entry, (uintptr_t) func, gdt_get_selector(GDT_RING0_CODE_SEG), INTR_32, 0, 0, 1);
+static void idt_init_entry_isr(size_t entry, void (*func)(), uint8_t dpl) {
+    idt_init_entry(entry, (uintptr_t) func, gdt_get_selector(GDT_RING0_CODE_SEG), INTR_32, 0, dpl, 1);
 }
 
 static void idt_load() {
@@ -61,6 +61,7 @@ static void idt_load() {
 
 void idt_init() {
     print("IDT init ... ");
+    // set up all the exceptions and IRQs as kernel-only (RING0) interrupts
     ISR_INIT(0x00); ISR_INIT(0x01); ISR_INIT(0x02); ISR_INIT(0x03);
     ISR_INIT(0x04); ISR_INIT(0x05); ISR_INIT(0x06); ISR_INIT(0x07);
     ISR_INIT(0x08); ISR_INIT(0x09); ISR_INIT(0x0A); ISR_INIT(0x0B);
@@ -73,7 +74,8 @@ void idt_init() {
     ISR_INIT(0x24); ISR_INIT(0x25); ISR_INIT(0x26); ISR_INIT(0x27);
     ISR_INIT(0x28); ISR_INIT(0x29); ISR_INIT(0x2A); ISR_INIT(0x2B);
     ISR_INIT(0x2C); ISR_INIT(0x2D); ISR_INIT(0x2E); ISR_INIT(0x2F);
-    ISR_INIT(0x30);
+    extern void isr_intr_0x30(); // set up 0x30 as a syscall interrupt which
+    idt_init_entry_isr(0x30, &isr_intr_0x30, 3); // might be called from RING3
     idt_load();
     println("%2aok%a.");
 }

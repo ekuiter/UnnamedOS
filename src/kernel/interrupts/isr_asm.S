@@ -1,7 +1,9 @@
 .global isr_common
 isr_common:
 // At this place, the CPU has already pushed EFLAGS, CS and EIP to the stack and, if we were in userspace
-// before getting interrupted, SS and ESP. In this case, SS and ESP have been set using the TSS.
+// before getting interrupted, the user SS and the user stack ESP. In userspace, after saving SS and ESP
+// the CPU loads the kernel SS and kernel ESP from the TSS (which is prepared by the scheduler).
+// So we change from the user stack to a kernel stack used only for handling interrupts. 
 // Additionally, in the ISR stubs we pushed an error code and the interrupt vector. Now we save the remaining registers:
     pusha    // save all general purpose registers
     push %ds // and the segment registers (except SS) onto the stack
@@ -12,22 +14,24 @@ isr_common:
 // Put the interrupt handling code in a defined state where we can access all kernel data, this is only necessary
 // when coming from userspace because DS, ES, FS and GS might hold a RING3 selector.
 // SS does not need to be altered because (a) we were in RING0 before and SS has already the right selector
-// or (b) we were in RING3 before and SS was set to RING0 from the TSS.
+// or (b) we were in RING3 before and SS was set to RING0 from the TSS. (CS does not need to be changed
+// either, it already holds the RING0 code selector because we told the CPU so in the IDT.)
     mov $0x0010, %ax // 0x0010 is the RING0 data segment (see gdt_asm.S)
     mov %ax, %ds
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
     call isr_handle_interrupt // jump to C
-    mov %eax, %esp // here a stack switch (possibly) happens if we want to switch tasks, we need to ensure that
-                   // the new stack pops off the right registers below!
-    pop %gs // pop everything neatly from the stack
-    pop %fs
-    pop %es
+    mov %eax, %esp // here a kernel stack switch (possibly) happens if we want to switch tasks, we need to ensure that
+                   // the new kernel stack pops off the right registers below! (Note that we are still in RING0!)
+    pop %gs // pop everything neatly from the stack. If we want to return to userspace, these
+    pop %fs // segment registers hold the appropriate RING3 selectors. SS is again taken care
+    pop %es // of by the CPU when doing the iret.
     pop %ds
     popa // this pops everything pusha pushed (except ESP!)
     add $8, %esp // pop interrupt and error code
-    iret // return from interrupt, takes care of popping EFLAGS, CS and so on
+    iret // return from interrupt, takes care of popping EFLAGS, CS and EIP. Also pops SS and ESP
+         // if we want to return to userspace, in that case the user stack switch happens here.
 
 // These ISR stubs push an error code (if necessary) and the interrupt vector before jumping into the common ISR handler:
 .macro isr_intr nr

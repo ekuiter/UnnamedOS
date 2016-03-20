@@ -6,6 +6,7 @@
 
 #include <common.h>
 #include <tasks/schedule.h>
+#include <tasks/tss.h>
 
 static task_t* tasks = 0; // linked list of scheduled tasks, start with none
 static task_t* current_task = 0; // points to the currently running task
@@ -34,7 +35,14 @@ cpu_state_t* schedule(cpu_state_t* cpu) {
     fprintln(bochs_log, "to");
     isr_dump_cpu(next_task->cpu);
     
-    next_task->ticks = ticks_per_time_slice;
+    // If we want to switch to userspace, we need to tell the TSS which kernel
+    // stack to load when an interrupt occurs. At the point we do the iret,
+    // the CPU state on the kernel stack (next_task->cpu) is fully popped, so
+    // when doing the iret, ESP will be next_task->cpu + sizeof(cpu_state_t)
+    // or next_task->cpu + 1. We will use that as ESP when we are interrupted
+    // the next time. Note that this has no effect when we stay in the kernel.
+    tss_set_stack((uint32_t) (next_task->cpu + 1));
+    next_task->ticks = ticks_per_time_slice; // refill the task's time slice
     current_task = next_task;
     return next_task->cpu; // restore the CPU state and ESP saved earlier
 }

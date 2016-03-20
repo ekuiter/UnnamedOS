@@ -5,6 +5,7 @@
  * https://en.wikipedia.org/wiki/Task_state_segment
  * http://www.lowlevel.eu/wiki/Task_State_Segment
  * http://wiki.osdev.org/Getting_to_Ring_3
+ * http://www.jamesmolloy.co.uk/tutorial_html/10.-User%20Mode.html
  */
 
 #include <common.h>
@@ -27,7 +28,6 @@ void tss_init(gdt_entry_t* gdt) {
     gdt[5].ac  = 1; gdt[5].rw = 0; gdt[5].dc = 0; gdt[5].ex = 1; gdt[5].dt = 0;
     gdt[5].dpl = 3; gdt[5].pr = 1; gdt[5].sz = 1; gdt[5].gr = 0;
     tss.ss0 = gdt_get_selector(GDT_RING0_DATA_SEG); // kernel stack segment
-    tss_set_stack(0); // TODO: task specific stacks for handling interrupts
 }
 
 void tss_set_stack(uint32_t stack_pointer) {

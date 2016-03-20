@@ -16,8 +16,9 @@ void task_create_detailed(task_t* task, uintptr_t entry_point, task_stack_t* use
     // when a timer interrupt occurs. The CPU state lies at the top of the task's
     // userspace stack:
     task->user_stack = user_stack, task->kernel_stack = kernel_stack;
+    task->user_stack_len = user_stack_len, task->kernel_stack_len = kernel_stack_len;
     cpu_state_t* cpu = task->cpu =
-            (cpu_state_t*) (user_stack + user_stack_len - sizeof(cpu_state_t));
+            (cpu_state_t*) (kernel_stack + kernel_stack_len - 1 - sizeof(cpu_state_t));
     // make an initial CPU state, setting the registers popped off in isr_asm.S
     // (ESP is set to the pointer value of cpu itself, so the TOS of the user stack.)
     cpu->gs  = cpu->fs  = cpu->es  = cpu->ds  = gdt_get_selector(data_segment);
@@ -29,12 +30,21 @@ void task_create_detailed(task_t* task, uintptr_t entry_point, task_stack_t* use
     cpu->eflags.dword = 0;         // first reset EFLAGS, then
     cpu->eflags.bits._if = 1;      // enable interrupts, otherwise
     cpu->eflags.bits.reserved = 1; // we can't exit the task once entered!
-    // TODO: user_esp, user_ss
+    // If we want to go to userspace, the following registers are popped by iret.
+    // Note that if we stay in the kernel, these values are ignored.
+    cpu->user_esp = (uint32_t) user_stack + user_stack_len - 1;
+    cpu->user_ss = gdt_get_selector(data_segment);
     schedule_add_task(task); // tell the scheduler to run this task when appropriate
 }
 
-void task_create(task_t* task, uintptr_t entry_point, task_stack_t* user_stack,
-            size_t user_stack_len, task_stack_t* kernel_stack, size_t kernel_stack_len) {
-    task_create_detailed(task, entry_point, user_stack, user_stack_len,
+void task_create_kernel(task_t* task, uintptr_t entry_point,
+        task_stack_t* kernel_stack, size_t kernel_stack_len) {
+    task_create_detailed(task, entry_point, 0, 0,
             kernel_stack, kernel_stack_len, GDT_RING0_CODE_SEG, GDT_RING0_DATA_SEG);
+}
+
+void task_create_user(task_t* task, uintptr_t entry_point, task_stack_t* kernel_stack,
+        size_t kernel_stack_len, task_stack_t* user_stack, size_t user_stack_len) {
+    task_create_detailed(task, entry_point, user_stack, user_stack_len,
+            kernel_stack, kernel_stack_len, GDT_RING3_CODE_SEG, GDT_RING3_DATA_SEG);
 }
