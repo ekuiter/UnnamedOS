@@ -16,12 +16,12 @@ typedef struct task {
     struct task* next_task; // pointer to the next task in the linked list
 } task_t;
 
-void task_create_detailed(task_t* task, uintptr_t entry_point, task_stack_t* user_stack,
+void task_create_detailed(task_t* task, void* entry_point, task_stack_t* user_stack,
         size_t user_stack_len, task_stack_t* kernel_stack, size_t kernel_stack_len,
         size_t code_segment, size_t data_segment);
-void task_create_kernel(task_t* task, uintptr_t entry_point,
+void task_create_kernel(task_t* task, void* entry_point,
         task_stack_t* kernel_stack, size_t kernel_stack_len);
-void task_create_user(task_t* task, uintptr_t entry_point, task_stack_t* kernel_stack,
+void task_create_user(task_t* task, void* entry_point, task_stack_t* kernel_stack,
         size_t kernel_stack_len, task_stack_t* user_stack, size_t user_stack_len);
 
 #endif

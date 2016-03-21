@@ -33,10 +33,14 @@
             <in>gdt.c</in>
           </df>
           <df name="tasks">
+            <in>elf.c</in>
             <in>schedule.c</in>
             <in>task.c</in>
             <in>tss.c</in>
           </df>
+        </df>
+        <df name="user_template">
+          <in>main.c</in>
         </df>
       </df>
     </df>
@@ -67,7 +71,7 @@
       </codeAssistance>
       <makefileType>
         <makeTool>
-          <buildCommandWorkingDir>src</buildCommandWorkingDir>
+          <buildCommandWorkingDir></buildCommandWorkingDir>
           <buildCommand>make</buildCommand>
           <cleanCommand>make clean</cleanCommand>
           <executablePath></executablePath>
@@ -135,6 +139,13 @@
           <incDir>
             <pElem>src/kernel/tasks</pElem>
             <pElem>src/kernel/lib</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/user_template">
+        <cTool>
+          <incDir>
+            <pElem>src/user_template</pElem>
           </incDir>
         </cTool>
       </folder>
@@ -247,6 +258,14 @@
         <cTool flags="0">
         </cTool>
       </item>
+      <item path="src/kernel/tasks/elf.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
       <item path="src/kernel/tasks/schedule.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
@@ -271,6 +290,10 @@
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
+        </cTool>
+      </item>
+      <item path="src/user_template/main.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
         </cTool>
       </item>
     </conf>

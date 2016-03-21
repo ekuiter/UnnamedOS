@@ -1,5 +1,6 @@
 #include <common.h>
 #include <boot/multiboot.h>
+#include <string.h>
 
 /*
  * Multiboot - info passed by and to the bootloader
@@ -8,8 +9,11 @@
  * https://www.gnu.org/software/grub/manual/multiboot/html_node/multiboot.h.html
 */
 
+static multiboot_info_t* multiboot_info;
+
 void multiboot_init(multiboot_info_t* mb_info, uint32_t mb_magic) {
     print("Multiboot init ... ");
+    multiboot_info = mb_info;
     if (mb_magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         println("%4afail%a. Multiboot magic not found.");
         return;
@@ -24,11 +28,9 @@ void multiboot_init(multiboot_info_t* mb_info, uint32_t mb_magic) {
     if (mb_info->flags.cmdline)
         print("boot options %s, ", mb_info->cmdline);
     if (mb_info->flags.mods)
-        print("%d modules, ", mb_info->mods_count); // TODO
-    if (mb_info->flags.aout_symbol_table)
-        print("%d a.out symbols, ", mb_info->u.aout_sym.tabsize);
+        print("%d modules, ", mb_info->mods_count);
     if (mb_info->flags.elf_section_header_table)
-        print("%d ELF sections, ", mb_info->u.elf_sec.num); // TODO
+        print("%d ELF sections, ", mb_info->elf_sec.num); // TODO
     if (mb_info->flags.mmap)
         print("memory map, "); // TODO
     if (mb_info->flags.drives)
@@ -42,4 +44,16 @@ void multiboot_init(multiboot_info_t* mb_info, uint32_t mb_magic) {
     if (mb_info->flags.vbe)
         print("VBE, "); // TODO
     println("%2aok%a.");
+}
+
+// returns the start address of the module with the specified string
+void* multiboot_get_module(char* str) {
+    if (!multiboot_info || !multiboot_info->flags.mods)
+        return 0;
+    for (int i = 0; i < multiboot_info->mods_count; i++) {
+        multiboot_module_t* module = multiboot_info->mods_addr + i;
+        if (strcmp(str, module->string) == 0)
+            return module->mod_start;
+    }
+    return 0; // no module found
 }

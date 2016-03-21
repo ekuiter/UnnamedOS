@@ -1,23 +1,39 @@
-all: kernel
-	hdiutil mount ../build/image.img
-	cp kernel/kernel ../build
-	cp ../build/kernel "/Volumes/NO NAME/"
+# Collects all subfolders in src as modules to be compiled, at least 'kernel'.
+MODULES=$(notdir $(shell find ./ -maxdepth 1 -type d))
+
+# foreach takes a variable, a space-separated list to iterate and a command
+# in which every occurrence of the variable is replaced by every item in the
+# list, for example: cp kernel/kernel ../build; cp user/user ../build and so on.
+# the - before test lets make ignore test's return value.
+all: modules
+	-test ! -d "/Volumes/NO NAME/" && hdiutil mount ../build/image.img
+	$(foreach MOD, $(MODULES), cp $(MOD)/$(MOD) ../build;)
+	$(foreach MOD, $(MODULES), cp ../build/$(MOD) "/Volumes/NO NAME/";)
+	cp ../build/menu.lst "/Volumes/NO NAME/grub/"
 
 copy: all
-ifeq ($(DISK),0)
-else
+ifdef DISK
 	sudo umount /dev/disk$(DISK) || true
 	sudo dd if=../build/image.img of=/dev/disk$(DISK)
+else
+	$(warning You need to specify a DISK to copy to.)
 endif
 
-kernel:
-	$(MAKE) -C kernel
+# foreach results in something like this: make -C kernel; make -C user ...
+modules:
+	$(foreach MOD, $(MODULES), $(MAKE) -C $(MOD);)
+
 run: all
-	cd ../build; /usr/local/bin/bochs -q -rc .debugrc
+	-cd ../build; /usr/local/bin/bochs -q -rc .debugrc
+
 count:
 	wc -l $(shell find -E ./ -regex '.*(c|cpp|S|h)')
-create:
-	bximage -fd -size=1.44 -q ../build/created_image.img
+
+# $@ expands to the targets name 'clean': make -C kernel clean; ...
 clean:
-	$(MAKE) -C kernel clean
-.PHONY: all copy kernel run count create clean
+	-test ! -d "/Volumes/NO NAME/" && hdiutil mount ../build/image.img
+	$(foreach MOD, $(MODULES), $(MAKE) -C $(MOD) $@;)
+	$(foreach MOD, $(MODULES), rm -f "/Volumes/NO NAME/$(MOD)";)
+	rm -f "/Volumes/NO NAME/grub/menu.lst"
+
+.PHONY: all copy modules run count clean

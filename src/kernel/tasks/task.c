@@ -9,7 +9,7 @@
 #include <tasks/schedule.h>
 #include <mem/gdt.h>
 
-void task_create_detailed(task_t* task, uintptr_t entry_point, task_stack_t* user_stack,
+void task_create_detailed(task_t* task, void* entry_point, task_stack_t* user_stack,
         size_t user_stack_len, task_stack_t* kernel_stack, size_t kernel_stack_len,
         size_t code_segment, size_t data_segment) {
     // We want to run a task in userspace, so we prepare a CPU state to pop off
@@ -25,7 +25,7 @@ void task_create_detailed(task_t* task, uintptr_t entry_point, task_stack_t* use
     // we don't need to set ESP because it is discarded by popa (and set to cpu)
     cpu->edi = cpu->esi = cpu->ebp = cpu->ebx = cpu->edx = cpu->ecx = cpu->eax = 0;
     // we also ignore intr and error, those are always set when entering the kernel
-    cpu->eip = task->entry_point   = entry_point;
+    cpu->eip = task->entry_point = (uintptr_t) entry_point;
     cpu->cs  = gdt_get_selector(code_segment);
     cpu->eflags.dword = 0;         // first reset EFLAGS, then
     cpu->eflags.bits._if = 1;      // enable interrupts, otherwise
@@ -37,13 +37,13 @@ void task_create_detailed(task_t* task, uintptr_t entry_point, task_stack_t* use
     schedule_add_task(task); // tell the scheduler to run this task when appropriate
 }
 
-void task_create_kernel(task_t* task, uintptr_t entry_point,
+void task_create_kernel(task_t* task, void* entry_point,
         task_stack_t* kernel_stack, size_t kernel_stack_len) {
     task_create_detailed(task, entry_point, 0, 0,
             kernel_stack, kernel_stack_len, GDT_RING0_CODE_SEG, GDT_RING0_DATA_SEG);
 }
 
-void task_create_user(task_t* task, uintptr_t entry_point, task_stack_t* kernel_stack,
+void task_create_user(task_t* task, void* entry_point, task_stack_t* kernel_stack,
         size_t kernel_stack_len, task_stack_t* user_stack, size_t user_stack_len) {
     task_create_detailed(task, entry_point, user_stack, user_stack_len,
             kernel_stack, kernel_stack_len, GDT_RING3_CODE_SEG, GDT_RING3_DATA_SEG);

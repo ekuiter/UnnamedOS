@@ -9,9 +9,8 @@
 .int    MULTIBOOT_CHECKSUM(MULTIBOOT_HEADER_MAGIC, MULTIBOOT_HEADER_FLAGS)
 
 .section .text
-
-.global _start
-_start: // kernel entry point
+.global start
+start: // kernel entry point
         mov $main_kernel_stack, %esp // set the kernel stack (see label below)
         // now that we have a stack, we can push multiboot information as parameters
         push %eax // must be MULTIBOOT_BOOTLOADER_MAGIC
