@@ -10,9 +10,10 @@
 #include <common.h>
 #include <hardware/io/output.h>
 
-#define IO_CHARS (IO_COLS * IO_ROWS)
-#define IO_MEM ((uint8_t*) 0xb8000)
+#define IO_CHARS    (IO_COLS * IO_ROWS)
+#define IO_MEM      ((uint8_t*) 0xb8000)
 #define IS_DIGIT(c) ((c) >= '0' && (c) <= '9')
+#define TAG_LENGTH  9
 
 static uint8_t* video = IO_MEM;
 static uint8_t attr = IO_DEFAULT;
@@ -89,10 +90,11 @@ void io_clear(putchar_func_t putchar_func) {
 // from uint64_t and double which are not supported by this implementation, so we ignore them). That means we can
 // interpret &fmt as a uint32_t pointer (arg) and increment it (++arg) to access all the additional arguments,
 // doing essentially what the macros va_start, va_arg and va_end would do if we had stdarg.h.
-static void vprint(char* fmt, uint32_t* arg, putchar_func_t putchar_func) {
+static uint16_t vprint(char* fmt, uint32_t* arg, putchar_func_t putchar_func) {
+    uint16_t count = 0;
     for (char* cur = fmt; *cur != '\0'; cur++) { // iterate over format string
         if (*cur != '%') // output non-% characters normally
-            putchar_func(*cur);
+            count += putchar_func(*cur);
         else { // process format specifiers
             int8_t pad = 0; // default values for integer padding
             uint8_t pad_char = ' ';
@@ -109,51 +111,70 @@ static void vprint(char* fmt, uint32_t* arg, putchar_func_t putchar_func) {
                         pad--;
                         *arg = -*arg;
                     }
-                    io_putint(*arg, 10, pad, pad_char, putchar_func);
+                    count += io_putint(*arg, 10, pad, pad_char, putchar_func);
                     break;
                 case 'u': // decimal
-                    io_putint(*++arg, 10, pad, pad_char, putchar_func);
+                    count += io_putint(*++arg, 10, pad, pad_char, putchar_func);
                     break;
                 case 'x': // hexadecimal
-                    io_putint(*++arg, 16, pad, pad_char, putchar_func);
+                    count += io_putint(*++arg, 16, pad, pad_char, putchar_func);
                     break;
                 case 'b': // binary
-                    io_putint(*++arg, 2, pad, pad_char, putchar_func);
+                    count += io_putint(*++arg, 2, pad, pad_char, putchar_func);
                     break;
                 case 'o': // octal
-                    io_putint(*++arg, 8, pad, pad_char, putchar_func);
+                    count += io_putint(*++arg, 8, pad, pad_char, putchar_func);
                     break;
                 case 'c': // single character
-                    putchar_func((uint8_t) *++arg);
+                    count += putchar_func((uint8_t) *++arg);
                     break;
                 case 's': // 0-terminated string
-                    io_putstr((char*) *++arg, putchar_func);
+                    count += io_putstr((char*) *++arg, putchar_func);
                     break;
                 case 'a': // attribute byte
                     io_attr(pad == 0 ? IO_DEFAULT : pad);
                     break;
                 case '%': // escaped %
-                    putchar_func('%');
+                    count += putchar_func('%');
                     break;
             }
         }
     }
+    return count;
 }
 
-void print(char* fmt, ...) {
-    vprint(fmt, (uint32_t*) &fmt, io_putchar);
+uint16_t print(char* fmt, ...) {
+    return vprint(fmt, (uint32_t*) &fmt, io_putchar);
 }
 
-void println(char* fmt, ...) {
-    vprint(fmt, (uint32_t*) &fmt, io_putchar);
-    io_putchar('\n');
+uint16_t println(char* fmt, ...) {
+    return vprint(fmt, (uint32_t*) &fmt, io_putchar) + io_putchar('\n');
 }
 
-void fprint(putchar_func_t putchar_func, char* fmt, ...) {
-    vprint(fmt, (uint32_t*) &fmt, putchar_func);
+uint16_t fprint(putchar_func_t putchar_func, char* fmt, ...) {
+    return vprint(fmt, (uint32_t*) &fmt, putchar_func);
 }
 
-void fprintln(putchar_func_t putchar_func, char* fmt, ...) {
-    vprint(fmt, (uint32_t*) &fmt, putchar_func);
-    putchar_func('\n');
+uint16_t fprintln(putchar_func_t putchar_func, char* fmt, ...) {
+    return vprint(fmt, (uint32_t*) &fmt, putchar_func) + putchar_func('\n');
+}
+
+uint16_t log(char* tag, char* fmt, ...) {
+    if (!tag)
+        return vprint(fmt, (uint32_t*) &fmt, bochs_log);
+    uint16_t count = vprint("[%s", (uint32_t*) (&tag - 1), bochs_log);
+    while (count <= TAG_LENGTH)
+        count += bochs_log(' ');
+    return count + vprint("] ", (uint32_t*) (&tag - 1), bochs_log) +
+            vprint(fmt, (uint32_t*) &fmt, bochs_log);
+}
+
+uint16_t logln(char* tag, char* fmt, ...) {
+    if (!tag)
+        return vprint(fmt, (uint32_t*) &fmt, bochs_log) + bochs_log('\n');
+    uint16_t count = vprint("[%s", (uint32_t*) (&tag - 1), bochs_log);
+    while (count <= TAG_LENGTH)
+        count += bochs_log(' ');
+    return count + vprint("] ", (uint32_t*) (&tag - 1), bochs_log) +
+            vprint(fmt, (uint32_t*) &fmt, bochs_log) + bochs_log('\n');
 }

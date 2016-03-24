@@ -4,3 +4,4 @@ megs: 128
 display_library: x
 clock: sync=realtime
 port_e9_hack: enabled=1
+logprefix: %d

@@ -14,7 +14,7 @@ all: modules
 copy: all
 ifdef DISK
 	sudo umount /dev/disk$(DISK) || true
-	sudo dd if=../build/image.img of=/dev/disk$(DISK)
+	-sudo dd if=../build/image.img of=/dev/disk$(DISK)
 else
 	$(warning You need to specify a DISK to copy to.)
 endif

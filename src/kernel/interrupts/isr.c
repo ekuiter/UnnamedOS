@@ -62,11 +62,12 @@ cpu_state_t* isr_handle_interrupt(cpu_state_t* cpu) {
 }
 
 void isr_dump_cpu(cpu_state_t* cpu) {
-    fprintln(bochs_log, 
-            "uss=%08x usp=%08x efl=%08x  cs=    %04x eip=%08x err=%08x int=%08x "
-            "eax=%08x ecx=%08x edx=%08x\nebx=%08x esp=%08x ebp=%08x esi=%08x "
-            "edi=%08x  ds=    %04x  es=    %04x  fs=    %04x  gs=    %04x",
+    logln("ISR", "uss=%08x usp=%08x efl=%08x  cs=    %04x eip=%08x err=%08x "
+            "int=%08x eax=%08x ecx=%08x edx=%08x",
             cpu->user_ss, cpu->user_esp, cpu->eflags, cpu->cs, cpu->eip,
-            cpu->error, cpu->intr, cpu->eax, cpu->ecx, cpu->edx, cpu->ebx,
-            cpu->esp, cpu->ebp, cpu->esi, cpu->edi, cpu->ds, cpu->es, cpu->fs, cpu->gs);
+            cpu->error, cpu->intr, cpu->eax, cpu->ecx, cpu->edx);
+    logln("ISR", "ebx=%08x esp=%08x ebp=%08x esi=%08x edi=%08x  "
+            "ds=    %04x  es=    %04x  fs=    %04x  gs=    %04x",
+            cpu->ebx, cpu->esp, cpu->ebp, cpu->esi, cpu->edi,
+            cpu->ds, cpu->es, cpu->fs, cpu->gs);
 }

@@ -7,12 +7,13 @@
 #include <common.h>
 #include <tasks/schedule.h>
 #include <tasks/tss.h>
+#include <hardware/io/keyboard.h>
 
 static task_t* tasks = 0; // linked list of scheduled tasks, start with none
 static task_t* current_task = 0; // points to the currently running task
 static uint32_t ticks_per_time_slice = 1; // 1 tick = frequency of the PIT
 
-cpu_state_t* schedule(cpu_state_t* cpu) {    
+cpu_state_t* schedule(cpu_state_t* cpu) {   
     task_t* next_task;
     // if we just started scheduling or if we reached the linked list's end,
     if (!current_task || !current_task->next_task)
@@ -30,10 +31,12 @@ cpu_state_t* schedule(cpu_state_t* cpu) {
         current_task->cpu = cpu; // save the current ESP and CPU state
     }
     
-    fprintln(bochs_log, "Task switch from");
-    isr_dump_cpu(cpu);
-    fprintln(bochs_log, "to");
-    isr_dump_cpu(next_task->cpu);
+    if (keyboard_get_event().flags.shift) { // don't clutter the log
+        logln("SCHEDULER", "Task switch from");
+        isr_dump_cpu(cpu);
+        logln("SCHEDULER", "to");
+        isr_dump_cpu(next_task->cpu);
+    }
     
     // If we want to switch to userspace, we need to tell the TSS which kernel
     // stack to load when an interrupt occurs. At the point we do the iret,
@@ -47,7 +50,27 @@ cpu_state_t* schedule(cpu_state_t* cpu) {
     return next_task->cpu; // restore the CPU state and ESP saved earlier
 }
 
+task_t* schedule_get_current_task() {
+    return current_task;
+}
+
 void schedule_add_task(task_t* task) {
+    // TODO: prevent duplicate entries
     task->next_task = tasks;
     tasks = task;
+}
+
+void schedule_remove_task(task_t* task) {
+    if (!tasks) // if there are no tasks, we are done
+        return;
+    if (task == tasks) { // the task to remove is at the beginning
+        tasks = tasks->next_task;
+        return;
+    }
+    task_t* cur = tasks;
+    while (cur->next_task && cur->next_task != task);
+    if (!cur->next_task) // the task to remove is not in the list
+        return;
+    // otherwise, the task is pointed to by cur->next_task, so remove it:
+    cur->next_task = cur->next_task->next_task;
 }

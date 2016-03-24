@@ -22,6 +22,8 @@ typedef void (*keyboard_handler_t)(keyboard_event_t event);
 
 void keyboard_init(ps2_port_t _port);
 uint8_t keyboard_get_keycode(char* name);
+uint8_t keyboard_get_key_pressed(uint8_t keycode);
+keyboard_event_t keyboard_get_event();
 void keyboard_register_handler(keyboard_handler_t _handler);
 void keyboard_handle_data(uint8_t data);
 

@@ -219,7 +219,7 @@ uint8_t keyboard_get_keycode(char* name) {
     return keyboard_get_keycode_from_scancode((uint8_t*) name, 0);
 }
 
-static uint8_t keyboard_get_key_pressed(uint8_t keycode) {
+uint8_t keyboard_get_key_pressed(uint8_t keycode) {
     return (key_states[keycode / 8] >> (keycode % 8)) & 1; // bitmap getter
 }
 
@@ -281,6 +281,10 @@ static uint8_t keyboard_process_special_scancode(uint8_t condition, uint8_t len,
         return 1;
     }
     return 0;
+}
+
+keyboard_event_t keyboard_get_event() {
+    return event;
 }
 
 void keyboard_register_handler(keyboard_handler_t _handler) {

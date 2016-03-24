@@ -39,4 +39,5 @@ bochs_log:
 // stacks for running tasks in userspace and handling interrupts in the kernel.
 .section .bss
 .space  STACK_SIZE
+.global main_kernel_stack
 main_kernel_stack:

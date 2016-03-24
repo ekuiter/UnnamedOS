@@ -8,8 +8,9 @@
  */
 
 #include <common.h>
-#include <tasks/elf.h>
 #include <string.h>
+#include <tasks/elf.h>
+#include <mem/pmm.h>
 
 #define MAGIC_0 0x7F // magic values expected at the beginning
 #define MAGIC_1 'E'  // of every ELF file
@@ -74,10 +75,10 @@ void* elf_load(elf_t* elf) {
     // find the program header table that contains info on how to load the file
     elf_program_header_entry_t* program_header_table =
             (elf_program_header_entry_t*) ((uintptr_t) elf + elf->e_phoff);
-    fprintln(bochs_log, "ELF program header entries:");
+    logln("ELF", "Program header entries:");
     for (int i = 0; i < elf->e_phnum; i++) { // process every entry in the table
         elf_program_header_entry_t* entry = program_header_table + i;
-        fprintln(bochs_log, "[%d] type=%d offset=%08x vaddr=%08x paddr=%08x "
+        logln("ELF", "[%d] type=%d offset=%08x vaddr=%08x paddr=%08x "
                 "filesz=%08x memsz=%08x flags=%03b align=%08x", i,
                 entry->p_type, entry->p_offset, entry->p_vaddr, entry->p_paddr,
                 entry->p_filesz, entry->p_memsz, entry->p_flags, entry->p_align);
@@ -89,8 +90,21 @@ void* elf_load(elf_t* elf) {
             // Now copy the actual segment's data from the file to memory.
             memcpy(entry->p_vaddr, (void*) ((uintptr_t) elf + entry->p_offset),
                     entry->p_filesz);
+            pmm_use(entry->p_vaddr, entry->p_memsz, PMM_USER, "ELF");
             // TODO: tell the MMU the proper page permissions (entry->p_flags)
         }
     }
     return elf->e_entry;
+}
+
+void elf_unload(elf_t* elf) {
+    if (!elf_check(elf))
+        return;
+    elf_program_header_entry_t* program_header_table =
+            (elf_program_header_entry_t*) ((uintptr_t) elf + elf->e_phoff);
+    for (int i = 0; i < elf->e_phnum; i++) {
+        elf_program_header_entry_t* entry = program_header_table + i;
+        if (entry->p_type == PT_LOAD)
+            pmm_free(entry->p_vaddr, entry->p_memsz);
+    }
 }

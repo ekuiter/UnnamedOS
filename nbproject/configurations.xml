@@ -31,6 +31,7 @@
           </df>
           <df name="mem">
             <in>gdt.c</in>
+            <in>pmm.c</in>
           </df>
           <df name="tasks">
             <in>elf.c</in>
@@ -128,9 +129,6 @@
           <incDir>
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/lib</pElem>
-            <pElem>src/kernel/hardware/io</pElem>
-            <pElem>src/kernel/tasks</pElem>
-            <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
       </folder>
@@ -164,6 +162,7 @@
       <item path="src/kernel/boot/multiboot.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
+            <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -226,8 +225,8 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/lib</pElem>
-            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -256,11 +255,26 @@
       </item>
       <item path="src/kernel/mem/gdt.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/mem/pmm.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/boot</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="src/kernel/tasks/elf.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
+            <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
@@ -269,8 +283,8 @@
       <item path="src/kernel/tasks/schedule.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
-            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -279,6 +293,7 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel</pElem>
           </incDir>

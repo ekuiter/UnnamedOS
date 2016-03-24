@@ -20,9 +20,11 @@ uint16_t io_putstr(char* s, putchar_func_t putchar_func);
 uint16_t io_putint(uint32_t n, uint8_t radix, int8_t pad, uint8_t pad_char,
         putchar_func_t putchar_func);
 void io_clear(putchar_func_t putchar_func);
-void print(char* fmt, ...);
-void println(char* fmt, ...);
-void fprint(putchar_func_t putchar_func, char* fmt, ...);
-void fprintln(putchar_func_t putchar_func, char* fmt, ...);
+uint16_t print(char* fmt, ...);
+uint16_t println(char* fmt, ...);
+uint16_t fprint(putchar_func_t putchar_func, char* fmt, ...);
+uint16_t fprintln(putchar_func_t putchar_func, char* fmt, ...);
+uint16_t log(char* tag, char* fmt, ...);
+uint16_t logln(char* tag, char* fmt, ...);
 
 #endif

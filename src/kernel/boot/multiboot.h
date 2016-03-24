@@ -51,8 +51,9 @@ typedef struct {
         vbe_mode, vbe_interface_seg, vbe_interface_off, vbe_interface_len;
 } multiboot_info_t;
 
-void multiboot_init(multiboot_info_t* mb_info, uint32_t mb_magic);
+void multiboot_init(multiboot_info_t* _mb_info, uint32_t mb_magic);
 void* multiboot_get_module(char* str);
+uint8_t multiboot_init_memory();
 
 #endif
 

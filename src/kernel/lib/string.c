@@ -8,6 +8,13 @@ uint32_t strcmp(char* s1, char* s2) {
     return *s1 - *s2;
 }
 
+// returns the string length in bytes
+size_t strlen(const char* str) {
+    const char* s = str;
+    for (; *s != '\0'; s++);
+    return s - str;
+}
+
 // copies num bytes from src to dst
 void* memcpy(void* dst, const void* src, size_t num) {
     uint8_t* d = dst;

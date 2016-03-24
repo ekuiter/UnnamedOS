@@ -28,5 +28,6 @@ typedef struct { // the ELF header at the start of every ELF file
 typedef elf_header_t elf_t; // an ELF file starts with the header
 
 void* elf_load(elf_t* elf);
+void elf_unload(elf_t* elf);
 
 #endif
