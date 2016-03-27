@@ -8,16 +8,18 @@
 #include <tasks/task.h>
 #include <tasks/schedule.h>
 #include <mem/gdt.h>
-#include <mem/pmm.h>
+#include <mem/vmm.h>
 
 static task_t* task_create_detailed(void* entry_point, size_t kernel_stack_len,
         size_t user_stack_len, size_t code_segment, size_t data_segment) {
     logln("TASK", "Creating task with %dKB kernel and %dKB user stack",
             kernel_stack_len, user_stack_len);
     // Here we allocate a whole page (4KB) which is more than we need.
-    task_t* task = pmm_alloc(sizeof(task_t)); // TODO: use a proper heap (malloc)
-    task->kernel_stack = pmm_alloc(kernel_stack_len), task->kernel_stack_len = kernel_stack_len;
-    task->user_stack   = pmm_alloc(user_stack_len),   task->user_stack_len   = user_stack_len;
+    task_t* task = vmm_alloc(sizeof(task_t), VMM_KERNEL); // TODO: use a proper heap (malloc)
+    task->kernel_stack     = vmm_alloc(kernel_stack_len, VMM_KERNEL);
+    task->user_stack       = vmm_alloc(user_stack_len, VMM_READWRITE);
+    task->kernel_stack_len = kernel_stack_len;
+    task->user_stack_len   = user_stack_len;
     // We want to run a task in userspace, so we prepare a CPU state to pop off
     // when a timer interrupt occurs. The CPU state lies at the top of the task's
     // userspace stack:
@@ -57,8 +59,8 @@ void task_destroy(task_t* task) {
         println("%4aYou may not destroy a running task%a");
         return;
     }
-    pmm_free(task->kernel_stack, task->kernel_stack_len);
-    pmm_free(task->user_stack, task->user_stack_len);
+    vmm_free(task->kernel_stack, task->kernel_stack_len);
+    vmm_free(task->user_stack, task->user_stack_len);
     schedule_remove_task(task);
-    pmm_free(task, sizeof(task_t));
+    vmm_free(task, sizeof(task_t));
 }

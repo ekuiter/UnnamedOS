@@ -10,7 +10,7 @@
 #include <common.h>
 #include <string.h>
 #include <tasks/elf.h>
-#include <mem/pmm.h>
+#include <mem/vmm.h>
 
 #define MAGIC_0 0x7F // magic values expected at the beginning
 #define MAGIC_1 'E'  // of every ELF file
@@ -83,6 +83,9 @@ void* elf_load(elf_t* elf) {
                 entry->p_type, entry->p_offset, entry->p_vaddr, entry->p_paddr,
                 entry->p_filesz, entry->p_memsz, entry->p_flags, entry->p_align);
         if (entry->p_type == PT_LOAD)  { // we only process LOAD segments for now
+            // claim the memory so that we can write to it
+            vmm_use(entry->p_vaddr, entry->p_memsz,
+                    entry->p_flags & PF_W ? VMM_READWRITE : VMM_READONLY, "ELF");
             // Fill the complete segment with zeroes. (There are cases when the
             // segment's p_memsz is bigger than p_filesz, for example for BSS
             // sections which need to be initialized with zeroes.)
@@ -90,8 +93,6 @@ void* elf_load(elf_t* elf) {
             // Now copy the actual segment's data from the file to memory.
             memcpy(entry->p_vaddr, (void*) ((uintptr_t) elf + entry->p_offset),
                     entry->p_filesz);
-            pmm_use(entry->p_vaddr, entry->p_memsz, PMM_USER, "ELF");
-            // TODO: tell the MMU the proper page permissions (entry->p_flags)
         }
     }
     return elf->e_entry;
@@ -105,6 +106,6 @@ void elf_unload(elf_t* elf) {
     for (int i = 0; i < elf->e_phnum; i++) {
         elf_program_header_entry_t* entry = program_header_table + i;
         if (entry->p_type == PT_LOAD)
-            pmm_free(entry->p_vaddr, entry->p_memsz);
+            vmm_free(entry->p_vaddr, entry->p_memsz);
     }
 }

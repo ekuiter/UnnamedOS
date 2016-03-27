@@ -13,18 +13,20 @@
 #include <boot/multiboot.h>
 
 #define PAGE_SIZE       4096        // 4KB pages
+#define PAGE_SHIFT      12          // bits to shift to get page (2^12=4096)
 #define MEMORY_SIZE     0x100000000 // 4GB address space
 #define TYPE_BITS       2           // number of bits per page entry
 #define PAGE_NUMBER     (MEMORY_SIZE / PAGE_SIZE) // total number of pages
 #define PAGES_PER_DWORD (32 / TYPE_BITS) // pages in each bitmap entry
 #define TYPE_MASK       (0xFFFFFFFF >> (32 - TYPE_BITS)) // calc 2^TYPE_BITS-1
-#define BITMAP_INIT     0x55555555  // 0b0101...01, use PMM_BIOS
+#define BITMAP_INIT     0x55555555  // 0b0101...01, use PMM_RESERVED
 
 #define BIT_CHECK(val, bit) (((val) >> (bit)) & 1)
 #define BITMAP_SET(idx)     (bitmap[(idx) / 32] |= 1 << ((idx) % 32))
 #define BITMAP_CLEAR(idx)   (bitmap[(idx) / 32] &= ~(1 << ((idx) % 32)))
 
 uint32_t bitmap[PAGE_NUMBER / PAGES_PER_DWORD]; // saves page entries
+uint32_t allocations = 0; // track the number of pmm_alloc calls
 
 // symbols defined in script.ld and main_asm.S, only the addresses matter
 extern const void kernel_start, kernel_end, multiboot_start, multiboot_end,
@@ -64,35 +66,41 @@ void pmm_init() {
         println("%4afail%a. Memory map not found.");
         return;
     }
-    pmm_use(0, 1, PMM_BIOS, "null pointer"); // prevent that we allocate 0
+    pmm_use(0, 1, PMM_RESERVED, "null pointer"); // prevent that we allocate 0
     pmm_use_kernel_memory();
+    io_init();
     println("%2aok%a.");
 }
 
-static uint32_t pmm_get_page(void* ptr, uint32_t offset) {
-    return ((uintptr_t) ptr + offset) / PAGE_SIZE;
+uint32_t pmm_get_page(void* ptr, uint32_t offset) {
+    return ((uintptr_t) ptr + offset) >> PAGE_SHIFT;
 }
 
-void pmm_use(void* ptr, size_t len, pmm_page_type_t type, char* tag) {
+void* pmm_get_address(uint32_t page, uint32_t offset) {
+    return (void*) ((page << PAGE_SHIFT) + offset);
+}
+
+void pmm_use(void* ptr, size_t len, pmm_flags_t flags, char* tag) {
     if (len == 0) return;
     uint32_t start_page = pmm_get_page(ptr, 0), end_page = pmm_get_page(ptr, len - 1);
-    log("PMM", "%s %08x-%08x (page %05x-%05x)", type == PMM_UNUSED ? "Free" : "Use ",
+    log("PMM", "%s %08x-%08x (page %05x-%05x)", flags == PMM_UNUSED ? "Free" : "Use ",
             ptr, ptr + len - 1, start_page, end_page);
     if (tag)
         log(0, " for %s", tag);
     logln(0, "");
     for (int i = start_page; i <= end_page; i++)
-        pmm_bitmap_set(i, type); // mark pages as used in the bitmap
+        pmm_bitmap_set(i, flags); // mark pages as used in the bitmap
 }
 
-void* pmm_alloc(size_t len) {
+void* pmm_alloc(size_t len, pmm_flags_t flags) {
     if (len == 0) return 0;
     uint32_t pages = len / PAGE_SIZE + (len % PAGE_SIZE ? 1 : 0), // "round up"
             free_pages = 0;
     for (int i = 0; i < PAGE_NUMBER; i++) { // makeshift first-fit linear search
         if (free_pages >= pages) { // if we found enough in-a-row pages,
-            void* ptr = (void*) ((i - free_pages) * PAGE_SIZE);
-            pmm_use(ptr, len, PMM_KERNEL, "pmm_alloc"); // mark them as used
+            void* ptr = pmm_get_address(i - free_pages, 0);
+            pmm_use(ptr, len, flags, "pmm_alloc"); // mark them as used
+            allocations++;
             return ptr; // and return a pointer to the first page's beginning
         }
         if (pmm_bitmap_get(i) == PMM_UNUSED)
@@ -106,9 +114,10 @@ void* pmm_alloc(size_t len) {
 
 void pmm_free(void* ptr, size_t len) {
     pmm_use(ptr, len, PMM_UNUSED, 0);
+    allocations--;
 }
 
-pmm_page_type_t pmm_check(void* ptr) {
+pmm_flags_t pmm_check(void* ptr) {
     return pmm_bitmap_get(pmm_get_page(ptr, 0));
 }
 
@@ -126,4 +135,8 @@ void pmm_dump(void* ptr, size_t len) {
         log(0, "%x", pmm_bitmap_get(i));
     }
     logln(0, "");
+}
+
+uint32_t pmm_get_allocations() {
+    return allocations;
 }

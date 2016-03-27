@@ -19,7 +19,7 @@
 
 static isr_handler_t handlers[IDT_ENTRIES] = {0};
 
-void isr_interrupts(uint8_t enable) {
+void isr_enable_interrupts(uint8_t enable) {
     if (enable) {
         print("Enabling interrupts ... ");
         asm volatile("sti");

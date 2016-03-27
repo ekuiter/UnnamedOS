@@ -13,6 +13,7 @@
 
 typedef uint16_t (*putchar_func_t)(uint8_t c);
 
+void io_init();
 void io_attr(uint8_t new_attr);
 size_t io_cursor(int32_t new_cursor);
 uint16_t io_putchar(uint8_t c);

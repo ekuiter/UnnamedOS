@@ -31,7 +31,9 @@
           </df>
           <df name="mem">
             <in>gdt.c</in>
+            <in>mmu.c</in>
             <in>pmm.c</in>
+            <in>vmm.c</in>
           </df>
           <df name="tasks">
             <in>elf.c</in>
@@ -188,6 +190,7 @@
       <item path="src/kernel/hardware/io/output.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
+            <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -262,11 +265,28 @@
           </incDir>
         </cTool>
       </item>
+      <item path="src/kernel/mem/mmu.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
       <item path="src/kernel/mem/pmm.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/boot</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/mem/vmm.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>

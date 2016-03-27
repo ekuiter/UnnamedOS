@@ -9,7 +9,9 @@
 #include <interrupts/isr.h>
 #include <interrupts/pic.h>
 #include <mem/gdt.h>
+#include <mem/mmu.h>
 #include <mem/pmm.h>
+#include <mem/vmm.h>
 #include <tasks/elf.h>
 #include <tasks/task.h>
 
@@ -29,22 +31,28 @@ static void handle_mouse_event(mouse_event_t e) {
 }
 
 void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
+    logln("MAIN", "Entering main");
     io_clear(io_putchar); // clear any messages GRUB left us
     println("%15aWelcome!%a");
     multiboot_init(mb_info, mb_magic); // Multiboot - info passed by bootloader
     pmm_init(); // Physical Memory Manager - info on free and used memory
+    // at this point we can allocate pages with pmm_alloc
     gdt_init(); // Global Descriptor Table - flat memory model
     cpuid_init(); // CPUID - gather information about the CPU
     idt_init(); // Interrupt Descriptor Table - set up ISRs
     pic_init(); // Programmable Interrupt Controller - remap IRQs
+    // at this point we can use exceptions and syscalls
     pit_init(50); // Programmable Interval Timer - system clock
-    isr_interrupts(1); // enable interrupts
+    vmm_init(); // Virtual Memory Manager - enable paging
+    // at this point we have to use vmm_alloc and friends instead of pmm_*
+    isr_enable_interrupts(1); // enable interrupts
     // hand over further initialization to multitasking-land main2
     task_create_kernel(main2, STACK_SIZE);
     asm volatile("hlt"); // stop execution until the scheduler calls main2
 }
 
 static void main2() {
+    logln("MAIN", "Entering main2");    
     task_t* ps2_task = task_create_kernel(ps2, _4KB);
     elf_t* elf = multiboot_get_module("/user_template");
     task_t* elf_task = 0;
@@ -66,7 +74,16 @@ static void main2() {
         task_destroy(elf_task);
     if (elf)
         elf_unload(elf);
-    println("%15aIt's now safe to turn off your computer. ;)%a");
+    vmm_deinit();
+    
+    io_clear(io_putchar);
+    io_cursor(IO_COORD(0, IO_ROWS / 2 - 2));
+    logln("MAIN", "Shutting down. %d allocations left.", pmm_get_allocations());
+    println("                =================================================");
+    println("                =                                               =");
+    println("                =  %15aIt's now safe to turn off your computer. ;)%a  =");
+    println("                =                                               =");
+    println("                =================================================");
     halt();
 }
     

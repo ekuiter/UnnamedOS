@@ -9,15 +9,22 @@
 
 #include <common.h>
 #include <hardware/io/output.h>
+#include <mem/pmm.h>
 
 #define IO_CHARS    (IO_COLS * IO_ROWS)
 #define IO_MEM      ((uint8_t*) 0xb8000)
+#define IO_LEN      4000
 #define IS_DIGIT(c) ((c) >= '0' && (c) <= '9')
 #define TAG_LENGTH  9
 
 static uint8_t* video = IO_MEM;
 static uint8_t attr = IO_DEFAULT;
 static size_t cursor = 0;
+
+void io_init() {
+    // claim the video memory so that we can map it into virtual memory later
+    pmm_use(IO_MEM, IO_LEN, PMM_KERNEL, "video memory");
+}
 
 static void io_setchar(uint8_t c, size_t pos) {
     video[(pos % IO_CHARS) * 2] = c;
