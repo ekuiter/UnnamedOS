@@ -7,7 +7,12 @@
 #define VMM_PAGEDIR ((page_directory_t*) 0xFFFFF000) // see vmm_init
 #define VMM_PAGETAB(i) ((page_table_t*) (0xFFC00000 + i * PAGE_SIZE))
 
-typedef enum { VMM_KERNEL, VMM_READONLY, VMM_READWRITE } vmm_flags_t;
+typedef enum {
+    // whether we are working with kernel or user memory, this controls
+    // permissions and in which domain memory is stored (you can also store
+    VMM_KERNEL = 0b0, VMM_USER = 0b1, // kernel-only memory in the user domain
+    VMM_WRITABLE = 0b100, VMM_TOGGLE_DOMAIN = 0b1000 // with VMM_TOGGLE_DOMAIN)
+} vmm_flags_t;
 
 typedef struct {
     uint8_t  pr    :  1; // whether this page table is present in virtual memory
@@ -41,14 +46,12 @@ typedef struct {
 typedef page_table_entry_t page_table_t;
 
 // In the following, page_directory might be VMM_PAGEDIR or a physical address.
-page_directory_t* vmm_get_page_directory();
-void vmm_set_page_directory(page_directory_t* _page_directory);
 page_directory_t* vmm_create_page_directory();
-void vmm_destroy_page_directory();
+void vmm_destroy_page_directory(page_directory_t* dir_phys);
+page_directory_t* vmm_load_page_directory(page_directory_t* new_directory);
 void* vmm_get_physical_address(void* _vaddr);
 void vmm_dump();
 void vmm_init();
-void vmm_deinit();
 
 // maps the given page frame into the page directory
 uint8_t vmm_map(void* _vaddr, void* paddr, vmm_flags_t flags);
@@ -62,10 +65,16 @@ void vmm_map_range(void* vaddr, void* paddr, size_t len, vmm_flags_t flags);
 // unmaps the given page frame(s) from the page directory
 void vmm_unmap_range(void* vaddr, size_t len);
 
-// marks the given page frame(s) as used and maps them into the page directory
-void vmm_use(void* ptr, size_t len, vmm_flags_t flags, char* tag);
+// marks the given page frame(s) as used and maps them into the given memory
+void vmm_use(void* vaddr, void* paddr, size_t len, vmm_flags_t flags);
 
-// allocates page frame(s) and identity maps it into the page directory
+// marks the given page frame(s) as used and maps them somewhere into memory
+void* vmm_use_physical_memory(void* paddr, size_t len, vmm_flags_t flags);
+
+// marks some page frame(s) as used and maps them into the given memory
+void* vmm_use_virtual_memory(void* vaddr, size_t len, vmm_flags_t flags);
+
+// marks some page frame(s) as used and maps them somewhere into memory
 void* vmm_alloc(size_t len, vmm_flags_t flags);
 
 // frees the given page frame(s) and unmaps them from the page directory

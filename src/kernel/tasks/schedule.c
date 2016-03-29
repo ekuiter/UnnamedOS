@@ -8,6 +8,8 @@
 #include <tasks/schedule.h>
 #include <tasks/tss.h>
 #include <hardware/io/keyboard.h>
+#include <mem/mmu.h>
+#include <mem/vmm.h>
 
 static task_t* tasks = 0; // linked list of scheduled tasks, start with none
 static task_t* current_task = 0; // points to the currently running task
@@ -46,6 +48,9 @@ cpu_state_t* schedule(cpu_state_t* cpu) {
     // the next time. Note that this has no effect when we stay in the kernel.
     tss_set_stack((uint32_t) (next_task->cpu + 1));
     next_task->ticks = ticks_per_time_slice; // refill the task's time slice
+    io_set_logging(0);
+    vmm_load_page_directory(next_task->page_directory);
+    io_set_logging(1);
     current_task = next_task;
     return next_task->cpu; // restore the CPU state and ESP saved earlier
 }

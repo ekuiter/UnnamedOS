@@ -10,7 +10,6 @@
 #include <common.h>
 #include <string.h>
 #include <tasks/elf.h>
-#include <mem/vmm.h>
 
 #define MAGIC_0 0x7F // magic values expected at the beginning
 #define MAGIC_1 'E'  // of every ELF file
@@ -69,13 +68,14 @@ static uint8_t elf_check(elf_t* elf) {
 }
 
 // loads the segments of an ELF file into memory and returns its entry point
-void* elf_load(elf_t* elf) {
+void* elf_load(elf_t* elf, page_directory_t* page_directory) {
     if (!elf_check(elf)) // check whether it's a suitable ELF file
         return 0;
     // find the program header table that contains info on how to load the file
     elf_program_header_entry_t* program_header_table =
             (elf_program_header_entry_t*) ((uintptr_t) elf + elf->e_phoff);
     logln("ELF", "Program header entries:");
+    page_directory_t* old_directory = vmm_load_page_directory(page_directory);
     for (int i = 0; i < elf->e_phnum; i++) { // process every entry in the table
         elf_program_header_entry_t* entry = program_header_table + i;
         logln("ELF", "[%d] type=%d offset=%08x vaddr=%08x paddr=%08x "
@@ -84,8 +84,8 @@ void* elf_load(elf_t* elf) {
                 entry->p_filesz, entry->p_memsz, entry->p_flags, entry->p_align);
         if (entry->p_type == PT_LOAD)  { // we only process LOAD segments for now
             // claim the memory so that we can write to it
-            vmm_use(entry->p_vaddr, entry->p_memsz,
-                    entry->p_flags & PF_W ? VMM_READWRITE : VMM_READONLY, "ELF");
+            vmm_use_virtual_memory(entry->p_vaddr, entry->p_memsz,
+                    entry->p_flags & PF_W ? VMM_USER | VMM_WRITABLE : VMM_USER);
             // Fill the complete segment with zeroes. (There are cases when the
             // segment's p_memsz is bigger than p_filesz, for example for BSS
             // sections which need to be initialized with zeroes.)
@@ -95,17 +95,44 @@ void* elf_load(elf_t* elf) {
                     entry->p_filesz);
         }
     }
+    vmm_load_page_directory(old_directory);
     return elf->e_entry;
 }
 
-void elf_unload(elf_t* elf) {
+void elf_unload(elf_t* elf, page_directory_t* page_directory) {
     if (!elf_check(elf))
         return;
     elf_program_header_entry_t* program_header_table =
             (elf_program_header_entry_t*) ((uintptr_t) elf + elf->e_phoff);
+    page_directory_t* old_directory = vmm_load_page_directory(page_directory);
     for (int i = 0; i < elf->e_phnum; i++) {
         elf_program_header_entry_t* entry = program_header_table + i;
         if (entry->p_type == PT_LOAD)
             vmm_free(entry->p_vaddr, entry->p_memsz);
     }
+    vmm_load_page_directory(old_directory);
+}
+
+elf_task_t* elf_create_task(elf_t* elf, size_t kernel_stack_len,
+        size_t user_stack_len) {
+    if (!elf) {
+        println("%4aELF not found%a");
+        return 0;
+    }
+    page_directory_t* dir = vmm_create_page_directory();
+    elf_task_t* elf_task = vmm_alloc(sizeof(elf_task_t), VMM_KERNEL);
+    elf_task->elf = elf;
+    elf_task->task = task_create_user(elf_load(elf, dir), dir,
+            kernel_stack_len, user_stack_len);
+    return elf_task;
+}
+
+void elf_destroy_task(elf_task_t* elf_task) {
+    if (!elf_task) {
+        println("%4aELF not found%a");
+        return;
+    }
+    elf_unload(elf_task->elf, elf_task->task->page_directory);
+    task_destroy(elf_task->task);
+    vmm_free(elf_task, sizeof(elf_task_t));
 }

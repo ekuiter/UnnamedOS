@@ -20,6 +20,7 @@
 static uint8_t* video = IO_MEM;
 static uint8_t attr = IO_DEFAULT;
 static size_t cursor = 0;
+static uint8_t logging_enabled = 1;
 
 void io_init() {
     // claim the video memory so that we can map it into virtual memory later
@@ -167,6 +168,8 @@ uint16_t fprintln(putchar_func_t putchar_func, char* fmt, ...) {
 }
 
 uint16_t log(char* tag, char* fmt, ...) {
+    if (!logging_enabled)
+        return 0;
     if (!tag)
         return vprint(fmt, (uint32_t*) &fmt, bochs_log);
     uint16_t count = vprint("[%s", (uint32_t*) (&tag - 1), bochs_log);
@@ -177,6 +180,8 @@ uint16_t log(char* tag, char* fmt, ...) {
 }
 
 uint16_t logln(char* tag, char* fmt, ...) {
+    if (!logging_enabled)
+        return 0;
     if (!tag)
         return vprint(fmt, (uint32_t*) &fmt, bochs_log) + bochs_log('\n');
     uint16_t count = vprint("[%s", (uint32_t*) (&tag - 1), bochs_log);
@@ -184,4 +189,8 @@ uint16_t logln(char* tag, char* fmt, ...) {
         count += bochs_log(' ');
     return count + vprint("] ", (uint32_t*) (&tag - 1), bochs_log) +
             vprint(fmt, (uint32_t*) &fmt, bochs_log) + bochs_log('\n');
+}
+
+void io_set_logging(uint8_t _logging_enabled) {
+    logging_enabled = _logging_enabled;
 }

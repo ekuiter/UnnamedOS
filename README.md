@@ -20,4 +20,4 @@ Run the following commands in the root directory:
 - multiboot info
 - userspace multitasking (TSS)
 - ELF GRUB modules
-- memory manager (PMM)
+- memory manager (PMM, VMM, MMU)

@@ -153,9 +153,9 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/tasks</pElem>
             <pElem>src/kernel/hardware</pElem>
-            <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/hardware/cpu</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
@@ -295,6 +295,7 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/interrupts</pElem>
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
@@ -304,6 +305,7 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
@@ -313,8 +315,8 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/interrupts</pElem>
-            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>

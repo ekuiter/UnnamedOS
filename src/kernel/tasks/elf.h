@@ -2,6 +2,8 @@
 #define TASKS_ELF_H
 
 #include <stdint.h>
+#include <mem/vmm.h>
+#include <tasks/task.h>
 
 typedef struct { // the ELF header at the start of every ELF file
     struct {     // (here for 32 bit and little endian)
@@ -27,7 +29,14 @@ typedef struct { // the ELF header at the start of every ELF file
 
 typedef elf_header_t elf_t; // an ELF file starts with the header
 
-void* elf_load(elf_t* elf);
-void elf_unload(elf_t* elf);
+typedef struct {
+    elf_t* elf;
+    task_t* task;
+} elf_task_t;
+
+void* elf_load(elf_t* elf, page_directory_t* page_directory);
+void elf_unload(elf_t* elf, page_directory_t* page_directory);
+elf_task_t* elf_create_task(elf_t* elf, size_t kernel_stack_len, size_t user_stack_len);
+void elf_destroy_task(elf_task_t* elf_task);
 
 #endif

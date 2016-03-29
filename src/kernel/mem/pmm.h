@@ -13,11 +13,13 @@ void* pmm_get_address(uint32_t page, uint32_t offset);
 pmm_flags_t pmm_check(void* ptr);
 void pmm_dump(void* ptr, size_t len);
 uint32_t pmm_get_allocations();
+void pmm_reset_allocations();
+uint32_t pmm_get_last_kernel_page();
 
 // marks the given page frame(s) as used
 void pmm_use(void* ptr, size_t len, pmm_flags_t flags, char* tag);
 
-// allocates page frame(s)
+// marks some page frame(s) as used
 void* pmm_alloc(size_t len, pmm_flags_t flags);
 
 // frees the given page frame(s)

@@ -25,8 +25,9 @@
 #define BITMAP_SET(idx)     (bitmap[(idx) / 32] |= 1 << ((idx) % 32))
 #define BITMAP_CLEAR(idx)   (bitmap[(idx) / 32] &= ~(1 << ((idx) % 32)))
 
-uint32_t bitmap[PAGE_NUMBER / PAGES_PER_DWORD]; // saves page entries
-uint32_t allocations = 0; // track the number of pmm_alloc calls
+static uint32_t bitmap[PAGE_NUMBER / PAGES_PER_DWORD]; // saves page entries
+static uint32_t last_kernel_page = 0; // remember the highest kernel page
+static uint32_t allocations = 0; // track the number of pmm_alloc calls
 
 // symbols defined in script.ld and main_asm.S, only the addresses matter
 extern const void kernel_start, kernel_end, multiboot_start, multiboot_end,
@@ -90,29 +91,38 @@ void pmm_use(void* ptr, size_t len, pmm_flags_t flags, char* tag) {
     logln(0, "");
     for (int i = start_page; i <= end_page; i++)
         pmm_bitmap_set(i, flags); // mark pages as used in the bitmap
+    if (flags == PMM_KERNEL && end_page > last_kernel_page)
+        last_kernel_page = end_page;
 }
 
-void* pmm_alloc(size_t len, pmm_flags_t flags) {
+static void* pmm_find_free(size_t len) {
     if (len == 0) return 0;
     uint32_t pages = len / PAGE_SIZE + (len % PAGE_SIZE ? 1 : 0), // "round up"
             free_pages = 0;
     for (int i = 0; i < PAGE_NUMBER; i++) { // makeshift first-fit linear search
-        if (free_pages >= pages) { // if we found enough in-a-row pages,
-            void* ptr = pmm_get_address(i - free_pages, 0);
-            pmm_use(ptr, len, flags, "pmm_alloc"); // mark them as used
-            allocations++;
-            return ptr; // and return a pointer to the first page's beginning
-        }
         if (pmm_bitmap_get(i) == PMM_UNUSED)
             free_pages++;
         else
             free_pages = 0;
+        if (free_pages >= pages) // if we found enough in-a-row pages,
+            // return a pointer to the first page's beginning
+            return pmm_get_address(i - free_pages + 1, 0);
     }
     println("%4aPMM: Not enough memory%a");
     return 0;
 }
 
+void* pmm_alloc(size_t len, pmm_flags_t flags) {   
+    void* ptr = pmm_find_free(len); // find some free pages in a row
+    if (!ptr)
+        return 0;
+    pmm_use(ptr, len, flags, "pmm_alloc"); // mark the pages as used
+    allocations++;
+    return ptr;
+}
+
 void pmm_free(void* ptr, size_t len) {
+    if (len == 0) return;
     pmm_use(ptr, len, PMM_UNUSED, 0);
     allocations--;
 }
@@ -139,4 +149,12 @@ void pmm_dump(void* ptr, size_t len) {
 
 uint32_t pmm_get_allocations() {
     return allocations;
+}
+
+void pmm_reset_allocations() {
+    allocations = 0;
+}
+
+uint32_t pmm_get_last_kernel_page() {
+    return last_kernel_page;
 }

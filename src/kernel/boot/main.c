@@ -36,31 +36,28 @@ void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
     println("%15aWelcome!%a");
     multiboot_init(mb_info, mb_magic); // Multiboot - info passed by bootloader
     pmm_init(); // Physical Memory Manager - info on free and used memory
-    // at this point we can allocate pages with pmm_alloc
+    vmm_init(); // Virtual Memory Manager - enable paging
+    // at this point we can allocate virtual memory with vmm_alloc
     gdt_init(); // Global Descriptor Table - flat memory model
     cpuid_init(); // CPUID - gather information about the CPU
     idt_init(); // Interrupt Descriptor Table - set up ISRs
     pic_init(); // Programmable Interrupt Controller - remap IRQs
     // at this point we can use exceptions and syscalls
     pit_init(50); // Programmable Interval Timer - system clock
-    vmm_init(); // Virtual Memory Manager - enable paging
-    // at this point we have to use vmm_alloc and friends instead of pmm_*
     isr_enable_interrupts(1); // enable interrupts
     // hand over further initialization to multitasking-land main2
-    task_create_kernel(main2, STACK_SIZE);
+    task_create_kernel(main2, 0, STACK_SIZE);
     asm volatile("hlt"); // stop execution until the scheduler calls main2
 }
 
 static void main2() {
-    logln("MAIN", "Entering main2");    
-    task_t* ps2_task = task_create_kernel(ps2, _4KB);
-    elf_t* elf = multiboot_get_module("/user_template");
-    task_t* elf_task = 0;
-    if (elf)
-        elf_task = task_create_user(elf_load(elf), _4KB, _4KB);
-    else
-        println("%4aModule not found.%a");
+    logln("MAIN", "Entering main2");
+    pmm_reset_allocations();
+    task_t* ps2_task = task_create_kernel(ps2, 0, _4KB);
+    elf_task_t* elf_task = elf_create_task(multiboot_get_module("/user_template"),
+            _4KB, _4KB);
     pmm_dump(0, 1024 * _4KB);
+    vmm_dump();
         
     while (keyboard_get_event().keycode != KEY("ESC")) {
         size_t old_cursor = io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
@@ -70,12 +67,8 @@ static void main2() {
     }
     
     task_destroy(ps2_task);
-    if (elf_task)
-        task_destroy(elf_task);
-    if (elf)
-        elf_unload(elf);
-    vmm_deinit();
-    
+    elf_destroy_task(elf_task);
+
     io_clear(io_putchar);
     io_cursor(IO_COORD(0, IO_ROWS / 2 - 2));
     logln("MAIN", "Shutting down. %d allocations left.", pmm_get_allocations());

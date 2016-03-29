@@ -69,7 +69,7 @@ static void multiboot_free_memory() {
         // We ignore the upper bytes here because we assume the machine does not
         // have more than 4 GiB RAM. (Might be relevant if we wanted to use PAE.)
         pmm_use((void*) mmap_entry->base_addr_low, mmap_entry->length_low,
-                mmap_entry->type == 1 ? PMM_UNUSED : PMM_KERNEL, "BIOS memory");
+                mmap_entry->type == 1 ? PMM_UNUSED : PMM_RESERVED, "BIOS memory");
     }
 }
 

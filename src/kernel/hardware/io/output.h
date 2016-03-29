@@ -27,5 +27,6 @@ uint16_t fprint(putchar_func_t putchar_func, char* fmt, ...);
 uint16_t fprintln(putchar_func_t putchar_func, char* fmt, ...);
 uint16_t log(char* tag, char* fmt, ...);
 uint16_t logln(char* tag, char* fmt, ...);
+void io_set_logging(uint8_t _logging_enabled);
 
 #endif
