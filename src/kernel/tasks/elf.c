@@ -75,7 +75,7 @@ void* elf_load(elf_t* elf, page_directory_t* page_directory) {
     elf_program_header_entry_t* program_header_table =
             (elf_program_header_entry_t*) ((uintptr_t) elf + elf->e_phoff);
     logln("ELF", "Program header entries:");
-    page_directory_t* old_directory = vmm_load_page_directory(page_directory);
+    vmm_modify_page_directory(page_directory);
     for (int i = 0; i < elf->e_phnum; i++) { // process every entry in the table
         elf_program_header_entry_t* entry = program_header_table + i;
         logln("ELF", "[%d] type=%d offset=%08x vaddr=%08x paddr=%08x "
@@ -95,7 +95,7 @@ void* elf_load(elf_t* elf, page_directory_t* page_directory) {
                     entry->p_filesz);
         }
     }
-    vmm_load_page_directory(old_directory);
+    vmm_modified_page_directory();
     return elf->e_entry;
 }
 
@@ -104,13 +104,13 @@ void elf_unload(elf_t* elf, page_directory_t* page_directory) {
         return;
     elf_program_header_entry_t* program_header_table =
             (elf_program_header_entry_t*) ((uintptr_t) elf + elf->e_phoff);
-    page_directory_t* old_directory = vmm_load_page_directory(page_directory);
+    vmm_modify_page_directory(page_directory);
     for (int i = 0; i < elf->e_phnum; i++) {
         elf_program_header_entry_t* entry = program_header_table + i;
         if (entry->p_type == PT_LOAD)
             vmm_free(entry->p_vaddr, entry->p_memsz);
     }
-    vmm_load_page_directory(old_directory);
+    vmm_modified_page_directory();
 }
 
 elf_task_t* elf_create_task(elf_t* elf, size_t kernel_stack_len,

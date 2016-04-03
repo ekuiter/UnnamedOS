@@ -29,8 +29,13 @@ typedef struct {
 // every handler is passed the CPU state/ESP and returns a (possibly altered) ESP
 typedef cpu_state_t* (*isr_handler_t)(cpu_state_t* cpu);
 
+typedef uint32_t (*isr_syscall_t)(uint32_t ebx, uint32_t ecx, uint32_t edx,
+        uint32_t esi, uint32_t edi, cpu_state_t** cpu);
+
 void isr_enable_interrupts(uint8_t enable);
-void isr_register_handler(uint8_t intr, isr_handler_t handler);
+void isr_register_handler(size_t intr, isr_handler_t handler);
+void isr_register_syscall(size_t eax, void* syscall);
 void isr_dump_cpu(cpu_state_t* cpu);
+void isr_init();
 
 #endif

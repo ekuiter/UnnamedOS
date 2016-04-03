@@ -12,8 +12,6 @@ uint32_t pmm_get_page(void* ptr, uint32_t offset);
 void* pmm_get_address(uint32_t page, uint32_t offset);
 pmm_flags_t pmm_check(void* ptr);
 void pmm_dump(void* ptr, size_t len);
-uint32_t pmm_get_allocations();
-void pmm_reset_allocations();
 uint32_t pmm_get_last_kernel_page();
 
 // marks the given page frame(s) as used

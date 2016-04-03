@@ -1,6 +1,8 @@
 #ifndef STRING_H
 #define STRING_H
 
+#include <stdint.h>
+
 uint32_t strcmp(char* s1, char* s2);
 size_t strlen(const char* str);
 void* memcpy(void* dst, const void* src, size_t num);

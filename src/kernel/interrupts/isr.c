@@ -10,32 +10,39 @@
 #include <interrupts/isr.h>
 #include <interrupts/idt.h>
 #include <interrupts/pic.h>
+#include <interrupts/syscall.h>
 #include <hardware/pit.h>
 #include <hardware/io/ps2.h>
+#include <syscall.h>
 
 #define IS_EXCEPTION(intr) ((intr) <= 0x1F)
 #define IS_IRQ(intr)       ((intr) >= 0x20 && intr <= 0x2F)
 #define IS_SYSCALL(intr)   ((intr) == 0x30)
 
 static isr_handler_t handlers[IDT_ENTRIES] = {0};
+static void* syscalls[SYSCALL_NUMBER] = {0};
 
 void isr_enable_interrupts(uint8_t enable) {
     if (enable) {
-        print("Enabling interrupts ... ");
         asm volatile("sti");
-    } else {
-        print("Disabling interrupts ... ");
+    } else
         asm volatile("cli");
-    }
-    println("%2aok%a.");
 }
 
-void isr_register_handler(uint8_t intr, isr_handler_t handler) {
+void isr_register_handler(size_t intr, isr_handler_t handler) {
     if (intr >= IDT_ENTRIES) {
         println("%4ainterrupt vector %d not allowed%a", intr);
         return;
     }
     handlers[intr] = handler;
+}
+
+void isr_register_syscall(size_t id, void* syscall) {
+    if (id >= SYSCALL_NUMBER) {
+        println("%4asyscall %d not allowed%a", id);
+        return;
+    }
+    syscalls[id] = syscall;
 }
 
 // cpu has two functions here - as a pointer (CPU state) and as a value (ESP):
@@ -70,4 +77,21 @@ void isr_dump_cpu(cpu_state_t* cpu) {
             "ds=    %04x  es=    %04x  fs=    %04x  gs=    %04x",
             cpu->ebx, cpu->esp, cpu->ebp, cpu->esi, cpu->edi,
             cpu->ds, cpu->es, cpu->fs, cpu->gs);
+}
+
+static cpu_state_t* isr_handle_syscall(cpu_state_t* cpu) {
+    if (cpu->eax < SYSCALL_NUMBER && syscalls[cpu->eax])
+        cpu->eax = ((isr_syscall_t) syscalls[cpu->eax])
+            (cpu->ebx, cpu->ecx, cpu->edx, cpu->esi, cpu->edi, &cpu);
+    else
+        println("%4aUnknown syscall %08x%a", cpu->eax);
+    return cpu;
+}
+
+void isr_init() {
+    print("ISR init ... ");
+    isr_register_handler(0x30, isr_handle_syscall);
+    syscall_init();
+    isr_enable_interrupts(1);
+    println("%2aok%a.");
 }

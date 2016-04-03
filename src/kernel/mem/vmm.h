@@ -49,6 +49,8 @@ typedef page_table_entry_t page_table_t;
 page_directory_t* vmm_create_page_directory();
 void vmm_destroy_page_directory(page_directory_t* dir_phys);
 page_directory_t* vmm_load_page_directory(page_directory_t* new_directory);
+void vmm_modify_page_directory(page_directory_t* new_directory);
+void vmm_modified_page_directory();
 void* vmm_get_physical_address(void* _vaddr);
 void vmm_dump();
 void vmm_init();

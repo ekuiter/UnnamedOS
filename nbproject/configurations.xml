@@ -25,9 +25,7 @@
             <in>idt.c</in>
             <in>isr.c</in>
             <in>pic.c</in>
-          </df>
-          <df name="lib">
-            <in>string.c</in>
+            <in>syscall.c</in>
           </df>
           <df name="mem">
             <in>gdt.c</in>
@@ -41,6 +39,12 @@
             <in>task.c</in>
             <in>tss.c</in>
           </df>
+        </df>
+        <df name="lib">
+          <in>io.c</in>
+          <in>lib.c</in>
+          <in>string.c</in>
+          <in>syscall.c</in>
         </df>
         <df name="user_template">
           <in>main.c</in>
@@ -78,6 +82,8 @@
           <buildCommand>make</buildCommand>
           <cleanCommand>make clean</cleanCommand>
           <executablePath></executablePath>
+          <cTool flags="0">
+          </cTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
@@ -88,8 +94,7 @@
         <cTool>
           <incDir>
             <pElem>src/kernel/boot</pElem>
-            <pElem>src/kernel/lib</pElem>
-            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/lib</pElem>
           </incDir>
         </cTool>
       </folder>
@@ -97,7 +102,7 @@
         <cTool>
           <incDir>
             <pElem>src/kernel/hardware/cpu</pElem>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
@@ -107,7 +112,7 @@
         <cTool>
           <incDir>
             <pElem>src/kernel/hardware/io</pElem>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
           </incDir>
         </cTool>
       </folder>
@@ -118,19 +123,11 @@
           </incDir>
         </cTool>
       </folder>
-      <folder path="0/src/kernel/lib">
-        <cTool>
-          <incDir>
-            <pElem>src/kernel/lib</pElem>
-            <pElem>src/kernel</pElem>
-          </incDir>
-        </cTool>
-      </folder>
       <folder path="0/src/kernel/mem">
         <cTool>
           <incDir>
             <pElem>src/kernel/mem</pElem>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
           </incDir>
         </cTool>
       </folder>
@@ -138,13 +135,21 @@
         <cTool>
           <incDir>
             <pElem>src/kernel/tasks</pElem>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/lib">
+        <cTool>
+          <incDir>
+            <pElem>src/lib</pElem>
           </incDir>
         </cTool>
       </folder>
       <folder path="0/src/user_template">
         <cTool>
           <incDir>
+            <pElem>src/lib</pElem>
             <pElem>src/user_template</pElem>
           </incDir>
         </cTool>
@@ -153,17 +158,19 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/tasks</pElem>
             <pElem>src/kernel/hardware</pElem>
-            <pElem>src/kernel/hardware/cpu</pElem>
             <pElem>src/kernel</pElem>
+            <pElem>src/kernel/hardware/cpu</pElem>
           </incDir>
         </cTool>
       </item>
       <item path="src/kernel/boot/multiboot.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
@@ -217,7 +224,7 @@
           <incDir>
             <pElem>src/kernel/hardware</pElem>
             <pElem>src/kernel/hardware/io</pElem>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
             <pElem>src/kernel/interrupts</pElem>
             <pElem>src/kernel/tasks</pElem>
             <pElem>src/kernel</pElem>
@@ -227,7 +234,7 @@
       <item path="src/kernel/interrupts/idt.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
@@ -237,7 +244,7 @@
       <item path="src/kernel/interrupts/isr.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
@@ -247,13 +254,20 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/hardware/io</pElem>
-            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
       </item>
-      <item path="src/kernel/lib/string.c" ex="false" tool="0" flavor2="2">
+      <item path="src/kernel/interrupts/syscall.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="src/kernel/mem/gdt.c" ex="false" tool="0" flavor2="2">
@@ -287,6 +301,7 @@
         <cTool flags="0">
           <incDir>
             <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/interrupts</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -327,6 +342,22 @@
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
+        </cTool>
+      </item>
+      <item path="src/lib/io.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/lib/lib.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/lib/string.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/lib/syscall.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
         </cTool>
       </item>
       <item path="src/user_template/main.c" ex="false" tool="0" flavor2="2">

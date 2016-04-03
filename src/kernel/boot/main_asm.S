@@ -11,8 +11,8 @@
 .section .text
 .global start
 start: // kernel entry point
-        mov $main_kernel_stack, %esp // set the kernel stack (see label below)
-        // now that we have a stack, we can push multiboot information as parameters
+        mov $main_kernel_stack_end, %esp // set main kernel stack (see below)
+        // now that we have a stack, we can push multiboot info as parameters
         push %eax // must be MULTIBOOT_BOOTLOADER_MAGIC
         push %ebx // pointer to multiboot info struct
         // thanks to multiboot/GRUB, we should be in the following state:
@@ -38,6 +38,6 @@ bochs_log:
 // Stack for running main to kick off initialization. Later we switch to new
 // stacks for running tasks in userspace and handling interrupts in the kernel.
 .section .bss
-.space  STACK_SIZE
-.global main_kernel_stack
-main_kernel_stack:
+.space  STACK_SIZE - 1
+.global main_kernel_stack_end
+main_kernel_stack_end:

@@ -21,3 +21,4 @@ Run the following commands in the root directory:
 - userspace multitasking (TSS)
 - ELF GRUB modules
 - memory manager (PMM, VMM, MMU)
+- Syscalls

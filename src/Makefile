@@ -1,5 +1,7 @@
 # Collects all subfolders in src as modules to be compiled, at least 'kernel'.
-MODULES=$(notdir $(shell find ./ -maxdepth 1 -type d))
+CP_MODS=$(filter-out lib, $(notdir $(shell find ./ -maxdepth 1 -type d)))
+MODULES=lib
+MODULES+=$(CP_MODS)
 
 # foreach takes a variable, a space-separated list to iterate and a command
 # in which every occurrence of the variable is replaced by every item in the
@@ -7,8 +9,8 @@ MODULES=$(notdir $(shell find ./ -maxdepth 1 -type d))
 # the - before test lets make ignore test's return value.
 all: modules
 	-test ! -d "/Volumes/NO NAME/" && hdiutil mount ../build/image.img
-	$(foreach MOD, $(MODULES), cp $(MOD)/$(MOD) ../build;)
-	$(foreach MOD, $(MODULES), cp ../build/$(MOD) "/Volumes/NO NAME/";)
+	$(foreach MOD, $(CP_MODS), cp $(MOD)/$(MOD) ../build;)
+	$(foreach MOD, $(CP_MODS), cp ../build/$(MOD) "/Volumes/NO NAME/";)
 	cp ../build/menu.lst "/Volumes/NO NAME/grub/"
 
 copy: all
@@ -33,7 +35,7 @@ count:
 clean:
 	-test ! -d "/Volumes/NO NAME/" && hdiutil mount ../build/image.img
 	$(foreach MOD, $(MODULES), $(MAKE) -C $(MOD) $@;)
-	$(foreach MOD, $(MODULES), rm -f "/Volumes/NO NAME/$(MOD)";)
+	$(foreach MOD, $(CP_MODS), rm -f "/Volumes/NO NAME/$(MOD)";)
 	rm -f "/Volumes/NO NAME/grub/menu.lst"
 
 .PHONY: all copy modules run count clean

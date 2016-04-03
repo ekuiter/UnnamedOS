@@ -27,12 +27,13 @@
 
 static uint32_t bitmap[PAGE_NUMBER / PAGES_PER_DWORD]; // saves page entries
 static uint32_t last_kernel_page = 0; // remember the highest kernel page
-static uint32_t allocations = 0; // track the number of pmm_alloc calls
 
 // symbols defined in script.ld and main_asm.S, only the addresses matter
 extern const void kernel_start, kernel_end, multiboot_start, multiboot_end,
         text_start, text_end, data_start, data_end, rodata_start, rodata_end,
-        bss_start, bss_end, main_kernel_stack;
+        bss_start, bss_end, main_kernel_stack_end;
+static void* main_kernel_stack_start = (void*) ((uintptr_t)
+        &main_kernel_stack_end - STACK_SIZE + 1);
 
 static void pmm_bitmap_set(uint32_t idx, uint32_t value) {
     idx *= TYPE_BITS; // make this flexible so that more types can be added
@@ -56,8 +57,9 @@ static void pmm_use_kernel_memory() {
     logln("PMM", "     data=%08x-%08x", &data_start,      &data_end);
     logln("PMM", "   rodata=%08x-%08x", &rodata_start,    &rodata_end);
     logln("PMM", "      bss=%08x-%08x", &bss_start,       &bss_end);
-    logln("PMM", "    stack=%08x-%08x", &main_kernel_stack - STACK_SIZE, &main_kernel_stack);
-    pmm_use((void*) &kernel_start, &kernel_end - &kernel_start + 1, PMM_KERNEL, "kernel");
+    logln("PMM", "    stack=%08x-%08x", main_kernel_stack_start, &main_kernel_stack_end);
+    pmm_use((void*) &kernel_start, (uintptr_t) &kernel_end -
+            (uintptr_t) &kernel_start + 1, PMM_KERNEL, "kernel");
 }
 
 void pmm_init() {
@@ -117,14 +119,12 @@ void* pmm_alloc(size_t len, pmm_flags_t flags) {
     if (!ptr)
         return 0;
     pmm_use(ptr, len, flags, "pmm_alloc"); // mark the pages as used
-    allocations++;
     return ptr;
 }
 
 void pmm_free(void* ptr, size_t len) {
     if (len == 0) return;
     pmm_use(ptr, len, PMM_UNUSED, 0);
-    allocations--;
 }
 
 pmm_flags_t pmm_check(void* ptr) {
@@ -145,14 +145,6 @@ void pmm_dump(void* ptr, size_t len) {
         log(0, "%x", pmm_bitmap_get(i));
     }
     logln(0, "");
-}
-
-uint32_t pmm_get_allocations() {
-    return allocations;
-}
-
-void pmm_reset_allocations() {
-    allocations = 0;
 }
 
 uint32_t pmm_get_last_kernel_page() {

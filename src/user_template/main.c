@@ -1,4 +1,7 @@
+#include <syscall.h>
+#include <io.h>
+
 void main() {
-    asm volatile("int $0x30" : : "a" (0x12345678));
-    while (1);
+    print("%3apid=%d %a", sys_getpid());
+    sys_exit(0);
 }

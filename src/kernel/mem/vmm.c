@@ -10,6 +10,7 @@
 #include <string.h>
 #include <mem/vmm.h>
 #include <mem/mmu.h>
+#include <interrupts/isr.h>
 
 #define ENTRIES 1024 // number of entries in page directories and tables
 // The number of bytes per page directory / table "happens" to equal the size
@@ -33,6 +34,7 @@ typedef union {
 } vmm_virtual_address_t;
 
 static page_directory_t* page_directory = 0; // the current page directory
+static page_directory_t* old_directory = 0; // for temporary modifications
 // We use 0-1GiB as kernel memory. This will be mapped into all processes.
 // We exclude page 0 so we don't return the null pointer accidentally.
 static vmm_domain_t kernel_domain = {.start = (void*) 0x1000,
@@ -123,6 +125,26 @@ page_directory_t* vmm_load_page_directory(page_directory_t* new_directory) {
     return 0;
 }
 
+void vmm_modify_page_directory(page_directory_t* new_directory) {
+    if (old_directory) {
+        println("VMM: Already modifying a page directory at %08x", old_directory);
+        return;
+    }
+    // we don't want to be interrupted when modifying kernel-relevant page
+    isr_enable_interrupts(0); // directories, so disable interrupts
+    old_directory = vmm_load_page_directory(new_directory);
+}
+
+void vmm_modified_page_directory() {
+    if (!old_directory) {
+        println("VMM: Not yet modifying a page directory");
+        return;
+    }
+    vmm_load_page_directory(old_directory);
+    old_directory = 0;
+    isr_enable_interrupts(1);
+}
+
 static page_table_entry_t* vmm_get_page_table(
     page_directory_entry_t* dir_entry, vmm_virtual_address_t vaddr) {
     // If paging is already enabled and we access the virtually mapped page
@@ -209,7 +231,7 @@ void vmm_unmap(void* _vaddr) {
 
 static void vmm_map_range_detailed(void* vaddr, void* paddr, size_t len,
         vmm_flags_t flags, uint8_t map) {
-    if (!vmm_domain_check(vaddr, flags)) return;
+    if (map && !vmm_domain_check(vaddr, flags)) return;
     uint32_t virtual_page = pmm_get_page(vaddr, 0),
             physical_page = pmm_get_page(paddr, 0),
             pages         = pmm_get_page(vaddr, len - 1) - virtual_page + 1;

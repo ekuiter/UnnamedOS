@@ -3,16 +3,16 @@ OBJS = $(addsuffix .o, $(basename $(SRCS)))
 NAME = $(notdir $(shell pwd))
 
 CC = /usr/local/bin/i586-elf-gcc
-LD = /usr/local/bin/i586-elf-ld
+AR = /usr/local/bin/i586-elf-ar
 
-ASFLAGS = -m32 -Wall -I. -I../lib
-CFLAGS = -m32 -Wall -O2 -I. -I../lib -std=gnu99 -ffreestanding -nostartfiles \
+ASFLAGS = -m32 -Wall -I.
+CFLAGS = -m32 -Wall -O2 -I. -std=gnu99 -ffreestanding -nostartfiles \
 	-fno-stack-protector -nostdinc -nostdlib -fno-builtin -g \
 	-Wno-packed-bitfield-compat
-LDFLAGS = -Tscript.ld
+ARFLAGS = rcs
 
 $(NAME): $(OBJS)
-	$(LD) $(LDFLAGS) -o $(NAME) $^ ../lib/lib
+	$(AR) $(ARFLAGS) $(NAME) $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^

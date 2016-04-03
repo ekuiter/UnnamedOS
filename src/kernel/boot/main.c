@@ -14,6 +14,9 @@
 #include <mem/vmm.h>
 #include <tasks/elf.h>
 #include <tasks/task.h>
+#include <tasks/schedule.h>
+#include <lib.h>
+#include <syscall.h>
 
 #define _4KB 0x1000
 
@@ -32,6 +35,7 @@ static void handle_mouse_event(mouse_event_t e) {
 
 void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
     logln("MAIN", "Entering main");
+    lib_init(io_putchar, io_attr); // tell the library how to print to screen
     io_clear(io_putchar); // clear any messages GRUB left us
     println("%15aWelcome!%a");
     multiboot_init(mb_info, mb_magic); // Multiboot - info passed by bootloader
@@ -44,7 +48,7 @@ void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
     pic_init(); // Programmable Interrupt Controller - remap IRQs
     // at this point we can use exceptions and syscalls
     pit_init(50); // Programmable Interval Timer - system clock
-    isr_enable_interrupts(1); // enable interrupts
+    isr_init(); // enable interrupts
     // hand over further initialization to multitasking-land main2
     task_create_kernel(main2, 0, STACK_SIZE);
     asm volatile("hlt"); // stop execution until the scheduler calls main2
@@ -52,10 +56,9 @@ void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
 
 static void main2() {
     logln("MAIN", "Entering main2");
-    pmm_reset_allocations();
-    task_t* ps2_task = task_create_kernel(ps2, 0, _4KB);
-    elf_task_t* elf_task = elf_create_task(multiboot_get_module("/user_template"),
-            _4KB, _4KB);
+    task_create_kernel(ps2, 0, _4KB);
+    for (int i = 0; i < 10; i++)
+        elf_create_task(multiboot_get_module("/user_template"), _4KB, _4KB); 
     pmm_dump(0, 1024 * _4KB);
     vmm_dump();
         
@@ -63,20 +66,16 @@ static void main2() {
         size_t old_cursor = io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
         pit_dump_time();
         io_cursor(old_cursor);
+        schedule_dump();
+        schedule_finalize_tasks(); // clean up any tasks marked for removal
         pit_sleep(1000);
     }
     
-    task_destroy(ps2_task);
-    elf_destroy_task(elf_task);
-
-    io_clear(io_putchar);
-    io_cursor(IO_COORD(0, IO_ROWS / 2 - 2));
-    logln("MAIN", "Shutting down. %d allocations left.", pmm_get_allocations());
-    println("                =================================================");
-    println("                =                                               =");
-    println("                =  %15aIt's now safe to turn off your computer. ;)%a  =");
-    println("                =                                               =");
-    println("                =================================================");
+    io_cursor(IO_COORD(16, IO_ROWS / 2 - 2)); println("=================================================");
+    io_cursor(IO_COORD(16, IO_ROWS / 2 - 1)); println("=                                               =");
+    io_cursor(IO_COORD(16, IO_ROWS / 2    )); println("=  %15aIt's now safe to turn off your computer. ;)%a  =");
+    io_cursor(IO_COORD(16, IO_ROWS / 2 + 1)); println("=                                               =");
+    io_cursor(IO_COORD(16, IO_ROWS / 2 + 2)); println("=================================================");
     halt();
 }
     
@@ -84,5 +83,5 @@ static void ps2() {
     ps2_init(); // PS/2 Controller - mouse, keyboard and speaker control
     keyboard_register_handler(handle_keyboard_event);
     mouse_register_handler(handle_mouse_event);
-    while (1); // TODO: proper task exit (return value/parameters?)
+    sys_exit(0);
 }

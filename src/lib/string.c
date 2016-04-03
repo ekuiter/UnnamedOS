@@ -1,4 +1,3 @@
-#include <common.h>
 #include <string.h>
 
 // compares two strings and returns 0 if they are equal

@@ -5,8 +5,8 @@ CC = /usr/local/bin/i586-elf-gcc
 LD = /usr/local/bin/i586-elf-ld
 
 # flags for assembler, compiler and linker
-ASFLAGS = -m32 -Wall -I. -Ilib
-CFLAGS = -m32 -Wall -O2 -I. -Ilib -std=gnu99 -ffreestanding -nostartfiles \
+ASFLAGS = -m32 -Wall -I. -I../lib
+CFLAGS = -m32 -Wall -O2 -I. -I../lib -std=gnu99 -ffreestanding -nostartfiles \
 	-fno-stack-protector -nostdinc -nostdlib -fno-builtin -g \
 	-Wno-packed-bitfield-compat
 LDFLAGS = -Tscript.ld # the linker script with details on the kernel sections
@@ -15,8 +15,9 @@ LDFLAGS = -Tscript.ld # the linker script with details on the kernel sections
 # with. It depends on every object file, so they are taken care of first. Then
 # it invokes the linker with flags and $@ (which is the target's name 'kernel',
 # the output file) and $^ (which is the target's dependencies '$(OBJS)').
+# Note that we also link the kernel/user-shared system call library.
 kernel: $(OBJS) 
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^ ../lib/lib
 
 # This is not a phony target: This describes how .o files are made from .c
 # files, just like above. $@ expands here to the actual name of the object
