@@ -8,7 +8,7 @@
 ENTRY(start) /* os entry point is start in main_asm.S */
 
 SECTIONS { /* defines the sections of the kernel file */
-    . = 0x100000; /* load at 1 MiB */
+    . = 0x400000; /* load at 4 MiB, leaving space for VM86 tasks */
 
     kernel_start = .; /* these constants save section start and end addresses */
     .text : { /* code section */

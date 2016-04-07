@@ -38,6 +38,8 @@
             <in>schedule.c</in>
             <in>task.c</in>
             <in>tss.c</in>
+            <in>vm86.c</in>
+            <in>vm86_asm.S</in>
           </df>
         </df>
         <df name="lib">
@@ -170,8 +172,8 @@
       <item path="src/kernel/boot/multiboot.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
-            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
@@ -343,6 +345,18 @@
             <pElem>src/kernel</pElem>
           </incDir>
         </cTool>
+      </item>
+      <item path="src/kernel/tasks/vm86.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/vm86_asm.S" ex="false" tool="4" flavor2="0">
       </item>
       <item path="src/lib/io.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">

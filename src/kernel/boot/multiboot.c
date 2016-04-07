@@ -59,7 +59,9 @@ void* multiboot_get_module(char* str) {
     return 0; // no module found
 }
 
-static void multiboot_free_memory() {
+uint8_t multiboot_free_memory() {
+    if (!mb_info || !mb_info->flags.mmap)
+        return 0;
     uintptr_t mmap = mb_info->mmap_addr, // get the mmap start and end addresses
             mmap_end = (uintptr_t) mb_info->mmap_addr + mb_info->mmap_length;
     for (multiboot_memory_map_t* mmap_entry; // iterate over every mmap entry
@@ -71,28 +73,33 @@ static void multiboot_free_memory() {
         pmm_use((void*) mmap_entry->base_addr_low, mmap_entry->length_low,
                 mmap_entry->type == 1 ? PMM_UNUSED : PMM_RESERVED, "BIOS memory");
     }
+    return 1;
 }
 
-uint8_t multiboot_init_memory() {
-    if (!mb_info || !mb_info->flags.mmap)
-        return 0;
-    // Start off by assuming all memory is used. Now determine from the memory
-    multiboot_free_memory(); // map which parts of the memory are usable.
-    // Now we mark some data as used we don't want to overwrite:
-    pmm_use(mb_info, sizeof(multiboot_info_t), PMM_KERNEL, "multiboot info");
+void multiboot_copy_memory() {
+    size_t mb_info_length = sizeof(multiboot_info_t),
+            mmap_length = mb_info->mmap_length,
+            modules_length = mb_info->flags.mods ?
+                mb_info->mods_count * sizeof(multiboot_module_t) : 0;
+    // we allocate some space all at once to save (some) memory
+    void* dst = pmm_alloc(mb_info_length + mmap_length + modules_length, PMM_KERNEL);
+    // Now we copy some data we don't want to overwrite:
+    mb_info = memcpy(dst, mb_info, mb_info_length);
     // the memory map (if we want to use it later)
-    pmm_use((void*) mb_info->mmap_addr, mb_info->mmap_length,
-            PMM_KERNEL, "multiboot memory map");
+    mb_info->mmap_addr = (uint32_t) memcpy((void*) ((uintptr_t) dst + mb_info_length),
+            (void*) mb_info->mmap_addr, mmap_length);
     if (mb_info->flags.mods) { // if there are modules, mark them as used
-        pmm_use(mb_info->mods_addr, mb_info->mods_count * sizeof(multiboot_module_t),
-                PMM_KERNEL, "multiboot modules");
+        mb_info->mods_addr = memcpy((void*)
+                ((uintptr_t) dst + mb_info_length + mmap_length),
+            mb_info->mods_addr, modules_length);
         for (int i = 0; i < mb_info->mods_count; i++) {
             multiboot_module_t* module = mb_info->mods_addr + i;
-            pmm_use(module->mod_start, module->mod_end - module->mod_start + 1,
-                    PMM_KERNEL, "multiboot module");
-            pmm_use(module->string, strlen(module->string) + 1,
-                    PMM_KERNEL, "multiboot module string");
+            size_t module_length = module->mod_end - module->mod_start + 1;
+            size_t string_length = strlen(module->string) + 1;
+            dst = pmm_alloc(module_length + string_length, PMM_KERNEL);
+            module->mod_start = memcpy(dst, module->mod_start, module_length);
+            module->string = memcpy((void*) ((uintptr_t) dst + module_length),
+                    module->string, string_length);
         }
     }
-    return 1;
 }

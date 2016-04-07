@@ -32,6 +32,7 @@ isr_common:
     add $8, %esp // pop interrupt and error code
     iret // return from interrupt, takes care of popping EFLAGS, CS and EIP. Also pops SS and ESP
          // if we want to return to userspace, in that case the user stack switch happens here.
+         // If we are switching into a VM86 task ES, DS, FS and GS are popped as well.
 
 // These ISR stubs push an error code (if necessary) and the interrupt vector before jumping into the common ISR handler:
 .macro isr_intr nr

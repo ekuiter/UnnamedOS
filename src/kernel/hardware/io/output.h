@@ -8,7 +8,7 @@
 #define IO_ROWS 25
 #define IO_COORD(x, y) ((y) * IO_COLS + (x))
 
-void io_init();
+void io_use_video_memory();
 uint8_t io_attr(uint8_t new_attr);
 size_t io_cursor(int32_t new_cursor);
 uint16_t io_putchar(uint8_t c);

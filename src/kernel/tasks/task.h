@@ -5,10 +5,13 @@
 #include <interrupts/isr.h>
 #include <mem/vmm.h>
 
+#define _4KB 0x1000 // often used for stacks
+
 typedef uint8_t task_stack_t;
 
 typedef struct task {
     uint32_t pid; // process id
+    uint8_t vm86; // whether this task is running in Virtual 8086 mode
     task_stack_t* user_stack; // stack for the actual task's code
     task_stack_t* kernel_stack; // stack for handling interrupts
     size_t user_stack_len, kernel_stack_len;
@@ -19,6 +22,7 @@ typedef struct task {
     struct task* next_task; // pointer to the next task in the linked list
 } task_t;
 
+uint32_t task_increment_pid();
 task_t* task_create_kernel(void* entry_point, page_directory_t* page_directory,
         size_t kernel_stack_len);
 task_t* task_create_user(void* entry_point, page_directory_t* page_directory,

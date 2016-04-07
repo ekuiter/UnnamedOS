@@ -17,7 +17,9 @@
 #define MEMORY_SIZE     0x100000000 // 4GB address space
 #define TYPE_BITS       2           // number of bits per page entry
 #define PAGE_NUMBER     (MEMORY_SIZE / PAGE_SIZE) // total number of pages
+#define ENTRIES         1024        // number of entries in a page table
 #define PAGES_PER_DWORD (32 / TYPE_BITS) // pages in each bitmap entry
+#define PAGES_BER_BYTE  (8 / TYPE_BITS)  // pages per bitmap entry byte
 #define TYPE_MASK       (0xFFFFFFFF >> (32 - TYPE_BITS)) // calc 2^TYPE_BITS-1
 #define BITMAP_INIT     0x55555555  // 0b0101...01, use PMM_RESERVED
 
@@ -64,14 +66,27 @@ static void pmm_use_kernel_memory() {
 
 void pmm_init() {
     print("PMM init ... ");
-    memset(bitmap, BITMAP_INIT, sizeof(bitmap)); // assume the whole memory is
-    if (!multiboot_init_memory()) { // used, GRUB tells us about free memory
+    // Assume the whole memory is used, GRUB will tell us about free memory.
+    memset(bitmap, BITMAP_INIT, sizeof(bitmap));
+    if (!multiboot_free_memory()) {
         println("%4afail%a. Memory map not found.");
         return;
     }
-    pmm_use(0, 1, PMM_RESERVED, "null pointer"); // prevent that we allocate 0
-    pmm_use_kernel_memory();
-    io_init();
+    // prevent that we allocate or dereference the null pointer or BIOS data
+    // by pmm_use'ing the first page table:
+    // pmm_use(0, MULTIBOOT_FIRST_PAGE_TABLE, PMM_RESERVED, "VM86 memory");
+    // We could do it like that, but a direct memset proves to be faster:
+    logln("PMM", "Use the first megabyte for VM86");
+    memset(bitmap, BITMAP_INIT, ENTRIES / PAGES_BER_BYTE);
+    pmm_use_kernel_memory(); // the actual kernel code and data
+    // We need to copy the multiboot structures somewhere into the kernel so
+    // we can overwrite lower memory in VM86 mode later. Because our kernel
+    // starts at 4 MiB (the 2nd page table) we reserved the first page table
+    multiboot_copy_memory(); // above so that multiboot lies beyond the kernel.
+    // Now that we have copied the everything from lower memory, we can free
+    // 0x100000-0x3FFFFF to not waste too much memory. (This memory is likely to
+    pmm_use((void*) MULTIBOOT_LOWER_MEMORY, // be used for paging by vmm_init.)
+            MULTIBOOT_FIRST_PAGE_TABLE - MULTIBOOT_LOWER_MEMORY, PMM_UNUSED, 0);    
     println("%2aok%a.");
 }
 

@@ -11,7 +11,6 @@
     print(" at %s:%d", __FILE__, __LINE__); \
     halt(); \
 }
-#define assert(exp) ((exp) ? (void) 0 : panic("Assert failed"))
 
 #define bochs_break() { \
     outw(0x8A00, 0x8A00); \

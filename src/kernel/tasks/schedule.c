@@ -33,10 +33,10 @@ cpu_state_t* schedule(cpu_state_t* cpu) {
 
 cpu_state_t* schedule_switch_task(cpu_state_t* cpu, task_t* next_task) {
     if (current_task)
-        logln("SCHEDULER", "Task switch from task %d to task %d",
+        logln("SCHEDULE", "Task switch from task %d to task %d",
             current_task->pid, next_task->pid);
     else
-        logln("SCHEDULER", "Initial task switch to task %d", next_task->pid);
+        logln("SCHEDULE", "Initial task switch to task %d", next_task->pid);
     // If we want to switch to userspace, we need to tell the TSS which kernel
     // stack to load when an interrupt occurs. At the point we do the iret,
     // the CPU state on the kernel stack (next_task->cpu) is fully popped, so
@@ -88,7 +88,7 @@ void schedule_finalize_tasks() {
 }
 
 void schedule_dump() {
-    logln("SCHEDULER", "Scheduled and removed tasks:");
+    logln("SCHEDULE", "Scheduled and removed tasks:");
     task_dump(&scheduled_tasks);
     task_dump(&remove_tasks);
 }

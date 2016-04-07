@@ -61,7 +61,7 @@ cpu_state_t* isr_handle_interrupt(cpu_state_t* cpu) {
         if (IS_IRQ(intr))
             print("%2aIRQ%d%a", intr - ISR_IRQ(0));
         if (IS_SYSCALL(intr))
-            print("%4aSYS%08x%a", cpu->eax);
+            print("%4aSYS%08x%a", cpu->r.eax);
     }
     if (IS_IRQ(intr))
         pic_send_eoi(intr);
@@ -72,25 +72,25 @@ void isr_dump_cpu(cpu_state_t* cpu) {
     logln("ISR", "uss=%08x usp=%08x efl=%08x  cs=    %04x eip=%08x err=%08x "
             "int=%08x eax=%08x ecx=%08x edx=%08x",
             cpu->user_ss, cpu->user_esp, cpu->eflags, cpu->cs, cpu->eip,
-            cpu->error, cpu->intr, cpu->eax, cpu->ecx, cpu->edx);
+            cpu->error, cpu->intr, cpu->r.eax, cpu->r.ecx, cpu->r.edx);
     logln("ISR", "ebx=%08x esp=%08x ebp=%08x esi=%08x edi=%08x  "
             "ds=    %04x  es=    %04x  fs=    %04x  gs=    %04x",
-            cpu->ebx, cpu->esp, cpu->ebp, cpu->esi, cpu->edi,
+            cpu->r.ebx, cpu->r.esp, cpu->r.ebp, cpu->r.esi, cpu->r.edi,
             cpu->ds, cpu->es, cpu->fs, cpu->gs);
 }
 
 static cpu_state_t* isr_handle_syscall(cpu_state_t* cpu) {
-    if (cpu->eax < SYSCALL_NUMBER && syscalls[cpu->eax])
-        cpu->eax = ((isr_syscall_t) syscalls[cpu->eax])
-            (cpu->ebx, cpu->ecx, cpu->edx, cpu->esi, cpu->edi, &cpu);
+    if (cpu->r.eax < SYSCALL_NUMBER && syscalls[cpu->r.eax])
+        cpu->r.eax = ((isr_syscall_t) syscalls[cpu->r.eax])
+            (cpu->r.ebx, cpu->r.ecx, cpu->r.edx, cpu->r.esi, cpu->r.edi, &cpu);
     else
-        println("%4aUnknown syscall %08x%a", cpu->eax);
+        println("%4aUnknown syscall %08x%a", cpu->r.eax);
     return cpu;
 }
 
 void isr_init() {
     print("ISR init ... ");
-    isr_register_handler(0x30, isr_handle_syscall);
+    isr_register_handler(ISR_SYSCALL, isr_handle_syscall);
     syscall_init();
     isr_enable_interrupts(1);
     println("%2aok%a.");

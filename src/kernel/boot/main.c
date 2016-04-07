@@ -15,10 +15,9 @@
 #include <tasks/elf.h>
 #include <tasks/task.h>
 #include <tasks/schedule.h>
+#include <tasks/vm86.h>
 #include <lib.h>
 #include <syscall.h>
-
-#define _4KB 0x1000
 
 static void main2(), ps2();
 
@@ -48,6 +47,7 @@ void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
     pic_init(); // Programmable Interrupt Controller - remap IRQs
     // at this point we can use exceptions and syscalls
     pit_init(50); // Programmable Interval Timer - system clock
+    vm86_init(); // Virtual 8086 Mode - run 16-bit code
     isr_init(); // enable interrupts
     // hand over further initialization to multitasking-land main2
     task_create_kernel(main2, 0, STACK_SIZE);
@@ -57,9 +57,11 @@ void main(multiboot_info_t* mb_info, uint32_t mb_magic) {
 static void main2() {
     logln("MAIN", "Entering main2");
     task_create_kernel(ps2, 0, _4KB);
+    isr_registers_t registers = {.eax = 0x0f00}; // get the VGA video mode
+    vm86_call_bios(0x10, &registers); // (only for testing VM86 mode)
     for (int i = 0; i < 10; i++)
         elf_create_task(multiboot_get_module("/user_template"), _4KB, _4KB); 
-    pmm_dump(0, 1024 * _4KB);
+    pmm_dump(0, 8 * 256 * _4KB);
     vmm_dump();
         
     while (keyboard_get_event().keycode != KEY("ESC")) {

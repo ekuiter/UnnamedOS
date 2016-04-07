@@ -10,22 +10,30 @@
 #include <mem/gdt.h>
 #include <mem/mmu.h>
 #include <mem/vmm.h>
+#include <boot/multiboot.h>
+#include <string.h>
 
 static uint32_t pid = 0; // process id counter
+
+uint32_t task_increment_pid() {
+    return ++pid;
+}
 
 static task_t* task_create_detailed(void* entry_point,
         page_directory_t* page_directory, size_t kernel_stack_len,
         size_t user_stack_len, size_t code_segment, size_t data_segment) {
+    uint32_t pid = task_increment_pid();
     logln("TASK", "Creating task %d with %dKB kernel and %dKB user stack",
-            ++pid, kernel_stack_len, user_stack_len);
+            pid, kernel_stack_len, user_stack_len);
     // Here we allocate a whole page (4KB) which is more than we need.
     task_t* task = vmm_alloc(sizeof(task_t), VMM_KERNEL); // TODO: use a proper heap (malloc)    
-    task->page_directory   = page_directory ? page_directory :
+    task->page_directory = page_directory ? page_directory :
         vmm_create_page_directory();
     vmm_modify_page_directory(task->page_directory);
-    task->pid              = pid;
-    task->kernel_stack     = vmm_alloc(kernel_stack_len, VMM_KERNEL);
-    task->user_stack       = vmm_alloc(user_stack_len, VMM_USER | VMM_WRITABLE);
+    task->pid = pid;
+    task->vm86 = 0;
+    task->kernel_stack = vmm_alloc(kernel_stack_len, VMM_KERNEL);
+    task->user_stack   = vmm_alloc(user_stack_len, VMM_USER | VMM_WRITABLE);
     task->kernel_stack_len = kernel_stack_len;
     task->user_stack_len   = user_stack_len;
     // We want to run a task in userspace, so we prepare a CPU state to pop off
@@ -35,19 +43,21 @@ static task_t* task_create_detailed(void* entry_point,
             (task->kernel_stack + kernel_stack_len - 1 - sizeof(cpu_state_t));
     // make an initial CPU state, setting the registers popped off in isr_asm.S
     // (ESP is set to the pointer value of cpu itself, so the TOS of the user stack.)
-    cpu->gs  = cpu->fs  = cpu->es  = cpu->ds  = gdt_get_selector(data_segment);
+    cpu->gs = cpu->fs = cpu->es = cpu->ds = gdt_get_selector(data_segment);
     // we don't need to set ESP because it is discarded by popa (and set to cpu)
-    cpu->edi = cpu->esi = cpu->ebp = cpu->ebx = cpu->edx = cpu->ecx = cpu->eax = 0;
+    cpu->r.edi = cpu->r.esi = cpu->r.ebp = cpu->r.ebx =
+            cpu->r.edx = cpu->r.ecx = cpu->r.eax = 0;
     // we also ignore intr and error, those are always set when entering the kernel
     cpu->eip = task->entry_point = (uintptr_t) entry_point;
     cpu->cs  = gdt_get_selector(code_segment);
-    cpu->eflags.dword = 0;         // first reset EFLAGS, then
-    cpu->eflags.bits._if = 1;      // enable interrupts, otherwise
+    cpu->eflags.dword         = 0; // first reset EFLAGS, then
+    cpu->eflags.bits._if      = 1; // enable interrupts, otherwise
     cpu->eflags.bits.reserved = 1; // we can't exit the task once entered!
     // If we want to go to userspace, the following registers are popped by iret.
     // Note that if we stay in the kernel, these values are ignored.
     cpu->user_esp = (uint32_t) task->user_stack + user_stack_len - 1;
-    cpu->user_ss = gdt_get_selector(data_segment);
+    cpu->user_ss  = gdt_get_selector(data_segment);
+    // The VM86 values will be ignored so we don't need to set them.
     vmm_modified_page_directory();
     schedule_add_task(task); // tell the scheduler to run this task when appropriate
     return task;

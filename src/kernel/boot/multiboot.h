@@ -6,6 +6,8 @@
 #define MULTIBOOT_HEADER_FLAGS     0x00000003
 #define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002
 #define STACK_SIZE                 0x4000
+#define MULTIBOOT_LOWER_MEMORY     0x100000
+#define MULTIBOOT_FIRST_PAGE_TABLE 0x400000
 
 #ifndef ASM
 
@@ -53,7 +55,8 @@ typedef struct {
 
 void multiboot_init(multiboot_info_t* _mb_info, uint32_t mb_magic);
 void* multiboot_get_module(char* str);
-uint8_t multiboot_init_memory();
+uint8_t multiboot_free_memory();
+void multiboot_copy_memory();
 
 #endif
 

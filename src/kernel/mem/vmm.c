@@ -11,6 +11,7 @@
 #include <mem/vmm.h>
 #include <mem/mmu.h>
 #include <interrupts/isr.h>
+#include <boot/multiboot.h>
 
 #define ENTRIES 1024 // number of entries in page directories and tables
 // The number of bytes per page directory / table "happens" to equal the size
@@ -36,22 +37,21 @@ typedef union {
 static page_directory_t* page_directory = 0; // the current page directory
 static page_directory_t* old_directory = 0; // for temporary modifications
 // We use 0-1GiB as kernel memory. This will be mapped into all processes.
-// We exclude page 0 so we don't return the null pointer accidentally.
-static vmm_domain_t kernel_domain = {.start = (void*) 0x1000,
+// We exclude the first page table so we can use it freely for VM86.
+static vmm_domain_t kernel_domain = {.start = (void*) 0x400000,
     .end = (void*) 0x3FFFFFFF};
 // This memory is process-specific. Process images are loaded to 1GiB.
 // The last page table is excluded (it contains the page directory and tables).
 static vmm_domain_t user_domain = {.start = (void*) 0x40000000,
     .end = (void*) 0xFFFFFFFF - ENTRIES * PAGE_SIZE};
+static uint8_t domain_check_enabled = 0;
 
 static page_table_t* vmm_create_page_table() {
     page_table_t* tab_phys = pmm_alloc(PAGE_SIZE, PMM_KERNEL);
     // if paging is already enabled, we need to map the table temporarily ...
-    page_table_t* tab = mmu_get_paging() ?
-        vmm_use_physical_memory(tab_phys, PAGE_SIZE, VMM_KERNEL) : tab_phys;
+    page_table_t* tab = vmm_map_physical_memory(tab_phys, PAGE_SIZE, VMM_KERNEL);
     memset(tab, 0, PAGE_SIZE);
-    if (mmu_get_paging())
-        vmm_unmap_range(tab, PAGE_SIZE); // ... and then unmap it
+    vmm_unmap_physical_memory(tab, PAGE_SIZE); // ... and then unmap it
     return tab_phys;
 }
 
@@ -65,49 +65,42 @@ static void vmm_destroy_page_table(uint16_t page_table) {
 page_directory_t* vmm_create_page_directory() {   
     page_directory_t* dir_phys = pmm_alloc(PAGE_SIZE, PMM_KERNEL);
     logln("VMM", "Creating page directory at %08x", dir_phys);
-    page_directory_t* dir = mmu_get_paging() ?
-        vmm_use_physical_memory(dir_phys, PAGE_SIZE, VMM_KERNEL) : dir_phys;
+    page_directory_t* dir = vmm_map_physical_memory(dir_phys, PAGE_SIZE, VMM_KERNEL);
     memset(dir, 0, PAGE_SIZE);
     // for a detailed explanation on why we do this, see vmm_init
     page_directory_entry_t dir_entry = {
         .pr = 1, .rw = 0, .user = 0, .pt = pmm_get_page(dir_phys, 0)
     };
     dir[ENTRIES - 1] = dir_entry;
-    if (mmu_get_paging())
-        vmm_unmap_range(dir, PAGE_SIZE);
+    vmm_unmap_physical_memory(dir, PAGE_SIZE);
     return dir_phys; // this is a physical address for a page directory
 }
 
 void vmm_destroy_page_directory(page_directory_t* dir_phys) {
+    logln("VMM", "Destroying page directory at %08x", dir_phys);
     page_directory_t* old_directory = page_directory;
-    page_directory = mmu_get_paging() ?
-        vmm_use_physical_memory(dir_phys, PAGE_SIZE, VMM_KERNEL) : dir_phys;
+    page_directory_t* dir = vmm_map_physical_memory(dir_phys, PAGE_SIZE, VMM_KERNEL);
+    page_directory = dir; // operate on the directory we want to destroy
     vmm_virtual_address_t start = (vmm_virtual_address_t) user_domain.start,
             end = (vmm_virtual_address_t) user_domain.end;
     // delete any unique page tables associated with this directory
+    vmm_destroy_page_table(0); // first VM86, then user domain page tables
     for (int i = start.bits.page_table; i <= end.bits.page_table; i++)
         if (page_directory[i].pr)
             vmm_destroy_page_table(i);
     vmm_destroy_page_table(ENTRIES - 1); // free the directory (last page table)
-    if (mmu_get_paging())
-        vmm_unmap_range(page_directory, PAGE_SIZE);
-    page_directory = old_directory;
-}
-
-static void vmm_copy_domain(page_directory_t* dir_phys, vmm_domain_t domain) {
-    page_directory_t* dir = mmu_get_paging() ?
-        vmm_use_physical_memory(dir_phys, PAGE_SIZE, VMM_KERNEL) : dir_phys;
-    vmm_virtual_address_t start = (vmm_virtual_address_t) domain.start,
-            end = (vmm_virtual_address_t) domain.end;
-    memcpy(dir, page_directory,
-            (end.bits.page_table - start.bits.page_table + 1) *
-            sizeof(page_directory_entry_t));
-    if (mmu_get_paging())
-        vmm_unmap_range(dir, PAGE_SIZE);
+    page_directory = old_directory; // change back so we can unmap the
+    vmm_unmap_physical_memory(dir, PAGE_SIZE); // destroyed directory
 }
 
 static void vmm_refresh_page_directory(page_directory_t* dir_phys) {
-    vmm_copy_domain(dir_phys, kernel_domain);
+    page_directory_t* dir = vmm_map_physical_memory(dir_phys, PAGE_SIZE, VMM_KERNEL);
+    vmm_virtual_address_t start = (vmm_virtual_address_t) kernel_domain.start,
+            end = (vmm_virtual_address_t) kernel_domain.end;
+    memcpy(dir, page_directory,
+            (end.bits.page_table - start.bits.page_table + 1) *
+            sizeof(page_directory_entry_t));
+    vmm_unmap_physical_memory(dir, PAGE_SIZE);
 }
 
 page_directory_t* vmm_load_page_directory(page_directory_t* new_directory) {
@@ -161,8 +154,6 @@ static page_table_entry_t* vmm_get_page_table_entry(
 }
 
 static vmm_domain_t* vmm_get_domain(vmm_flags_t flags) {
-    if (flags & VMM_TOGGLE_DOMAIN)
-        flags = ~flags;
     return flags & VMM_USER ? &user_domain : &kernel_domain;
 }
 
@@ -177,7 +168,8 @@ static vmm_domain_t* vmm_get_domain_from_address(void* vaddr) {
 }
 
 static uint8_t vmm_domain_check(void* vaddr, vmm_flags_t flags) {
-    if (vmm_get_domain_from_address(vaddr) != vmm_get_domain(flags)) {
+    if (domain_check_enabled &&
+        vmm_get_domain_from_address(vaddr) != vmm_get_domain(flags)) {
         println("%4aVMM: Domain mismatch%a");
         return 0;
     }
@@ -315,6 +307,21 @@ static pmm_flags_t vmm_get_pmm_flags(vmm_flags_t flags) {
     return flags & VMM_USER ? PMM_USER : PMM_KERNEL;
 }
 
+void* vmm_map_physical_memory(void* paddr, size_t len, vmm_flags_t flags) {
+    if (!mmu_get_paging())
+        return paddr;
+    void* vaddr = vmm_find_free(len, vmm_get_domain(flags));
+    if (!vaddr)
+        return 0;
+    vmm_map_range(vaddr, paddr, len, flags);
+    return vaddr;
+}
+
+void vmm_unmap_physical_memory(void* vaddr, size_t len) {
+    if (mmu_get_paging())
+        vmm_unmap_range(vaddr, len);
+}
+
 void vmm_use(void* vaddr, void* paddr, size_t len, vmm_flags_t flags) {
     if (len == 0 || !vmm_domain_check(vaddr, flags)) return;
     pmm_use(paddr, len, vmm_get_pmm_flags(flags), "vmm_use");
@@ -356,8 +363,12 @@ void vmm_free(void* vaddr, size_t len) {
     pmm_free(paddr, len);
 }
 
+void vmm_enable_domain_check(uint8_t enable) {
+    domain_check_enabled = enable;
+}
+
 void vmm_init() {
-    print("VMM init ... ");   
+    print("VMM init ... ");
     mmu_init();
     page_directory = vmm_create_page_directory();
     // Identity map all up to now used kernel pages. The PMM has memorized up
@@ -368,6 +379,7 @@ void vmm_init() {
         if (pmm_check(addr) != PMM_UNUSED && pmm_check(addr) != PMM_RESERVED)
             vmm_map(addr, addr, VMM_KERNEL); // only accessible to the kernel
     }
+    vmm_enable_domain_check(1);
     // Above we let the last directory entry point to itself so we can use it
     // as a page table to be able to dynamically (un)map and virtual addresses.
     // This allows us to refer to the page directory (wherever it is in physical
@@ -398,6 +410,7 @@ void vmm_init() {
     // ... (formula: 0xFFC00000 + tab_idx * PAGE_SIZE)
     // 0xFFFFE000 - the last "regular" page table (0xFF800000-0xFFBFFFFF)
     // 0xFFFFF000 - the page directory
-    // In this way, we can map addresses as we like even with paging enabled.  
+    // In this way, we can map addresses as we like even with paging enabled.
+    io_use_video_memory(); // necessary to keep print and friends working
     println("%2aok%a.");
 }

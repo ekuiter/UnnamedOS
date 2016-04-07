@@ -18,7 +18,8 @@ typedef struct {
             ss0 : 16,   // the stack segment to load when entering the kernel
             : 16, : 32, // (always the kernel data segment selector)
             : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32,
-            : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32;
+            : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 32, : 16,
+            iopb : 16; // TODO: maybe use this for I/O permissions
 } __attribute__((packed)) tss_t;
 
 static tss_t tss; // our TSS, for software multitasking we only need one

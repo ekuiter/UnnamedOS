@@ -9,21 +9,21 @@
 
 #include <common.h>
 #include <hardware/io/output.h>
-#include <mem/pmm.h>
+#include <mem/vmm.h>
 
 #define IO_CHARS    (IO_COLS * IO_ROWS)
-#define IO_MEM      ((uint8_t*) 0xb8000)
+#define IO_MEM      ((uint8_t*) 0xB8000)
 #define IO_LEN      4000
-#define TAG_LENGTH  9
+#define TAG_LENGTH  8
 
 static uint8_t* video = IO_MEM;
 static uint8_t attr = IO_DEFAULT;
 static size_t cursor = 0;
 static uint8_t logging_enabled = 1;
 
-void io_init() {
-    // claim the video memory so that we can map it into virtual memory later
-    pmm_use(IO_MEM, IO_LEN, PMM_KERNEL, "video memory");
+void io_use_video_memory() {
+    // map the video memory somewhere into the virtual address space
+    video = vmm_use_physical_memory(video, IO_LEN, VMM_KERNEL);
 }
 
 static void io_setchar(uint8_t c, size_t pos) {

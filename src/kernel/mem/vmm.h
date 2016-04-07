@@ -9,9 +9,8 @@
 
 typedef enum {
     // whether we are working with kernel or user memory, this controls
-    // permissions and in which domain memory is stored (you can also store
-    VMM_KERNEL = 0b0, VMM_USER = 0b1, // kernel-only memory in the user domain
-    VMM_WRITABLE = 0b100, VMM_TOGGLE_DOMAIN = 0b1000 // with VMM_TOGGLE_DOMAIN)
+    // permissions and in which domain memory is stored
+    VMM_KERNEL = 0b0, VMM_USER = 0b1, VMM_WRITABLE = 0b100
 } vmm_flags_t;
 
 typedef struct {
@@ -46,6 +45,7 @@ typedef struct {
 typedef page_table_entry_t page_table_t;
 
 // In the following, page_directory might be VMM_PAGEDIR or a physical address.
+// In general, given addresses should be page aligned (4 KiB)!
 page_directory_t* vmm_create_page_directory();
 void vmm_destroy_page_directory(page_directory_t* dir_phys);
 page_directory_t* vmm_load_page_directory(page_directory_t* new_directory);
@@ -53,6 +53,7 @@ void vmm_modify_page_directory(page_directory_t* new_directory);
 void vmm_modified_page_directory();
 void* vmm_get_physical_address(void* _vaddr);
 void vmm_dump();
+void vmm_enable_domain_check(uint8_t enable);
 void vmm_init();
 
 // maps the given page frame into the page directory
@@ -66,6 +67,12 @@ void vmm_map_range(void* vaddr, void* paddr, size_t len, vmm_flags_t flags);
 
 // unmaps the given page frame(s) from the page directory
 void vmm_unmap_range(void* vaddr, size_t len);
+
+// if necessary, maps the given page frame(s) somewhere into memory
+void* vmm_map_physical_memory(void* paddr, size_t len, vmm_flags_t flags);
+
+// if necessary, unmaps the given page frame(s)
+void vmm_unmap_physical_memory(void* vaddr, size_t len);
 
 // marks the given page frame(s) as used and maps them into the given memory
 void vmm_use(void* vaddr, void* paddr, size_t len, vmm_flags_t flags);
