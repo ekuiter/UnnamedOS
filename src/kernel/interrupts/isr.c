@@ -22,11 +22,19 @@
 static isr_handler_t handlers[IDT_ENTRIES] = {0};
 static void* syscalls[SYSCALL_NUMBER] = {0};
 
-void isr_enable_interrupts(uint8_t enable) {
-    if (enable) {
+uint8_t isr_enable_interrupts(uint8_t enable) {
+    uint8_t old_interrupts = isr_get_interrupts();
+    if (enable && !old_interrupts) {
         asm volatile("sti");
-    } else
+    } else if (!enable && old_interrupts)
         asm volatile("cli");
+    return old_interrupts;
+}
+
+uint8_t isr_get_interrupts() {
+    isr_eflags_t eflags;
+    asm volatile("pushfl; pop %%eax; mov %%eax, %0" : "=r" (eflags.dword));
+    return eflags.bits._if;
 }
 
 void isr_register_handler(size_t intr, isr_handler_t handler) {

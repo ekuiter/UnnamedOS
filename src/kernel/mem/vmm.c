@@ -36,6 +36,7 @@ typedef union {
 
 static page_directory_t* page_directory = 0; // the current page directory
 static page_directory_t* old_directory = 0; // for temporary modifications
+static uint8_t old_interrupts = 0;
 // We use 0-1GiB as kernel memory. This will be mapped into all processes.
 // We exclude the first page table so we can use it freely for VM86.
 static vmm_domain_t kernel_domain = {.start = (void*) 0x400000,
@@ -45,15 +46,6 @@ static vmm_domain_t kernel_domain = {.start = (void*) 0x400000,
 static vmm_domain_t user_domain = {.start = (void*) 0x40000000,
     .end = (void*) 0xFFFFFFFF - ENTRIES * PAGE_SIZE};
 static uint8_t domain_check_enabled = 0;
-
-static page_table_t* vmm_create_page_table() {
-    page_table_t* tab_phys = pmm_alloc(PAGE_SIZE, PMM_KERNEL);
-    // if paging is already enabled, we need to map the table temporarily ...
-    page_table_t* tab = vmm_map_physical_memory(tab_phys, PAGE_SIZE, VMM_KERNEL);
-    memset(tab, 0, PAGE_SIZE);
-    vmm_unmap_physical_memory(tab, PAGE_SIZE); // ... and then unmap it
-    return tab_phys;
-}
 
 static void vmm_destroy_page_table(uint16_t page_table) {
     // free the page table memory (using its physical address!)
@@ -97,7 +89,9 @@ static void vmm_refresh_page_directory(page_directory_t* dir_phys) {
     page_directory_t* dir = vmm_map_physical_memory(dir_phys, PAGE_SIZE, VMM_KERNEL);
     vmm_virtual_address_t start = (vmm_virtual_address_t) kernel_domain.start,
             end = (vmm_virtual_address_t) kernel_domain.end;
-    memcpy(dir, page_directory,
+    uint32_t offset = start.bits.page_table * sizeof(page_directory_entry_t);
+    memcpy((void*) ((uintptr_t) dir + offset),
+            (void*) ((uintptr_t) page_directory + offset),
             (end.bits.page_table - start.bits.page_table + 1) *
             sizeof(page_directory_entry_t));
     vmm_unmap_physical_memory(dir, PAGE_SIZE);
@@ -123,8 +117,8 @@ void vmm_modify_page_directory(page_directory_t* new_directory) {
         println("VMM: Already modifying a page directory at %08x", old_directory);
         return;
     }
-    // we don't want to be interrupted when modifying kernel-relevant page
-    isr_enable_interrupts(0); // directories, so disable interrupts
+    // we don't want to be interrupted when modifying kernel-relevant
+    old_interrupts = isr_enable_interrupts(0); // page directories
     old_directory = vmm_load_page_directory(new_directory);
 }
 
@@ -135,7 +129,7 @@ void vmm_modified_page_directory() {
     }
     vmm_load_page_directory(old_directory);
     old_directory = 0;
-    isr_enable_interrupts(1);
+    isr_enable_interrupts(old_interrupts);
 }
 
 static page_table_entry_t* vmm_get_page_table(
@@ -185,7 +179,9 @@ uint8_t vmm_map(void* _vaddr, void* paddr, vmm_flags_t flags) {
         // We assume the table's pages to be writable and in userspace for now,
         // this is overridden by individual pages below.
         dir_entry->pr = dir_entry->rw = dir_entry->user = 1;
-        dir_entry->pt = pmm_get_page(vmm_create_page_table(), 0);
+        dir_entry->pt = pmm_get_page(pmm_alloc(PAGE_SIZE, PMM_KERNEL), 0);
+        page_table_t* tab = vmm_get_page_table(dir_entry, vaddr);
+        memset(tab, 0, PAGE_SIZE); // initialize with zeroes
     }
     page_table_entry_t* tab_entry = vmm_get_page_table_entry(dir_entry, vaddr);
     if (tab_entry->pr) {
@@ -265,7 +261,8 @@ void* vmm_get_physical_address(void* _vaddr) {
 }
 
 void vmm_dump() {
-    log("VMM", "Page directory at %08x:", page_directory);
+    log("VMM", "Page directory at %08x (physical %08x):",
+            page_directory, vmm_get_physical_address(page_directory));
     uint32_t logged = 0;
     for (int i = 0; i < ENTRIES; i++) {
         page_directory_entry_t* dir_entry = page_directory + i;

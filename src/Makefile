@@ -25,8 +25,11 @@ endif
 modules:
 	$(foreach MOD, $(MODULES), $(MAKE) -C $(MOD);)
 
-run: all
+run-bochs: all
 	-cd ../build; /usr/local/bin/bochs -q -rc .debugrc
+
+run-qemu: all
+	/usr/local/bin/qemu-system-i386 -fda ../build/image.img -boot a -no-fd-bootchk
 
 count:
 	wc -l $(shell find -E ./ -regex '.*(c|cpp|S|h)')

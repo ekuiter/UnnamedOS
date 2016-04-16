@@ -10,6 +10,7 @@
 #include <common.h>
 #include <string.h>
 #include <tasks/elf.h>
+#include <interrupts/isr.h>
 
 #define MAGIC_0 0x7F // magic values expected at the beginning
 #define MAGIC_1 'E'  // of every ELF file
@@ -113,26 +114,23 @@ void elf_unload(elf_t* elf, page_directory_t* page_directory) {
     vmm_modified_page_directory();
 }
 
-elf_task_t* elf_create_task(elf_t* elf, size_t kernel_stack_len,
+task_pid_t elf_create_task(elf_t* elf, size_t kernel_stack_len,
         size_t user_stack_len) {
     if (!elf) {
         println("%4aELF not found%a");
         return 0;
     }
+    uint8_t old_interrupts = isr_enable_interrupts(0);
     page_directory_t* dir = vmm_create_page_directory();
-    elf_task_t* elf_task = vmm_alloc(sizeof(elf_task_t), VMM_KERNEL);
-    elf_task->elf = elf;
-    elf_task->task = task_create_user(elf_load(elf, dir), dir,
-            kernel_stack_len, user_stack_len);
-    return elf_task;
+    task_pid_t pid = task_create_user(elf_load(elf, dir), dir,
+            kernel_stack_len, user_stack_len, elf);
+    isr_enable_interrupts(old_interrupts);
+    return pid;
 }
 
-void elf_destroy_task(elf_task_t* elf_task) {
-    if (!elf_task) {
-        println("%4aELF not found%a");
-        return;
-    }
-    elf_unload(elf_task->elf, elf_task->task->page_directory);
-    task_destroy(elf_task->task);
-    vmm_free(elf_task, sizeof(elf_task_t));
+void elf_destroy_task(task_pid_t pid) {
+    uint8_t old_interrupts = isr_enable_interrupts(0);
+    elf_unload(task_get_elf(pid), task_get_page_directory(pid));
+    task_destroy(pid);
+    isr_enable_interrupts(old_interrupts);
 }

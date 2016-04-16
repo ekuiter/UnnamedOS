@@ -60,7 +60,7 @@ static void main2() {
     isr_registers_t registers = {.eax = 0x0f00}; // get the VGA video mode
     vm86_call_bios(0x10, &registers); // (only for testing VM86 mode)
     for (int i = 0; i < 10; i++)
-        elf_create_task(multiboot_get_module("/user_template"), _4KB, _4KB); 
+        elf_create_task(multiboot_get_module("/user_template"), _4KB, _4KB);
     pmm_dump(0, 8 * 256 * _4KB);
     vmm_dump();
         
@@ -68,7 +68,7 @@ static void main2() {
         size_t old_cursor = io_cursor(IO_COORD(IO_COLS - 8, IO_ROWS - 1));
         pit_dump_time();
         io_cursor(old_cursor);
-        schedule_dump();
+        task_dump();
         schedule_finalize_tasks(); // clean up any tasks marked for removal
         pit_sleep(1000);
     }

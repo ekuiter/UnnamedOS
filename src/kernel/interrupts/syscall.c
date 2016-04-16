@@ -10,8 +10,8 @@
 
 static uint32_t syscall_exit(uint32_t return_value, uint32_t ecx,
         uint32_t edx, uint32_t esi, uint32_t edi, cpu_state_t** cpu) {
-    task_t* current_task = schedule_get_current_task();
-    task_t* next_task = schedule_get_next_task();
+    task_pid_t current_task = schedule_get_current_task();
+    task_pid_t next_task = schedule_get_next_task();
     if (current_task == next_task) {
         println("%4aThe last task cannot exit%a");
         return 0;
@@ -19,13 +19,13 @@ static uint32_t syscall_exit(uint32_t return_value, uint32_t ecx,
     // For now we just tell the scheduler to not switch to this task again,
     // so we can properly free it later. We can't do that here because we are
     // operating on this task's kernel stack which we cannot free while it
-    schedule_remove_task(current_task); // is still in use.
+    task_stop(current_task); // is still in use.
     *cpu = schedule_switch_task(*cpu, next_task);
     return 0;
 }
 
 static uint32_t syscall_getpid() {
-    return schedule_get_current_task()->pid;
+    return schedule_get_current_task();
 }
 
 void syscall_init() {

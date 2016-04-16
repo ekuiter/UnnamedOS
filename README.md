@@ -2,11 +2,13 @@
 
 This is an attempt at implementing a simple OS for the IA-32 architecture. Supporting files (like Makefiles) use Mac OS specific commands.
 
-It uses a **i586-elf-gcc crosscompiler** and **Bochs** ([read more](https://github.com/ekuiter/homebrew-crosscompiler)).
+It uses a **i586-elf-gcc crosscompiler** and **Bochs**/**QEMU** ([read more](https://github.com/ekuiter/homebrew-crosscompiler)).
+
+To install QEMU, simply run `brew install qemu` with Homebrew installed.
 
 Run the following commands in the root directory:
 - To compile, run `make`.
-- To run in the Bochs emulator, type `make run`.
+- To run in QEMU, type `make run-qemu`, for Bochs run `make run-bochs`.
 - To copy the OS to a floppy disk `/dev/diskX`, type `DISK=X make copy` (sudo password needed, show progress with `Ctrl+T`).
 
 **Implemented features**
@@ -22,3 +24,4 @@ Run the following commands in the root directory:
 - ELF GRUB modules
 - memory manager (PMM, VMM, MMU)
 - Syscalls
+- Virtual 8086 Mode

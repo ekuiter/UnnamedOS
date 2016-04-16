@@ -14,6 +14,7 @@
 #include <tasks/vm86.h>
 #include <tasks/schedule.h>
 #include <interrupts/syscall.h>
+#include <interrupts/isr.h>
 #include <boot/multiboot.h>
 #include <mem/gdt.h>
 #include <mem/vmm.h>
@@ -85,13 +86,13 @@ static void* vm86_get_address(vm86_farptr_t farptr) {
     return (void*) ((farptr.segment << 4) + farptr.offset);
 }
 
-task_t* vm86_create_task(void* code_start, void* code_end,
+task_pid_t vm86_create_task(void* code_start, void* code_end,
         page_directory_t* page_directory, size_t kernel_stack_len,
         size_t user_stack_len, isr_registers_t* registers) {
+    uint8_t old_interrupts = isr_enable_interrupts(0);
     // see task_create_detailed for more info
-    uint32_t pid = task_increment_pid();
-    logln("VM86", "Creating VM86 task %d with %dKB kernel and %dKB user stack",
-            pid, kernel_stack_len, user_stack_len);
+    logln("VM86", "Creating VM86 task with %dKB kernel and %dKB user stack",
+            kernel_stack_len, user_stack_len);
     task_t* task = vmm_alloc(sizeof(task_t), VMM_KERNEL);
     task->page_directory = page_directory ? page_directory :
         vmm_create_page_directory();
@@ -107,7 +108,7 @@ task_t* vm86_create_task(void* code_start, void* code_end,
     // needs to be position independent. For calling the BIOS this is enough, if
     // we started writing real 16-bit programs, we would need to improve this.
     memcpy(CODE_ADDRESS, code_start, code_length);
-    task->pid = pid;
+    task->state = TASK_RUNNING;
     task->vm86 = 1;
     task->kernel_stack = vmm_alloc(kernel_stack_len, VMM_KERNEL);
     // the user stack is located after the code (we assume that's free memory)
@@ -120,7 +121,6 @@ task_t* vm86_create_task(void* code_start, void* code_end,
     cpu->gs = cpu->fs = cpu->es = cpu->ds = gdt_get_selector(GDT_RING3_DATA_SEG);
     cpu->r = *registers; // here we pass parameters to the code
     vm86_farptr_t entry_point_farptr = vm86_get_farptr(CODE_ADDRESS);
-    task->entry_point = (uintptr_t) CODE_ADDRESS;
     cpu->eip = entry_point_farptr.offset; // we need to use real mode addressing
     cpu->cs  = entry_point_farptr.segment; // in the form of CS:IP to run the code
     cpu->eflags.dword         = 0;
@@ -137,8 +137,9 @@ task_t* vm86_create_task(void* code_start, void* code_end,
     logln("VM86", "Entry at %04x:%04x, stack at %04x:%04x",
             cpu->cs, cpu->eip, cpu->user_ss, cpu->user_esp);
     vmm_modified_page_directory();
-    schedule_add_task(task);
-    return task;
+    task_pid_t pid = task_add(task);
+    isr_enable_interrupts(old_interrupts);
+    return pid;
 }
 
 void vm86_call_bios(uint8_t interrupt, isr_registers_t* registers) {
@@ -178,7 +179,7 @@ static void vm86_increment_eip(cpu_state_t* cpu, size_t inc) {
 
 static uint8_t vm86_monitor(cpu_state_t* cpu) {
     // if we are not in VM86 mode, do not handle this GPF
-    if (!schedule_get_current_task()->vm86)
+    if (!task_get_vm86(schedule_get_current_task()))
         return 0;
     // First we determine which instruction triggered the GPF. For that we need
     // to translate real mode (CS:IP) to protected mode (EIP) addresses.

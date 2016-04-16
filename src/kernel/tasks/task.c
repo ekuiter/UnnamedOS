@@ -7,31 +7,54 @@
 #include <common.h>
 #include <tasks/task.h>
 #include <tasks/schedule.h>
+#include <tasks/elf.h>
+#include <interrupts/isr.h>
 #include <mem/gdt.h>
 #include <mem/mmu.h>
 #include <mem/vmm.h>
 #include <boot/multiboot.h>
 #include <string.h>
 
-static uint32_t pid = 0; // process id counter
+// Right now we manage this as an array until we have a better way (e.g. vector).
+#define MAX_TASKS 1024
+static task_t* tasks[MAX_TASKS];
 
-uint32_t task_increment_pid() {
-    return ++pid;
+static task_t* task_get(task_pid_t pid) {
+    if (!tasks[pid]) {
+        println("%4aTask %d does not exist%a", pid);
+        return 0;
+    }
+    return tasks[pid];
 }
 
-static task_t* task_create_detailed(void* entry_point,
+task_pid_t task_add(task_t* task) {
+    task_pid_t pid;
+    // pid 0 is an error value
+    for (pid = 1; tasks[pid] && pid < MAX_TASKS; pid++);
+    if (pid == MAX_TASKS)
+        panic("Maximum task number reached");
+    tasks[pid] = task;
+    return pid;
+}
+
+static void task_remove(task_pid_t pid) {
+    tasks[pid] = 0;
+}
+
+static task_pid_t task_create_detailed(void* entry_point,
         page_directory_t* page_directory, size_t kernel_stack_len,
-        size_t user_stack_len, size_t code_segment, size_t data_segment) {
-    uint32_t pid = task_increment_pid();
-    logln("TASK", "Creating task %d with %dKB kernel and %dKB user stack",
-            pid, kernel_stack_len, user_stack_len);
+        size_t user_stack_len, elf_t* elf, size_t code_segment, size_t data_segment) {
+    uint8_t old_interrupts = isr_enable_interrupts(0);
+    logln("TASK", "Creating task with %dKB kernel and %dKB user stack",
+            kernel_stack_len, user_stack_len);
     // Here we allocate a whole page (4KB) which is more than we need.
-    task_t* task = vmm_alloc(sizeof(task_t), VMM_KERNEL); // TODO: use a proper heap (malloc)    
+    task_t* task = vmm_alloc(sizeof(task_t), VMM_KERNEL); // TODO: use a proper heap (malloc)
     task->page_directory = page_directory ? page_directory :
         vmm_create_page_directory();
     vmm_modify_page_directory(task->page_directory);
-    task->pid = pid;
+    task->state = TASK_RUNNING;
     task->vm86 = 0;
+    task->elf = elf;
     task->kernel_stack = vmm_alloc(kernel_stack_len, VMM_KERNEL);
     task->user_stack   = vmm_alloc(user_stack_len, VMM_USER | VMM_WRITABLE);
     task->kernel_stack_len = kernel_stack_len;
@@ -48,7 +71,7 @@ static task_t* task_create_detailed(void* entry_point,
     cpu->r.edi = cpu->r.esi = cpu->r.ebp = cpu->r.ebx =
             cpu->r.edx = cpu->r.ecx = cpu->r.eax = 0;
     // we also ignore intr and error, those are always set when entering the kernel
-    cpu->eip = task->entry_point = (uintptr_t) entry_point;
+    cpu->eip = (uintptr_t) entry_point;
     cpu->cs  = gdt_get_selector(code_segment);
     cpu->eflags.dword         = 0; // first reset EFLAGS, then
     cpu->eflags.bits._if      = 1; // enable interrupts, otherwise
@@ -59,84 +82,117 @@ static task_t* task_create_detailed(void* entry_point,
     cpu->user_ss  = gdt_get_selector(data_segment);
     // The VM86 values will be ignored so we don't need to set them.
     vmm_modified_page_directory();
-    schedule_add_task(task); // tell the scheduler to run this task when appropriate
-    return task;
+    task_pid_t pid = task_add(task); // tell the scheduler about this task
+    isr_enable_interrupts(old_interrupts);
+    return pid;
 }
 
-task_t* task_create_kernel(void* entry_point, page_directory_t* page_directory,
+task_pid_t task_create_kernel(void* entry_point, page_directory_t* page_directory,
         size_t kernel_stack_len) {
     return task_create_detailed(entry_point, page_directory, kernel_stack_len,
-            0, GDT_RING0_CODE_SEG, GDT_RING0_DATA_SEG);
+            0, 0, GDT_RING0_CODE_SEG, GDT_RING0_DATA_SEG);
 }
 
-task_t* task_create_user(void* entry_point, page_directory_t* page_directory,
-        size_t kernel_stack_len, size_t user_stack_len) {
+task_pid_t task_create_user(void* entry_point, page_directory_t* page_directory,
+        size_t kernel_stack_len, size_t user_stack_len, void* elf) {
     return task_create_detailed(entry_point, page_directory, kernel_stack_len,
-            user_stack_len, GDT_RING3_CODE_SEG, GDT_RING3_DATA_SEG);
+            user_stack_len, elf, GDT_RING3_CODE_SEG, GDT_RING3_DATA_SEG);
 }
 
-void task_destroy(task_t* task) {
-    if (schedule_task_running(task)) {
+void task_stop(task_pid_t pid) {
+    task_get(pid)->state = TASK_STOPPED;
+}
+
+void task_destroy(task_pid_t pid) {
+    uint8_t old_interrupts = isr_enable_interrupts(0);
+    if (task_get(pid)->state == TASK_RUNNING) {
         println("%4aYou may not destroy a running task%a");
         return;
     }
-    logln("TASK", "Destroying task %d", task->pid);
+    logln("TASK", "Destroying task %d", pid);
+    task_t* task = task_get(pid);
     vmm_modify_page_directory(task->page_directory);
     vmm_free(task->kernel_stack, task->kernel_stack_len);
     vmm_free(task->user_stack, task->user_stack_len);
     vmm_modified_page_directory();
-    schedule_finalize_task(task);
     vmm_destroy_page_directory(task->page_directory);
     vmm_free(task, sizeof(task_t));
+    task_remove(pid);
+    isr_enable_interrupts(old_interrupts);
 }
 
-void task_add(task_t** tasks, task_t* task) {
-    // TODO: prevent duplicate entries
-    task->next_task = *tasks;
-    *tasks = task;
+task_pid_t task_get_next_task(task_pid_t pid) {
+    for (pid++; pid < MAX_TASKS && !tasks[pid]; pid++);
+    if (pid == MAX_TASKS) {
+        for (pid = 1; pid < MAX_TASKS && !tasks[pid]; pid++);
+        if (pid == MAX_TASKS)
+            return 0;
+    }
+    return pid;
 }
 
-void task_remove(task_t** tasks, task_t* task) {
-    if (!*tasks) // if there are no tasks, we are done
-        return;
-    if (task == *tasks) { // the task to remove is at the beginning
-        *tasks = (*tasks)->next_task;
+static task_pid_t task_get_next_task_with_state(task_pid_t pid, task_state_t state) {
+    uint32_t pids = 0;
+    do {
+        pid = task_get_next_task(pid);
+        if (!pid)
+            return 0;
+        pids++;
+    } while (pids <= MAX_TASKS && task_get(pid)->state != state);
+    if (pids > MAX_TASKS)
+        return 0;
+    return pid;
+}
+
+task_pid_t task_get_next_running_task(task_pid_t pid) {
+    return task_get_next_task_with_state(pid, TASK_RUNNING);
+}
+
+task_pid_t task_get_next_stopped_task(task_pid_t pid) {
+    return task_get_next_task_with_state(pid, TASK_STOPPED);
+}
+
+task_state_t task_get_ticks(task_pid_t pid) {
+    return task_get(pid)->ticks;
+}
+
+uint32_t task_set_ticks(task_pid_t pid, uint32_t ticks) {
+    task_t* task = task_get(pid);
+    uint32_t old_ticks = task->ticks;
+    task->ticks = ticks;
+    return old_ticks;
+}
+
+cpu_state_t* task_get_cpu(task_pid_t pid) {
+    return task_get(pid)->cpu;
+}
+
+void task_set_cpu(task_pid_t pid, cpu_state_t* cpu) {
+    task_get(pid)->cpu = cpu;
+}
+
+page_directory_t* task_get_page_directory(task_pid_t pid) {
+    return task_get(pid)->page_directory;
+}
+
+uint8_t task_get_vm86(task_pid_t pid) {
+    return task_get(pid)->vm86;
+}
+
+void* task_get_elf(task_pid_t pid) {
+    return task_get(pid)->elf;
+}
+
+void task_dump() {
+    task_pid_t initial_pid = task_get_next_task(0), pid = initial_pid;
+    logln("TASK", "Task list:");
+    if (!initial_pid) {
+        logln("TASK", "There are no tasks.");
         return;
     }
-    task_t* cur = *tasks;
-    while (cur->next_task && cur->next_task != task)
-        cur = cur->next_task;
-    if (!cur->next_task) // the task to remove is not in the list
-        return;
-    // otherwise, the task is pointed to by cur->next_task, so remove it:
-    cur->next_task = cur->next_task->next_task;
-}
-
-task_t* task_get_next_task(task_t** tasks, task_t* task, uint8_t cyclic) {
-    if (!task)
-        return *tasks;
-    // If we reached the linked list's end,
-    else if (!task->next_task) // start over with the first task
-        return cyclic ? *tasks : 0; // (depending on the parameter cyclic)
-    else
-        return task->next_task; // or continue in the list
-}
-
-uint8_t task_contains_task(task_t** tasks, task_t* task) {
-    task_t* cur = 0;
-    while ((cur = task_get_next_task(tasks, cur, 0)))
-        if (cur == task)
-            return 1;
-    return 0;
-}
-
-void task_dump(task_t** tasks) {
-    task_t* cur = 0;
-    if (task_get_next_task(tasks, cur, 0))
-        logln("TASK", "Task list at %08x:", tasks);
-    else
-        logln("TASK", "Empty task list at %08x", tasks);
-    while ((cur = task_get_next_task(tasks, cur, 0)))
-        logln("TASK", "Task %d with %dKB kernel and %dKB user stack",
-                cur->pid, cur->kernel_stack_len, cur->user_stack_len);
+    do {
+        logln("TASK", "%s task with pid %d%s",
+                task_get(pid)->state ? "Running" : "Stopped", pid,
+                task_get(pid)->vm86 ? " (VM86)" : "");
+    } while ((pid = task_get_next_task(pid)) && pid != initial_pid);
 }
