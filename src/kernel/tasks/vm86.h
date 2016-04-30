@@ -1,3 +1,9 @@
+/**
+ * @file
+ * @addtogroup vm86
+ * @{
+ */
+
 #ifndef TASKS_VM86_H
 #define TASKS_VM86_H
 
@@ -11,3 +17,5 @@ void vm86_call_bios(uint8_t interrupt, isr_registers_t* registers);
 void vm86_init();
 
 #endif
+
+/// @}

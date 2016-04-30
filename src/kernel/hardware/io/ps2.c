@@ -30,7 +30,7 @@
 #define TEST_PORT_2        0xA9
 #define SEND_TO_PORT_2     0xD4 // indicates we want to send to port 2 via PS2_DATA
 #define PULSE_OUTPUT_LINES(b3, b2, b1, b0) /* used to reset the CPU */ \
-    (0xF0 + !b3 * 0b1000 + !b2 * 0b100 + !b1 * 0b10 + !b0 * 0b1)
+    (0xF0 + !(b3) * 0b1000 + !(b2) * 0b100 + !(b1) * 0b10 + !(b0) * 0b1)
 
 // PS/2 results
 #define TEST_PS2_PASSED    0x55

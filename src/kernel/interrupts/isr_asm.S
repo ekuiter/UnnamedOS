@@ -1,4 +1,3 @@
-.global isr_common
 isr_common:
 // At this place, the CPU has already pushed EFLAGS, CS and EIP to the stack and, if we were in userspace
 // before getting interrupted, the user SS and the user stack ESP. In userspace, after saving SS and ESP

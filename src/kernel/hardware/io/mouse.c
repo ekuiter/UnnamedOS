@@ -17,9 +17,9 @@
 #define PACKET_LEN         3 // length of a mouse packet
 #define FLAG_ALWAYS_ONE 0x08
 
-#define ABS(x) (x < 0 ? -x : x)
-#define SUM_TOO_LOW(coord, dcoord, min)  ((int16_t) event.coord + dcoord < min)
-#define SUM_TOO_HIGH(coord, dcoord, max) ((int16_t) event.coord + dcoord > max)
+#define ABS(x) ((x) < 0 ? -(x) : (x))
+#define SUM_TOO_LOW(coord, dcoord, min)  ((int16_t) event.coord + (dcoord) < (min))
+#define SUM_TOO_HIGH(coord, dcoord, max) ((int16_t) event.coord + (dcoord) > (max))
 
 typedef struct {
     uint8_t left : 1, right : 1, middle : 1, : 1, x_sign : 1,

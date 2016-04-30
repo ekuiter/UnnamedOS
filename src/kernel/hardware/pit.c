@@ -15,7 +15,7 @@
 #define PIT_INIT         0x43
 #define PIT_FREQ         1193182
 #define MODE_RATE        0x02
-#define MS_TO_TICKS(ms, freq) (freq * ms / 1000) // freq = ticks/1s = ticks/1000ms, so ticks = freq*1000ms
+#define MS_TO_TICKS(ms, freq) ((freq) * (ms) / 1000) // freq = ticks/1s = ticks/1000ms, so ticks = freq*1000ms
 
 typedef struct {
     uint8_t fmt  : 1; // counter format (binary/bcd)

@@ -23,20 +23,20 @@
 
 // The pause and print screen keys are treated specially, pause starts with 0xE1.
 // Print screen consists of two extended scancodes, also its break code differs.
-#define IS_PAUSE_MK(buf, len) (len >= 1 && buf[0] == 0xE1)
-#define IS_PR_SC_MK(buf, len) (len >= 2 && buf[0] == 0xE0 && buf[1] == 0x12)
-#define IS_PR_BR_MK(buf, len) (len >= 3 && buf[0] == 0xE0 && buf[1] == 0xF0 && buf[2] == 0x7C)
+#define IS_PAUSE_MK(buf, len) ((len) >= 1 && (buf)[0] == 0xE1)
+#define IS_PR_SC_MK(buf, len) ((len) >= 2 && (buf)[0] == 0xE0 && (buf)[1] == 0x12)
+#define IS_PR_BR_MK(buf, len) ((len) >= 3 && (buf)[0] == 0xE0 && (buf)[1] == 0xF0 && (buf)[2] == 0x7C)
 
 // we number keys by a more or less reasonable system (following the directions
-#define KEYCODE(row, col) ((row << 5) | col) // given on osdev.org, see above)
+#define KEYCODE(row, col) (((row) << 5) | (col)) // given on osdev.org, see above)
 
 // If the received scancode matches the given scancode or if the passed key
 // string matches the given name, return a suitable keycode.
 #define MAKE_KEYCODE(name, row, col, scancode...) { \
     uint8_t compare_buf[SCANCODE_LEN] = { scancode }; \
     if ((len != 0 && scancode_compare(buf, compare_buf, len)) || \
-        (len == 0 && strcmp(name, (char*) buf) == 0)) \
-        return KEYCODE(row, col); \
+        (len == 0 && strcmp((name), (char*) buf) == 0)) \
+        return KEYCODE((row), (col)); \
 }
 
 typedef enum { // Can be used to control multiple LEDs at once. Notice that the

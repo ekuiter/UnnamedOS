@@ -24,6 +24,7 @@ enum {
     SYSCALL_EXIT, SYSCALL_GETPID, SYSCALL_IO_PUTCHAR, SYSCALL_IO_ATTR
 } syscall_ids;
 
+// sys_exit does not actually return anything, but we cannot declare a void variable :/
 SYSCALL_1(SYSCALL_EXIT,       sys_exit,       uint32_t, uint32_t);
 SYSCALL_0(SYSCALL_GETPID,     sys_getpid,     uint32_t);
 SYSCALL_1(SYSCALL_IO_PUTCHAR, sys_io_putchar, uint16_t, uint8_t);

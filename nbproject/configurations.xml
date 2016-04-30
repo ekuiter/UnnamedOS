@@ -54,6 +54,7 @@
         <df name="user_template">
           <in>main.c</in>
         </df>
+        <in>doxygen.c</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -62,6 +63,7 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>nbproject/private/launcher.properties</itemPath>
     </logicalFolder>
+    <itemPath>Doxyfile</itemPath>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
@@ -166,6 +168,8 @@
           </incDir>
         </cTool>
       </folder>
+      <item path="src/doxygen.c" ex="false" tool="0" flavor2="2">
+      </item>
       <item path="src/kernel/boot/main.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>
@@ -173,7 +177,6 @@
             <pElem>src/kernel/hardware/io</pElem>
             <pElem>src/kernel/mem</pElem>
             <pElem>src/kernel/tasks</pElem>
-            <pElem>src/kernel/lib</pElem>
             <pElem>src/kernel/hardware</pElem>
             <pElem>src/kernel</pElem>
             <pElem>src/kernel/hardware/cpu</pElem>
@@ -434,6 +437,8 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="Doxyfile" ex="false" tool="3" flavor2="0">
+      </item>
       <folder path="0/src/kernel/boot">
         <cTool>
           <incDir>
@@ -505,6 +510,348 @@
           </incDir>
         </cTool>
       </folder>
+      <item path="src/doxygen.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/kernel/boot/main.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel/hardware</pElem>
+            <pElem>src/kernel</pElem>
+            <pElem>src/kernel/hardware/cpu</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/boot/multiboot.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/hardware/cpu/cpuid.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/kernel/hardware/io/keyboard.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/hardware/io/mouse.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/hardware/io/output.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/hardware/io/ps2.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/hardware</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/hardware/io/speaker.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/hardware/pit.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/interrupts/idt.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/interrupts/isr.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/interrupts/pic.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/interrupts/syscall.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/lib/list.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/lib/queue.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/mem/gdt.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/tasks</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/mem/mmu.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/mem/pmm.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/boot</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/mem/vmm.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/elf.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/schedule.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/task.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/tss.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/kernel/tasks/vm86.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/interrupts</pElem>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/lib/io.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/lib/lib.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/lib/string.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/lib/syscall.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/user_template/main.c" ex="false" tool="0" flavor2="2">
+        <cTool flags="0">
+        </cTool>
+      </item>
+    </conf>
+    <conf name="Doxygen" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0"
+                 commonFlags="-m32 -mtune=pentium -march=pentium -g -O2 -std=gnu99 -ffreestanding"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir></buildCommandWorkingDir>
+          <buildCommand>make docs</buildCommand>
+          <cleanCommand>make clean-docs</cleanCommand>
+          <executablePath></executablePath>
+          <cTool flags="0">
+          </cTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+          <preBuildCommand></preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <folder path="0/src/kernel/boot">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/boot</pElem>
+            <pElem>src/lib</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/kernel/hardware/cpu">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/hardware/cpu</pElem>
+            <pElem>src/lib</pElem>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/kernel</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/kernel/hardware/io">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/hardware/io</pElem>
+            <pElem>src/lib</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/kernel/interrupts">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/interrupts</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/kernel/lib">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/lib</pElem>
+            <pElem>src/lib</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/kernel/mem">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/mem</pElem>
+            <pElem>src/lib</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/kernel/tasks">
+        <cTool>
+          <incDir>
+            <pElem>src/kernel/tasks</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/lib">
+        <cTool>
+          <incDir>
+            <pElem>src/lib</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/user_template">
+        <cTool>
+          <incDir>
+            <pElem>src/lib</pElem>
+            <pElem>src/user_template</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <item path="src/doxygen.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="src/kernel/boot/main.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <incDir>

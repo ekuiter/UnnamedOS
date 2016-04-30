@@ -1,3 +1,9 @@
+/**
+ * @file
+ * @addtogroup tss
+ * @{
+ */
+
 #ifndef TASKS_TSS_H
 #define TASKS_TSS_H
 
@@ -9,3 +15,5 @@ void tss_set_stack(uint32_t stack_pointer);
 void tss_load();
 
 #endif
+
+/// @}

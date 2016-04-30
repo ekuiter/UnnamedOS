@@ -1,3 +1,9 @@
+/**
+ * @file
+ * @addtogroup syscall
+ * @{
+ */
+
 #ifndef INTERRUPTS_SYSCALL_H
 #define INTERRUPTS_SYSCALL_H
 
@@ -6,3 +12,5 @@
 void syscall_init();
 
 #endif
+
+/// @}

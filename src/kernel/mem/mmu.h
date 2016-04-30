@@ -1,3 +1,9 @@
+/**
+ * @file
+ * @addtogroup mmu
+ * @{
+ */
+
 #ifndef MEM_MMU_H
 #define MEM_MMU_H
 
@@ -11,3 +17,5 @@ void mmu_flush_tlb(void* vaddr);
 void mmu_init();
 
 #endif
+
+/// @}

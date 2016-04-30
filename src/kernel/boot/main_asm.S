@@ -1,6 +1,6 @@
 #define ASM
 #include <boot/multiboot.h>
-#define MULTIBOOT_CHECKSUM(magic, flags) -(magic + flags)
+#define MULTIBOOT_CHECKSUM(magic, flags) -((magic) + (flags))
 
 .section multiboot
 .align  4

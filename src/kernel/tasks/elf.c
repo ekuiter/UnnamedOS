@@ -1,10 +1,14 @@
-/*
- * Executable and Linking Format - execute external programs
+/**
+ * @file
+ * @addtogroup elf
+ * @{
+ * Executable and Linking Format
  * 
- * https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
- * http://wiki.osdev.org/ELF
- * http://lowlevel.eu/wiki/ELF
- * http://www.linux-kernel.de/appendix/ap05.pdf
+ * ELF files are used to execute external programs in user space.
+ * @see https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
+ * @see http://wiki.osdev.org/ELF
+ * @see http://lowlevel.eu/wiki/ELF
+ * @see http://www.linux-kernel.de/appendix/ap05.pdf
  */
 
 #include <common.h>
@@ -12,33 +16,43 @@
 #include <tasks/elf.h>
 #include <interrupts/isr.h>
 
-#define MAGIC_0 0x7F // magic values expected at the beginning
-#define MAGIC_1 'E'  // of every ELF file
-#define MAGIC_2 'L'
-#define MAGIC_3 'F'
-#define VERSION 1    // only ELF version 1 is supported (the current version)
+#define MAGIC_0 0x7F ///< magic value expected at the beginning of an ELF file
+#define MAGIC_1 'E'  ///< magic value expected at the beginning of an ELF file
+#define MAGIC_2 'L'  ///< magic value expected at the beginning of an ELF file
+#define MAGIC_3 'F'  ///< magic value expected at the beginning of an ELF file
+#define VERSION 1    ///< only ELF version 1 is supported (the current version)
 
-enum class   { CLASS_32_BIT = 1, CLASS_64_BIT };
-enum data    { DATA_LITTLE_ENDIAN = 1, DATA_BIG_ENDIAN };
-enum type    { TYPE_RELOCATABLE = 1, TYPE_EXECUTABLE, TYPE_SHARED, TYPE_CORE };
-enum machine { MACHINE_X86 = 3, /*...*/ }; // we are only interested in x86
+/// 32 or 64 bit
+enum elf_class   { CLASS_32_BIT = 1, CLASS_64_BIT };
+/// little or big endian
+enum elf_data    { DATA_LITTLE_ENDIAN = 1, DATA_BIG_ENDIAN };
+/// object type
+enum elf_type    { TYPE_RELOCATABLE = 1, TYPE_EXECUTABLE, TYPE_SHARED, TYPE_CORE };
+/// targeted ISA, we are only interested in x86
+enum elf_machine { MACHINE_X86 = 3, /*...*/ };
 
-typedef struct { // program header entries tell us how to load executables
-    enum {       // (here for 32 bit)
+/// program header entries tell us how to load executables
+typedef struct {
+    enum {
         // we will only need PT_LOAD (load a segment into memory) for now
         PT_NULL, PT_LOAD, PT_DYNAMIC, PT_INTERP, PT_NOTE, PT_SHLIB, PT_PHDR
-    } p_type;
-    uint32_t p_offset; // where the segment starts in the file
-    void*    p_vaddr;  // where the segment is located in virtual memory
-    void*    p_paddr;  // same for physical memory (only on systems without MMU)
-    uint32_t p_filesz; // the segment's length in the file
-    uint32_t p_memsz;  // the segment's length in memory
-    enum { // whether the segment should be executable, writable or readable
+    } p_type; ///< program header type
+    uint32_t p_offset; ///< where the segment starts in the file
+    void*    p_vaddr;  ///< where the segment is located in virtual memory
+    void*    p_paddr;  ///< same for physical memory (only on systems without MMU)
+    uint32_t p_filesz; ///< the segment's length in the file
+    uint32_t p_memsz;  ///< the segment's length in memory
+    enum {
         PF_X = 0b1, PF_W = 0b10, PF_R = 0b100
-    } p_flags;
-    uint32_t p_align;  // how this segment is aligned
+    } p_flags; ///< whether the segment should be executable, writable or readable
+    uint32_t p_align;  ///< how this segment is aligned
 } __attribute__((packed)) elf_program_header_entry_t;
 
+/**
+ * Checks whether a pointer points to a valid ELF file for this OS.
+ * @param elf the start address of the ELF file in memory
+ * @return whether it is a valid ELF file
+ */
 static uint8_t elf_check(elf_t* elf) {
     if (elf->e_ident.EI_MAG0 != MAGIC_0 || elf->e_ident.EI_MAG1 != MAGIC_1 ||
         elf->e_ident.EI_MAG2 != MAGIC_2 || elf->e_ident.EI_MAG3 != MAGIC_3) {
@@ -68,7 +82,12 @@ static uint8_t elf_check(elf_t* elf) {
     return 1;
 }
 
-// loads the segments of an ELF file into memory and returns its entry point
+/**
+ * Loads the segments of an ELF file into memory.
+ * @param elf            the start address of the ELF file in memory
+ * @param page_directory a page directory to map the segments into
+ * @return the entry point as a virtual address
+ */
 void* elf_load(elf_t* elf, page_directory_t* page_directory) {
     if (!elf_check(elf)) // check whether it's a suitable ELF file
         return 0;
@@ -100,6 +119,11 @@ void* elf_load(elf_t* elf, page_directory_t* page_directory) {
     return elf->e_entry;
 }
 
+/**
+ * Frees the segments of an ELF file in memory.
+ * @param elf            the start address of the ELF file in memory
+ * @param page_directory a page directory to unmap the segments from
+ */
 void elf_unload(elf_t* elf, page_directory_t* page_directory) {
     if (!elf_check(elf))
         return;
@@ -114,6 +138,13 @@ void elf_unload(elf_t* elf, page_directory_t* page_directory) {
     vmm_modified_page_directory();
 }
 
+/**
+ * Creates a user task running the code of an ELF file.
+ * @param elf              the start address of the ELF file in memory
+ * @param kernel_stack_len number of bytes to allocate for the kernel stack
+ * @param user_stack_len   number of bytes to allocate for the user stack
+ * @return PID of the created ELF task
+ */
 task_pid_t elf_create_task(elf_t* elf, size_t kernel_stack_len,
         size_t user_stack_len) {
     if (!elf) {
@@ -128,9 +159,15 @@ task_pid_t elf_create_task(elf_t* elf, size_t kernel_stack_len,
     return pid;
 }
 
+/**
+ * Destroys a user task running the code of an ELF file.
+ * @param pid PID of the ELF task
+ */
 void elf_destroy_task(task_pid_t pid) {
     uint8_t old_interrupts = isr_enable_interrupts(0);
     elf_unload(task_get_elf(pid), task_get_page_directory(pid));
     task_destroy(pid);
     isr_enable_interrupts(old_interrupts);
 }
+
+/// @}
