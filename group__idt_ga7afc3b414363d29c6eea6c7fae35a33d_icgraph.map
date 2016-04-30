@@ -1,0 +1,4 @@
+<map id="idt_init_entry" name="idt_init_entry">
+<area shape="rect" id="node2" href="$group__idt.html#ga37f635c1564f3affa235d3cb75f05696" title="Shorthand for initializing an ISR. " alt="" coords="150,5,269,31"/>
+<area shape="rect" id="node3" href="$group__idt.html#ga88d4205d069421eb4f8e7577285f1180" title="Initializes the IDT. " alt="" coords="317,5,377,31"/>
+</map>

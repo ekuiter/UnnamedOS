@@ -1,0 +1,8 @@
+<map id="Tasks" name="Tasks">
+<area shape="rect" id="node3" href="$group__tss.html" title="Task State Segment. " alt="" coords="231,5,279,31"/>
+<area shape="rect" id="node4" href="$group__task.html" title="Task. " alt="" coords="231,55,279,80"/>
+<area shape="rect" id="node5" href="$group__elf.html" title="Executable and Linking Format. " alt="" coords="232,104,278,129"/>
+<area shape="rect" id="node6" href="$group__vm86.html" title="Virtual 8086 Mode. " alt="" coords="227,153,283,179"/>
+<area shape="rect" id="node7" href="$group__schedule.html" title="Scheduler. " alt="" coords="217,203,294,228"/>
+<area shape="rect" id="node2" href="$group__kernel.html" title="Kernel" alt="" coords="5,104,65,129"/>
+</map>

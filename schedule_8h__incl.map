@@ -1,0 +1,7 @@
+<map id="src/kernel/tasks/schedule.h" name="src/kernel/tasks/schedule.h">
+<area shape="rect" id="node2" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="154,299,218,324"/>
+<area shape="rect" id="node3" href="$isr_8h.html" title="interrupts/isr.h" alt="" coords="44,152,149,177"/>
+<area shape="rect" id="node4" href="$task_8h.html" title="tasks/task.h" alt="" coords="136,79,228,104"/>
+<area shape="rect" id="node5" href="$vmm_8h.html" title="mem/vmm.h" alt="" coords="224,152,318,177"/>
+<area shape="rect" id="node6" href="$pmm_8h.html" title="mem/pmm.h" alt="" coords="274,225,369,251"/>
+</map>

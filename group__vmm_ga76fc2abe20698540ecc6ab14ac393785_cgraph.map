@@ -1,0 +1,21 @@
+<map id="vmm_unmap_range" name="vmm_unmap_range">
+<area shape="rect" id="node2" href="$group__vmm.html#ga36be7c83d887d2111b317b5ac796916f" title="Maps or unmaps the given page(s) into memory. " alt="" coords="193,214,372,239"/>
+<area shape="rect" id="node3" href="$group__vmm.html#ga408e67ff0d3c015f67a04d649a193677" title="Checks whether a virtual address might be accessed with the given flags. " alt="" coords="582,112,726,138"/>
+<area shape="rect" id="node7" href="$group__pmm.html#ga23e6a7808d715af89d32c53c006a4636" title="Returns to which page a given memory address belongs. " alt="" coords="1188,163,1302,188"/>
+<area shape="rect" id="node8" href="$group__vmm.html#ga3e7053cfb721b4d0e489b95df9063ad5" title="Maps the given page into memory. " alt="" coords="428,264,511,290"/>
+<area shape="rect" id="node12" href="$group__pmm.html#gad391adf0e0bfb5312b735ee87c0c7774" title="Returns a memory address belonging to a given page. " alt="" coords="1001,264,1133,290"/>
+<area shape="rect" id="node18" href="$group__vmm.html#ga712a6069455f36990ea8af974ba0a1e3" title="Unmaps the given page from memory. " alt="" coords="420,454,519,479"/>
+<area shape="rect" id="node4" href="$group__vmm.html#gae814d9b3e619cc1b3acaa94a336157c8" title="Returns the domain a virtual address belongs to. " alt="" coords="790,50,951,88"/>
+<area shape="rect" id="node6" href="$group__vmm.html#gab536804df3329c431fdf5c4486f09c23" title="Extracts a domain from the given flags. " alt="" coords="807,112,934,138"/>
+<area shape="rect" id="node5" href="$group__vmm.html#gaa0f722ed8ab308a12be211f1ef561143" title="Returns whether a virtual address belongs to a given domain. " alt="" coords="999,56,1135,82"/>
+<area shape="rect" id="node9" href="$group__pmm.html#gab88d4741ffdf121265ccc7a47aa06be3" title="Allocates page frames. " alt="" coords="611,264,697,290"/>
+<area shape="rect" id="node15" href="$group__vmm.html#ga4ec502fa0597ddc39ccefc5e41ed7068" title="Returns a virtual or physical address to a page table in memory. " alt="" coords="796,370,945,395"/>
+<area shape="rect" id="node16" href="$group__vmm.html#gaca2ad6adc3d01b4f69741bb3063b44bb" title="Returns a virtual or physical address to a page table entry in memory. " alt="" coords="579,366,729,404"/>
+<area shape="rect" id="node17" href="$group__mmu.html#gad103653c8eb7655d46156dff6c76b401" title="Flushes the Translation Lookaside Buffer for the given page. " alt="" coords="600,428,708,454"/>
+<area shape="rect" id="node10" href="$group__pmm.html#ga7fea33d2f72598f45f4e85f41534ccfa" title="Finds free page frames. " alt="" coords="815,214,925,239"/>
+<area shape="rect" id="node13" href="$group__pmm.html#ga71675c8083936fe4c7066c9eda8c5a53" title="Marks page frames for a given memory range as used or unused. " alt="" coords="1027,315,1107,340"/>
+<area shape="rect" id="node11" href="$group__pmm.html#gafa8dcde21f682f3a42a163781152a68b" title="Returns a bitmap entry. " alt="" coords="1005,214,1129,239"/>
+<area shape="rect" id="node14" href="$group__pmm.html#ga2af94bf7238dce2d9292635e69cbc56e" title="Sets a bitmap entry to a value. " alt="" coords="1183,315,1307,340"/>
+<area shape="rect" id="node19" href="$group__vmm.html#ga29929b27b1ddfc99ab409bb3149df217" title="Destroys a page table in the current page directory. " alt="" coords="567,530,742,555"/>
+<area shape="rect" id="node20" href="$group__pmm.html#ga71cab475c600b07e6ae2c34af4b65843" title="Frees page frames. " alt="" coords="830,512,911,538"/>
+</map>

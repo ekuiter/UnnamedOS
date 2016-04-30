@@ -1,0 +1,5 @@
+<map id="task_get_vm86" name="task_get_vm86">
+<area shape="rect" id="node2" href="$group__vm86.html#ga6782fcbda03f1415e656d951f764f6b6" title="Monitors a VM86 task by emulating sensitive instructions. " alt="" coords="165,5,271,31"/>
+<area shape="rect" id="node3" href="$group__vm86.html#gaf5c9879c84edccf22a667fe2672bf647" title="Handles general protection faults. " alt="" coords="319,5,446,31"/>
+<area shape="rect" id="node4" href="$group__vm86.html#ga27b2421e58df36b74005f433a4649a54" title="Initializes VM86 mode. " alt="" coords="494,5,573,31"/>
+</map>

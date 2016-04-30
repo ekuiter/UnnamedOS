@@ -1,0 +1,10 @@
+<map id="src/kernel/mem/gdt.h" name="src/kernel/mem/gdt.h">
+<area shape="rect" id="node2" href="$kernel_2boot_2main_8c_source.html" title="src/kernel/boot/main.c" alt="" coords="5,85,157,111"/>
+<area shape="rect" id="node3" href="$idt_8c.html" title="src/kernel/interrupts\l/idt.c" alt="" coords="181,79,320,117"/>
+<area shape="rect" id="node4" href="$gdt_8c.html" title="src/kernel/mem/gdt.c" alt="" coords="310,165,455,191"/>
+<area shape="rect" id="node5" href="$task_8c.html" title="src/kernel/tasks/task.c" alt="" coords="394,85,547,111"/>
+<area shape="rect" id="node6" href="$tss_8h.html" title="src/kernel/tasks/tss.h" alt="" coords="571,85,717,111"/>
+<area shape="rect" id="node9" href="$vm86_8c.html" title="src/kernel/tasks/vm86.c" alt="" coords="741,85,902,111"/>
+<area shape="rect" id="node7" href="$schedule_8c.html" title="src/kernel/tasks/schedule.c" alt="" coords="528,165,709,191"/>
+<area shape="rect" id="node8" href="$tss_8c.html" title="src/kernel/tasks/tss.c" alt="" coords="733,165,878,191"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="src/kernel/tasks/tss.h" name="src/kernel/tasks/tss.h">
+<area shape="rect" id="node2" href="$gdt_8c.html" title="src/kernel/mem/gdt.c" alt="" coords="5,79,150,104"/>
+<area shape="rect" id="node3" href="$schedule_8c.html" title="src/kernel/tasks/schedule.c" alt="" coords="174,79,355,104"/>
+<area shape="rect" id="node4" href="$tss_8c.html" title="src/kernel/tasks/tss.c" alt="" coords="379,79,524,104"/>
+</map>

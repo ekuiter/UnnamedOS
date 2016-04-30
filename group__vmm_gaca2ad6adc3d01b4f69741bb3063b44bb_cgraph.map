@@ -1,0 +1,4 @@
+<map id="vmm_get_page_table_entry" name="vmm_get_page_table_entry">
+<area shape="rect" id="node2" href="$group__vmm.html#ga4ec502fa0597ddc39ccefc5e41ed7068" title="Returns a virtual or physical address to a page table in memory. " alt="" coords="203,12,352,37"/>
+<area shape="rect" id="node3" href="$group__pmm.html#gad391adf0e0bfb5312b735ee87c0c7774" title="Returns a memory address belonging to a given page. " alt="" coords="400,12,532,37"/>
+</map>

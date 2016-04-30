@@ -1,0 +1,5 @@
+<map id="vmm_destroy_page_directory" name="vmm_destroy_page_directory">
+<area shape="rect" id="node2" href="$group__task.html#gac141a8f668ca44faf8f2cee286bdcf9d" title="Destroys a task. " alt="" coords="250,31,347,56"/>
+<area shape="rect" id="node3" href="$group__elf.html#ga75bec924ac71c3508f102cac452c67b3" title="Destroys a user task running the code of an ELF file. " alt="" coords="395,5,514,31"/>
+<area shape="rect" id="node4" href="$group__schedule.html#ga02fdfade63241289317a425497eb3927" title="Destroys tasks marked for removal. " alt="" coords="562,31,724,56"/>
+</map>

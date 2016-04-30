@@ -1,0 +1,8 @@
+<map id="vm86_write_farptr" name="vm86_write_farptr">
+<area shape="rect" id="node2" href="$group__vm86.html#ga4d4693ff0e30f0f617d47282e7ad1c7f" title="Emulates a PUSH instruction. " alt="" coords="209,5,299,31"/>
+<area shape="rect" id="node3" href="$group__vm86.html#ga6782fcbda03f1415e656d951f764f6b6" title="Monitors a VM86 task by emulating sensitive instructions. " alt="" coords="374,81,480,107"/>
+<area shape="rect" id="node6" href="$group__vm86.html#ga3e03a7c1532cfd10daa3b44cec6d17b4" title="Emulates a POP instruction. " alt="" coords="212,107,296,132"/>
+<area shape="rect" id="node7" href="$group__vm86.html#ga3095919424e99ca406a3252e974b86d9" title="Emulates the completion of an instruction. " alt="" coords="181,156,326,181"/>
+<area shape="rect" id="node4" href="$group__vm86.html#gaf5c9879c84edccf22a667fe2672bf647" title="Handles general protection faults. " alt="" coords="528,81,656,107"/>
+<area shape="rect" id="node5" href="$group__vm86.html#ga27b2421e58df36b74005f433a4649a54" title="Initializes VM86 mode. " alt="" coords="704,81,782,107"/>
+</map>

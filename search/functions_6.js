@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['task_5fadd',['task_add',['../group__task.html#ga2da7550dd700390f8da02c50b9ed7557',1,'task.c']]],
+  ['task_5fcreate_5fdetailed',['task_create_detailed',['../group__task.html#ga6889ecd06c51d1debc57ba9e0317a734',1,'task.c']]],
+  ['task_5fcreate_5fkernel',['task_create_kernel',['../group__task.html#gac3f74053067bb4dfb9298aeb8080dc44',1,'task.c']]],
+  ['task_5fcreate_5fuser',['task_create_user',['../group__task.html#ga283a67e6d57dbd0f6c3c7eecc44e687a',1,'task.c']]],
+  ['task_5fdestroy',['task_destroy',['../group__task.html#gac141a8f668ca44faf8f2cee286bdcf9d',1,'task.c']]],
+  ['task_5fdump',['task_dump',['../group__task.html#gab279481be3643f26c9d6239b15312037',1,'task.c']]],
+  ['task_5fget',['task_get',['../group__task.html#ga677ee1017fff2ed04306b4cd099e73c3',1,'task.c']]],
+  ['task_5fget_5fcpu',['task_get_cpu',['../group__task.html#ga6105ae3197cd749ad0c177d5dbc22ea4',1,'task.c']]],
+  ['task_5fget_5felf',['task_get_elf',['../group__task.html#ga913da01d52a432e11f5dd8f851c1c1ae',1,'task.c']]],
+  ['task_5fget_5fnext_5ftask',['task_get_next_task',['../group__task.html#ga15fd17b1eb4948c3228275579f21e2b1',1,'task.c']]],
+  ['task_5fget_5fnext_5ftask_5fwith_5fstate',['task_get_next_task_with_state',['../group__task.html#ga7be7f25127496db6196d7061b6ca3b4f',1,'task.c']]],
+  ['task_5fget_5fpage_5fdirectory',['task_get_page_directory',['../group__task.html#ga83d2195f03198dcb3f223aa986360a0c',1,'task.c']]],
+  ['task_5fget_5fticks',['task_get_ticks',['../group__task.html#ga60511b7a4e82a066877dd868ce6f562f',1,'task.c']]],
+  ['task_5fget_5fvm86',['task_get_vm86',['../group__task.html#ga04bd7d28496d63ff2efdb213a3e5a26a',1,'task.c']]],
+  ['task_5fremove',['task_remove',['../group__task.html#ga7719b98ea06361cdeca6119638518b76',1,'task.c']]],
+  ['task_5fset_5fcpu',['task_set_cpu',['../group__task.html#gac7ec5c638922f7fc210d82d4e64e0d02',1,'task.c']]],
+  ['task_5fset_5fticks',['task_set_ticks',['../group__task.html#gae10246a0df3b966a9446f954c79354ae',1,'task.c']]],
+  ['task_5fstop',['task_stop',['../group__task.html#ga83cb7be3d10b835ced91abd60bea445c',1,'task.c']]],
+  ['tss_5finit',['tss_init',['../group__tss.html#ga8329e9521c7069b04f78c18dac292d2a',1,'tss.c']]],
+  ['tss_5fload',['tss_load',['../group__tss.html#gad9b3641b0061ece3b95fca4c3347b635',1,'tss.c']]],
+  ['tss_5fset_5fstack',['tss_set_stack',['../group__tss.html#ga9ec424012b3e0b4d591f71ea6e927bc9',1,'tss.c']]]
+];

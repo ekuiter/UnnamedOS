@@ -1,0 +1,4 @@
+<map id="elf_unload" name="elf_unload">
+<area shape="rect" id="node2" href="$group__elf.html#ga75bec924ac71c3508f102cac452c67b3" title="Destroys a user task running the code of an ELF file. " alt="" coords="136,5,255,31"/>
+<area shape="rect" id="node3" href="$group__schedule.html#ga02fdfade63241289317a425497eb3927" title="Destroys tasks marked for removal. " alt="" coords="303,5,465,31"/>
+</map>

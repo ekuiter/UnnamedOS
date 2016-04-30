@@ -1,0 +1,7 @@
+<map id="elf_check" name="elf_check">
+<area shape="rect" id="node2" href="$group__elf.html#gaea989585797c9844fdefd0ee9608045d" title="Loads the segments of an ELF file into memory. " alt="" coords="138,5,206,31"/>
+<area shape="rect" id="node4" href="$group__elf.html#ga3f7773dbbddb1093ffe601fac1856b75" title="Frees the segments of an ELF file in memory. " alt="" coords="131,55,214,80"/>
+<area shape="rect" id="node3" href="$group__elf.html#ga4bcec1f99a7491663c79aeb376a51878" title="Creates a user task running the code of an ELF file. " alt="" coords="265,5,377,31"/>
+<area shape="rect" id="node5" href="$group__elf.html#ga75bec924ac71c3508f102cac452c67b3" title="Destroys a user task running the code of an ELF file. " alt="" coords="262,55,380,80"/>
+<area shape="rect" id="node6" href="$group__schedule.html#ga02fdfade63241289317a425497eb3927" title="Destroys tasks marked for removal. " alt="" coords="428,55,590,80"/>
+</map>

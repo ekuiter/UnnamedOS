@@ -1,0 +1,5 @@
+<map id="Kernel" name="Kernel">
+<area shape="rect" id="node1" href="$group__tasks.html" title="Tasks" alt="" coords="124,5,180,31"/>
+<area shape="rect" id="node3" href="$group__mem.html" title="Memory" alt="" coords="117,55,187,80"/>
+<area shape="rect" id="node4" href="$group__interrupts.html" title="Interrupts" alt="" coords="113,104,191,129"/>
+</map>

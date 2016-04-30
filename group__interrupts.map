@@ -1,0 +1,7 @@
+<map id="Interrupts" name="Interrupts">
+<area shape="rect" id="node1" href="$group__pic.html" title="Programmable Interrupt Controller. " alt="" coords="249,5,292,31"/>
+<area shape="rect" id="node2" href="$group__idt.html" title="Interrupt Descriptor Table. " alt="" coords="249,55,292,80"/>
+<area shape="rect" id="node3" href="$group__kernel.html" title="Kernel" alt="" coords="5,80,65,105"/>
+<area shape="rect" id="node5" href="$group__syscall.html" title="Syscall Interface. " alt="" coords="239,104,302,129"/>
+<area shape="rect" id="node6" href="$group__isr.html" title="Interrupt Service Routine. " alt="" coords="249,153,292,179"/>
+</map>

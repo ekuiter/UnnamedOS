@@ -1,0 +1,12 @@
+<map id="vm86_handle_gpf" name="vm86_handle_gpf">
+<area shape="rect" id="node2" href="$group__vm86.html#ga6782fcbda03f1415e656d951f764f6b6" title="Monitors a VM86 task by emulating sensitive instructions. " alt="" coords="181,181,286,207"/>
+<area shape="rect" id="node3" href="$group__task.html#ga04bd7d28496d63ff2efdb213a3e5a26a" title="Returns whether a task is a VM86 task. " alt="" coords="369,5,481,31"/>
+<area shape="rect" id="node5" href="$group__schedule.html#ga14b9cfb952fa598db494e5cc3e7b25bf" title="Returns the current task&#39;s PID. " alt="" coords="334,55,516,80"/>
+<area shape="rect" id="node6" href="$group__vm86.html#ga9b5c1e01a54fe78df1cbcaf06565d73f" title="Translate a far pointer into an address. " alt="" coords="564,181,699,207"/>
+<area shape="rect" id="node7" href="$group__vm86.html#ga4d4693ff0e30f0f617d47282e7ad1c7f" title="Emulates a PUSH instruction. " alt="" coords="380,156,470,181"/>
+<area shape="rect" id="node8" href="$group__vm86.html#ga82aed4d420a3b9125d17282a9e27f0cb" title="Writes a far pointer into another location. " alt="" coords="567,244,695,269"/>
+<area shape="rect" id="node9" href="$group__vm86.html#gab75514feba1665a571b32ac0ab0ca07a" title="Translate an address into a far pointer. " alt="" coords="572,293,691,319"/>
+<area shape="rect" id="node10" href="$group__vm86.html#ga3095919424e99ca406a3252e974b86d9" title="Emulates the completion of an instruction. " alt="" coords="353,205,498,231"/>
+<area shape="rect" id="node11" href="$group__vm86.html#ga3e03a7c1532cfd10daa3b44cec6d17b4" title="Emulates a POP instruction. " alt="" coords="383,307,467,332"/>
+<area shape="rect" id="node4" href="$group__task.html#ga677ee1017fff2ed04306b4cd099e73c3" title="Returns the internal task structure associated with the given PID. " alt="" coords="595,5,667,31"/>
+</map>

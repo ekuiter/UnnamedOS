@@ -1,0 +1,4 @@
+<map id="pmm_find_free" name="pmm_find_free">
+<area shape="rect" id="node2" href="$group__pmm.html#gafa8dcde21f682f3a42a163781152a68b" title="Returns a bitmap entry. " alt="" coords="167,5,292,31"/>
+<area shape="rect" id="node3" href="$group__pmm.html#gad391adf0e0bfb5312b735ee87c0c7774" title="Returns a memory address belonging to a given page. " alt="" coords="164,55,295,80"/>
+</map>

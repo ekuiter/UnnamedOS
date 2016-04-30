@@ -1,0 +1,17 @@
+<map id="src/kernel/tasks/vm86.c" name="src/kernel/tasks/vm86.c">
+<area shape="rect" id="node2" href="$common_8h_source.html" title="common.h" alt="" coords="147,152,230,177"/>
+<area shape="rect" id="node7" href="$vm86_8h.html" title="tasks/vm86.h" alt="" coords="280,79,380,104"/>
+<area shape="rect" id="node9" href="$isr_8h.html" title="interrupts/isr.h" alt="" coords="376,225,481,251"/>
+<area shape="rect" id="node10" href="$vmm_8h.html" title="mem/vmm.h" alt="" coords="556,225,650,251"/>
+<area shape="rect" id="node12" href="$schedule_8h.html" title="tasks/schedule.h" alt="" coords="481,79,602,104"/>
+<area shape="rect" id="node13" href="$kernel_2interrupts_2syscall_8h.html" title="interrupts/syscall.h" alt="" coords="693,152,825,177"/>
+<area shape="rect" id="node14" href="$multiboot_8h_source.html" title="boot/multiboot.h" alt="" coords="745,79,861,104"/>
+<area shape="rect" id="node15" href="$gdt_8h.html" title="mem/gdt.h" alt="" coords="849,152,933,177"/>
+<area shape="rect" id="node16" href="$string_8h_source.html" title="string.h" alt="" coords="912,225,977,251"/>
+<area shape="rect" id="node3" href="$output_8h_source.html" title="hardware/io/output.h" alt="" coords="108,225,251,251"/>
+<area shape="rect" id="node4" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="435,372,499,397"/>
+<area shape="rect" id="node6" href="$port_8h_source.html" title="hardware/io/port.h" alt="" coords="5,299,134,324"/>
+<area shape="rect" id="node5" href="$io_8h_source.html" title="io.h" alt="" coords="158,299,200,324"/>
+<area shape="rect" id="node8" href="$task_8h.html" title="tasks/task.h" alt="" coords="477,152,569,177"/>
+<area shape="rect" id="node11" href="$pmm_8h.html" title="mem/pmm.h" alt="" coords="505,299,600,324"/>
+</map>

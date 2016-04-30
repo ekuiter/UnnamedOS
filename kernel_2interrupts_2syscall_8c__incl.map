@@ -1,0 +1,13 @@
+<map id="src/kernel/interrupts/syscall.c" name="src/kernel/interrupts/syscall.c">
+<area shape="rect" id="node2" href="$common_8h_source.html" title="common.h" alt="" coords="62,165,145,191"/>
+<area shape="rect" id="node7" href="$kernel_2interrupts_2syscall_8h.html" title="interrupts/syscall.h" alt="" coords="168,92,300,117"/>
+<area shape="rect" id="node8" href="$isr_8h.html" title="interrupts/isr.h" alt="" coords="296,239,401,264"/>
+<area shape="rect" id="node9" href="$schedule_8h.html" title="tasks/schedule.h" alt="" coords="375,92,496,117"/>
+<area shape="rect" id="node3" href="$output_8h_source.html" title="hardware/io/output.h" alt="" coords="23,239,166,264"/>
+<area shape="rect" id="node4" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="298,385,362,411"/>
+<area shape="rect" id="node6" href="$port_8h_source.html" title="hardware/io/port.h" alt="" coords="139,312,268,337"/>
+<area shape="rect" id="node5" href="$io_8h_source.html" title="io.h" alt="" coords="73,312,116,337"/>
+<area shape="rect" id="node10" href="$task_8h.html" title="tasks/task.h" alt="" coords="475,165,567,191"/>
+<area shape="rect" id="node11" href="$vmm_8h.html" title="mem/vmm.h" alt="" coords="527,239,621,264"/>
+<area shape="rect" id="node12" href="$pmm_8h.html" title="mem/pmm.h" alt="" coords="577,312,673,337"/>
+</map>

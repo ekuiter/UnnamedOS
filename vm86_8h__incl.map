@@ -1,0 +1,7 @@
+<map id="src/kernel/tasks/vm86.h" name="src/kernel/tasks/vm86.h">
+<area shape="rect" id="node2" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="143,299,208,324"/>
+<area shape="rect" id="node3" href="$task_8h.html" title="tasks/task.h" alt="" coords="91,79,183,104"/>
+<area shape="rect" id="node4" href="$isr_8h.html" title="interrupts/isr.h" alt="" coords="123,225,228,251"/>
+<area shape="rect" id="node5" href="$vmm_8h.html" title="mem/vmm.h" alt="" coords="217,152,312,177"/>
+<area shape="rect" id="node6" href="$pmm_8h.html" title="mem/pmm.h" alt="" coords="302,225,398,251"/>
+</map>

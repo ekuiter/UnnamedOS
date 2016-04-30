@@ -1,0 +1,8 @@
+<map id="task_add" name="task_add">
+<area shape="rect" id="node2" href="$group__task.html#ga6889ecd06c51d1debc57ba9e0317a734" title="Creates a task. " alt="" coords="129,55,273,80"/>
+<area shape="rect" id="node6" href="$group__vm86.html#gadc3f4bd03c6bdafbdef4df17f1b7c19d" title="Creates a VM86 task. " alt="" coords="136,104,266,129"/>
+<area shape="rect" id="node3" href="$group__task.html#gac3f74053067bb4dfb9298aeb8080dc44" title="Creates a kernel task. " alt="" coords="321,5,455,31"/>
+<area shape="rect" id="node4" href="$group__task.html#ga283a67e6d57dbd0f6c3c7eecc44e687a" title="Creates a user task. " alt="" coords="326,55,450,80"/>
+<area shape="rect" id="node5" href="$group__elf.html#ga4bcec1f99a7491663c79aeb376a51878" title="Creates a user task running the code of an ELF file. " alt="" coords="503,55,615,80"/>
+<area shape="rect" id="node7" href="$group__vm86.html#gace8fed2c01cb34bf58e81e0648586e14" title="Calls a BIOS interrupt. " alt="" coords="332,104,445,129"/>
+</map>

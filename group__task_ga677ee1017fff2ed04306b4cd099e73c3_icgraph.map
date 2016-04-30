@@ -1,0 +1,24 @@
+<map id="task_get" name="task_get">
+<area shape="rect" id="node2" href="$group__task.html#ga83cb7be3d10b835ced91abd60bea445c" title="Stops a task. " alt="" coords="384,6,462,32"/>
+<area shape="rect" id="node6" href="$group__task.html#gac141a8f668ca44faf8f2cee286bdcf9d" title="Destroys a task. " alt="" coords="160,420,257,445"/>
+<area shape="rect" id="node9" href="$group__task.html#ga7be7f25127496db6196d7061b6ca3b4f" title="Returns the next task from the task list with a specified state. " alt="" coords="141,206,277,245"/>
+<area shape="rect" id="node12" href="$group__task.html#ga60511b7a4e82a066877dd868ce6f562f" title="Returns a task&#39;s number of remaining ticks. " alt="" coords="370,57,476,82"/>
+<area shape="rect" id="node13" href="$group__task.html#gae10246a0df3b966a9446f954c79354ae" title="Sets a task&#39;s number of remaining ticks. " alt="" coords="156,157,261,182"/>
+<area shape="rect" id="node15" href="$group__task.html#ga6105ae3197cd749ad0c177d5dbc22ea4" title="Returns a task&#39;s CPU state. " alt="" coords="158,108,259,133"/>
+<area shape="rect" id="node16" href="$group__task.html#gac7ec5c638922f7fc210d82d4e64e0d02" title="Sets a task&#39;s CPU state. " alt="" coords="373,309,473,334"/>
+<area shape="rect" id="node17" href="$group__task.html#ga83d2195f03198dcb3f223aa986360a0c" title="Returns a task&#39;s page directory. " alt="" coords="125,321,292,346"/>
+<area shape="rect" id="node18" href="$group__task.html#ga04bd7d28496d63ff2efdb213a3e5a26a" title="Returns whether a task is a VM86 task. " alt="" coords="153,469,265,494"/>
+<area shape="rect" id="node22" href="$group__task.html#ga913da01d52a432e11f5dd8f851c1c1ae" title="Returns a task&#39;s ELF file. " alt="" coords="162,370,255,396"/>
+<area shape="rect" id="node23" href="$group__task.html#gab279481be3643f26c9d6239b15312037" title="Dumps the task list. " alt="" coords="165,518,252,544"/>
+<area shape="rect" id="node3" href="$group__syscall.html#gaffd7e43e2a985f84ce5db41e84012e36" title="Exits the current task. " alt="" coords="590,106,679,132"/>
+<area shape="rect" id="node4" href="$group__syscall.html#ga581ed37968ead91b6d3a0b3b7a71da9d" title="Initializes the syscall interface. " alt="" coords="764,106,850,132"/>
+<area shape="rect" id="node5" href="$group__isr.html#ga2ea31f33125954459edbe7f4d7971ffa" title="Initializes syscalls and enables interrupts. " alt="" coords="898,106,957,132"/>
+<area shape="rect" id="node7" href="$group__elf.html#ga75bec924ac71c3508f102cac452c67b3" title="Destroys a user task running the code of an ELF file. " alt="" coords="364,358,482,384"/>
+<area shape="rect" id="node8" href="$group__schedule.html#ga02fdfade63241289317a425497eb3927" title="Destroys tasks marked for removal. " alt="" coords="554,384,716,409"/>
+<area shape="rect" id="node10" href="$group__schedule.html#gac83c6bd2aee45822e6fb26d8115f792b" title="Returns the next running task&#39;s PID. " alt="" coords="340,208,506,233"/>
+<area shape="rect" id="node11" href="$group__schedule.html#ga65f91e59df9210da417db34e224044a2" title="Returns the next task to run. " alt="" coords="597,157,672,182"/>
+<area shape="rect" id="node14" href="$group__schedule.html#gac59d1d10987a51bef5b01671b6a62c7f" title="Switches to a given task. " alt="" coords="347,106,499,132"/>
+<area shape="rect" id="node19" href="$group__vm86.html#ga6782fcbda03f1415e656d951f764f6b6" title="Monitors a VM86 task by emulating sensitive instructions. " alt="" coords="370,510,476,536"/>
+<area shape="rect" id="node20" href="$group__vm86.html#gaf5c9879c84edccf22a667fe2672bf647" title="Handles general protection faults. " alt="" coords="571,510,698,536"/>
+<area shape="rect" id="node21" href="$group__vm86.html#ga27b2421e58df36b74005f433a4649a54" title="Initializes VM86 mode. " alt="" coords="767,510,846,536"/>
+</map>

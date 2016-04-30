@@ -1,0 +1,8 @@
+<map id="gdt_init" name="gdt_init">
+<area shape="rect" id="node2" href="$group__gdt.html#ga79bb06d2528924f72cab1acf00b8b461" title="Sets basic parameters of a GDT entry. " alt="" coords="247,5,349,31"/>
+<area shape="rect" id="node3" href="$group__tss.html#ga8329e9521c7069b04f78c18dac292d2a" title="Initializes the TSS. " alt="" coords="122,43,185,68"/>
+<area shape="rect" id="node5" href="$group__gdt.html#gaf745d8b505ee0faa4d436298736be9e5" title="Loads the GDT into the GDTR register. " alt="" coords="118,141,190,167"/>
+<area shape="rect" id="node6" href="$group__gdt.html#ga9dc74fc329cb61a7332989b6bf181a57" title="Loads the kernel code and data segments into the segment registers. " alt="" coords="260,167,336,192"/>
+<area shape="rect" id="node7" href="$group__tss.html#gad9b3641b0061ece3b95fca4c3347b635" title="Loads the TSS into the TR register. " alt="" coords="118,92,189,117"/>
+<area shape="rect" id="node4" href="$group__gdt.html#ga0e89291c03112255d6ebdadc0ba218e0" title="Returns a selector ready to be loaded in a segment register. " alt="" coords="238,80,358,105"/>
+</map>

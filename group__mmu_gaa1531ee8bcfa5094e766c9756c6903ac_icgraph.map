@@ -1,0 +1,4 @@
+<map id="mmu_handle_page_fault" name="mmu_handle_page_fault">
+<area shape="rect" id="node2" href="$group__mmu.html#gabd7eba8cae99b9fb84685567d7f35242" title="Initializes the MMU. " alt="" coords="221,5,297,31"/>
+<area shape="rect" id="node3" href="$group__vmm.html#gadef373f9b9c3be4e9176224263fa4335" title="Initializes the VMM. " alt="" coords="345,5,420,31"/>
+</map>

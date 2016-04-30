@@ -1,0 +1,6 @@
+<map id="idt_init" name="idt_init">
+<area shape="rect" id="node2" href="$group__idt.html#ga37f635c1564f3affa235d3cb75f05696" title="Shorthand for initializing an ISR. " alt="" coords="113,29,232,55"/>
+<area shape="rect" id="node5" href="$group__idt.html#ga21eda5904d60bb93866369910c01cc4d" title="Loads the IDT into the IDTR register. " alt="" coords="138,79,206,104"/>
+<area shape="rect" id="node3" href="$group__idt.html#ga7afc3b414363d29c6eea6c7fae35a33d" title="Initializes an IDT entry. " alt="" coords="291,5,388,31"/>
+<area shape="rect" id="node4" href="$group__gdt.html#ga0e89291c03112255d6ebdadc0ba218e0" title="Returns a selector ready to be loaded in a segment register. " alt="" coords="280,55,400,80"/>
+</map>

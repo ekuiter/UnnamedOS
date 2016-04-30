@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['schedule',['schedule',['../group__schedule.html#ga65f91e59df9210da417db34e224044a2',1,'schedule(cpu_state_t *cpu):&#160;schedule.c'],['../group__schedule.html',1,'(Global Namespace)']]],
+  ['schedule_2ec',['schedule.c',['../schedule_8c.html',1,'']]],
+  ['schedule_2eh',['schedule.h',['../schedule_8h.html',1,'']]],
+  ['schedule_5ffinalize_5ftasks',['schedule_finalize_tasks',['../group__schedule.html#ga02fdfade63241289317a425497eb3927',1,'schedule.c']]],
+  ['schedule_5fget_5fcurrent_5ftask',['schedule_get_current_task',['../group__schedule.html#ga14b9cfb952fa598db494e5cc3e7b25bf',1,'schedule.c']]],
+  ['schedule_5fget_5fnext_5ftask',['schedule_get_next_task',['../group__schedule.html#gac83c6bd2aee45822e6fb26d8115f792b',1,'schedule.c']]],
+  ['schedule_5fswitch_5ftask',['schedule_switch_task',['../group__schedule.html#gac59d1d10987a51bef5b01671b6a62c7f',1,'schedule.c']]],
+  ['segment',['segment',['../structvm86__farptr__t.html#ac0657b1f59b92ac7752a465f0d21beda',1,'vm86_farptr_t']]],
+  ['selector',['selector',['../structidt__entry__t.html#ae3c0639a0ccf29f5219c7197d358d96b',1,'idt_entry_t']]],
+  ['sf',['sf',['../unionisr__eflags__t.html#afdcba603a75d2f8d49a9dcff8d6cf4ed',1,'isr_eflags_t']]],
+  ['ss0',['ss0',['../structtss__t.html#a9b7eac0ebee321516033184e47daed07',1,'tss_t']]],
+  ['st',['st',['../structidt__entry__t.html#a15e38ab6236560cc7f6790fb62152502',1,'idt_entry_t']]],
+  ['start',['start',['../structvmm__domain__t.html#a65f47232c2eb309b279382cdad7b75dd',1,'vmm_domain_t']]],
+  ['state',['state',['../structtask__t.html#ade01c5a299e49cad335190ffe4a2c69f',1,'task_t']]],
+  ['syscall',['Syscall',['../group__syscall.html',1,'']]],
+  ['syscall_2ec',['syscall.c',['../kernel_2interrupts_2syscall_8c.html',1,'']]],
+  ['syscall_2eh',['syscall.h',['../kernel_2interrupts_2syscall_8h.html',1,'']]],
+  ['syscall_5fexit',['syscall_exit',['../group__syscall.html#gaffd7e43e2a985f84ce5db41e84012e36',1,'syscall.c']]],
+  ['syscall_5fgetpid',['syscall_getpid',['../group__syscall.html#ga696d96c220f81db7d646610dc5c77e39',1,'syscall.c']]],
+  ['syscall_5finit',['syscall_init',['../group__syscall.html#ga581ed37968ead91b6d3a0b3b7a71da9d',1,'syscall.c']]],
+  ['syscalls',['syscalls',['../group__isr.html#ga5782dd52a9d132179ec591748e8e62e4',1,'isr.c']]],
+  ['sz',['sz',['../structgdt__entry__t.html#ac7375be70d830e85cdb7d6ba9ab11b69',1,'gdt_entry_t::sz()'],['../structpage__directory__entry__t.html#af6c075d7e0878560fae34e5cbf7f3f19',1,'page_directory_entry_t::sz()']]]
+];

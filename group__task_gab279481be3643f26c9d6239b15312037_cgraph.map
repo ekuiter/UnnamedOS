@@ -1,0 +1,4 @@
+<map id="task_dump" name="task_dump">
+<area shape="rect" id="node2" href="$group__task.html#ga15fd17b1eb4948c3228275579f21e2b1" title="Returns the next task from the task list. " alt="" coords="140,5,276,31"/>
+<area shape="rect" id="node3" href="$group__task.html#ga677ee1017fff2ed04306b4cd099e73c3" title="Returns the internal task structure associated with the given PID. " alt="" coords="172,55,244,80"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="tss_set_stack" name="tss_set_stack">
+<area shape="rect" id="node2" href="$group__schedule.html#gac59d1d10987a51bef5b01671b6a62c7f" title="Switches to a given task. " alt="" coords="155,31,306,56"/>
+<area shape="rect" id="node3" href="$group__syscall.html#gaffd7e43e2a985f84ce5db41e84012e36" title="Exits the current task. " alt="" coords="354,5,444,31"/>
+<area shape="rect" id="node6" href="$group__schedule.html#ga65f91e59df9210da417db34e224044a2" title="Returns the next task to run. " alt="" coords="362,55,437,80"/>
+<area shape="rect" id="node4" href="$group__syscall.html#ga581ed37968ead91b6d3a0b3b7a71da9d" title="Initializes the syscall interface. " alt="" coords="492,5,578,31"/>
+<area shape="rect" id="node5" href="$group__isr.html#ga2ea31f33125954459edbe7f4d7971ffa" title="Initializes syscalls and enables interrupts. " alt="" coords="626,5,686,31"/>
+</map>

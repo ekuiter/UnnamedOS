@@ -1,0 +1,21 @@
+<map id="src/kernel/mem/pmm.h" name="src/kernel/mem/pmm.h">
+<area shape="rect" id="node2" href="$kernel_2boot_2main_8c_source.html" title="src/kernel/boot/main.c" alt="" coords="1238,319,1390,344"/>
+<area shape="rect" id="node3" href="$multiboot_8c_source.html" title="src/kernel/boot/multiboot.c" alt="" coords="1013,79,1190,104"/>
+<area shape="rect" id="node4" href="$pmm_8c.html" title="src/kernel/mem/pmm.c" alt="" coords="1214,79,1370,104"/>
+<area shape="rect" id="node5" href="$vmm_8h.html" title="src/kernel/mem/vmm.h" alt="" coords="760,79,916,104"/>
+<area shape="rect" id="node6" href="$output_8c_source.html" title="src/kernel/hardware\l/io/output.c" alt="" coords="1232,152,1371,191"/>
+<area shape="rect" id="node7" href="$list_8c_source.html" title="src/kernel/lib/list.c" alt="" coords="225,159,352,184"/>
+<area shape="rect" id="node8" href="$mmu_8h.html" title="src/kernel/mem/mmu.h" alt="" coords="477,239,633,264"/>
+<area shape="rect" id="node10" href="$vmm_8c.html" title="src/kernel/mem/vmm.c" alt="" coords="5,319,161,344"/>
+<area shape="rect" id="node11" href="$schedule_8c.html" title="src/kernel/tasks/schedule.c" alt="" coords="366,319,547,344"/>
+<area shape="rect" id="node12" href="$task_8c.html" title="src/kernel/tasks/task.c" alt="" coords="736,319,889,344"/>
+<area shape="rect" id="node13" href="$elf_8h.html" title="src/kernel/tasks/elf.h" alt="" coords="657,239,800,264"/>
+<area shape="rect" id="node15" href="$task_8h.html" title="src/kernel/tasks/task.h" alt="" coords="908,159,1061,184"/>
+<area shape="rect" id="node19" href="$vm86_8c.html" title="src/kernel/tasks/vm86.c" alt="" coords="1413,319,1574,344"/>
+<area shape="rect" id="node9" href="$mmu_8c.html" title="src/kernel/mem/mmu.c" alt="" coords="185,319,341,344"/>
+<area shape="rect" id="node14" href="$elf_8c.html" title="src/kernel/tasks/elf.c" alt="" coords="571,319,713,344"/>
+<area shape="rect" id="node16" href="$schedule_8h.html" title="src/kernel/tasks/schedule.h" alt="" coords="925,239,1107,264"/>
+<area shape="rect" id="node20" href="$vm86_8h.html" title="src/kernel/tasks/vm86.h" alt="" coords="1233,239,1394,264"/>
+<area shape="rect" id="node17" href="$pit_8c_source.html" title="src/kernel/hardware\l/pit.c" alt="" coords="912,312,1051,351"/>
+<area shape="rect" id="node18" href="$kernel_2interrupts_2syscall_8c.html" title="src/kernel/interrupts\l/syscall.c" alt="" coords="1075,312,1214,351"/>
+</map>

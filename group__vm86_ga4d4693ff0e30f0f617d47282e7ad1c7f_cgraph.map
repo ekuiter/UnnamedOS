@@ -1,0 +1,5 @@
+<map id="vm86_push" name="vm86_push">
+<area shape="rect" id="node2" href="$group__vm86.html#ga9b5c1e01a54fe78df1cbcaf06565d73f" title="Translate a far pointer into an address. " alt="" coords="144,5,278,31"/>
+<area shape="rect" id="node3" href="$group__vm86.html#ga82aed4d420a3b9125d17282a9e27f0cb" title="Writes a far pointer into another location. " alt="" coords="147,55,275,80"/>
+<area shape="rect" id="node4" href="$group__vm86.html#gab75514feba1665a571b32ac0ab0ca07a" title="Translate an address into a far pointer. " alt="" coords="152,104,270,129"/>
+</map>

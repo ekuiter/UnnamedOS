@@ -1,0 +1,22 @@
+<map id="mmu_enable_paging" name="mmu_enable_paging">
+<area shape="rect" id="node2" href="$group__vmm.html#gae21ea3cbc0bddb5ade0251b4bfb2946c" title="Loads a new page directory. " alt="" coords="199,231,378,256"/>
+<area shape="rect" id="node3" href="$group__vmm.html#gab011b4635615c4046c5d0afc72c5ef25" title="Loads a page directory for temporary modification. " alt="" coords="431,156,624,181"/>
+<area shape="rect" id="node15" href="$group__vmm.html#gaa4627b5873ec19276ccf28f254227c01" title="Ends a page directory modification. " alt="" coords="426,205,629,231"/>
+<area shape="rect" id="node16" href="$group__vmm.html#gadef373f9b9c3be4e9176224263fa4335" title="Initializes the VMM. " alt="" coords="490,255,565,280"/>
+<area shape="rect" id="node17" href="$group__schedule.html#gac59d1d10987a51bef5b01671b6a62c7f" title="Switches to a given task. " alt="" coords="452,304,603,329"/>
+<area shape="rect" id="node4" href="$group__elf.html#gaea989585797c9844fdefd0ee9608045d" title="Loads the segments of an ELF file into memory. " alt="" coords="715,107,784,132"/>
+<area shape="rect" id="node6" href="$group__elf.html#ga3f7773dbbddb1093ffe601fac1856b75" title="Frees the segments of an ELF file in memory. " alt="" coords="708,255,791,280"/>
+<area shape="rect" id="node9" href="$group__task.html#ga6889ecd06c51d1debc57ba9e0317a734" title="Creates a task. " alt="" coords="677,156,822,181"/>
+<area shape="rect" id="node12" href="$group__task.html#gac141a8f668ca44faf8f2cee286bdcf9d" title="Destroys a task. " alt="" coords="701,205,798,231"/>
+<area shape="rect" id="node13" href="$group__vm86.html#gadc3f4bd03c6bdafbdef4df17f1b7c19d" title="Creates a VM86 task. " alt="" coords="684,57,815,83"/>
+<area shape="rect" id="node5" href="$group__elf.html#ga4bcec1f99a7491663c79aeb376a51878" title="Creates a user task running the code of an ELF file. " alt="" coords="1077,81,1189,107"/>
+<area shape="rect" id="node7" href="$group__elf.html#ga75bec924ac71c3508f102cac452c67b3" title="Destroys a user task running the code of an ELF file. " alt="" coords="877,257,996,283"/>
+<area shape="rect" id="node8" href="$group__schedule.html#ga02fdfade63241289317a425497eb3927" title="Destroys tasks marked for removal. " alt="" coords="1052,232,1214,257"/>
+<area shape="rect" id="node10" href="$group__task.html#gac3f74053067bb4dfb9298aeb8080dc44" title="Creates a kernel task. " alt="" coords="870,156,1004,181"/>
+<area shape="rect" id="node11" href="$group__task.html#ga283a67e6d57dbd0f6c3c7eecc44e687a" title="Creates a user task. " alt="" coords="875,107,998,132"/>
+<area shape="rect" id="node14" href="$group__vm86.html#gace8fed2c01cb34bf58e81e0648586e14" title="Calls a BIOS interrupt. " alt="" coords="880,5,993,31"/>
+<area shape="rect" id="node18" href="$group__syscall.html#gaffd7e43e2a985f84ce5db41e84012e36" title="Exits the current task. " alt="" coords="705,353,794,379"/>
+<area shape="rect" id="node21" href="$group__schedule.html#ga65f91e59df9210da417db34e224044a2" title="Returns the next task to run. " alt="" coords="712,304,787,329"/>
+<area shape="rect" id="node19" href="$group__syscall.html#ga581ed37968ead91b6d3a0b3b7a71da9d" title="Initializes the syscall interface. " alt="" coords="894,353,980,379"/>
+<area shape="rect" id="node20" href="$group__isr.html#ga2ea31f33125954459edbe7f4d7971ffa" title="Initializes syscalls and enables interrupts. " alt="" coords="1103,353,1163,379"/>
+</map>

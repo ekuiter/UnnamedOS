@@ -1,0 +1,5 @@
+<map id="src/kernel/interrupts/pic.h" name="src/kernel/interrupts/pic.h">
+<area shape="rect" id="node2" href="$kernel_2boot_2main_8c_source.html" title="src/kernel/boot/main.c" alt="" coords="5,99,157,124"/>
+<area shape="rect" id="node3" href="$isr_8c.html" title="src/kernel/interrupts\l/isr.c" alt="" coords="181,92,320,131"/>
+<area shape="rect" id="node4" href="$pic_8c.html" title="src/kernel/interrupts\l/pic.c" alt="" coords="344,92,482,131"/>
+</map>

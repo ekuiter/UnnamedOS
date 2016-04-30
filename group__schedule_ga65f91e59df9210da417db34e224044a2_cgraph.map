@@ -1,0 +1,43 @@
+<map id="schedule" name="schedule">
+<area shape="rect" id="node2" href="$group__schedule.html#gac83c6bd2aee45822e6fb26d8115f792b" title="Returns the next running task&#39;s PID. " alt="" coords="128,17,293,43"/>
+<area shape="rect" id="node6" href="$group__task.html#gae10246a0df3b966a9446f954c79354ae" title="Sets a task&#39;s number of remaining ticks. " alt="" coords="378,171,483,196"/>
+<area shape="rect" id="node7" href="$group__task.html#ga60511b7a4e82a066877dd868ce6f562f" title="Returns a task&#39;s number of remaining ticks. " alt="" coords="158,120,264,145"/>
+<area shape="rect" id="node8" href="$group__task.html#gac7ec5c638922f7fc210d82d4e64e0d02" title="Sets a task&#39;s CPU state. " alt="" coords="161,71,261,96"/>
+<area shape="rect" id="node9" href="$group__schedule.html#gac59d1d10987a51bef5b01671b6a62c7f" title="Switches to a given task. " alt="" coords="135,245,286,271"/>
+<area shape="rect" id="node3" href="$group__task.html#ga7be7f25127496db6196d7061b6ca3b4f" title="Returns the next task from the task list with a specified state. " alt="" coords="362,5,499,44"/>
+<area shape="rect" id="node4" href="$group__task.html#ga15fd17b1eb4948c3228275579f21e2b1" title="Returns the next task from the task list. " alt="" coords="597,12,733,37"/>
+<area shape="rect" id="node5" href="$group__task.html#ga677ee1017fff2ed04306b4cd099e73c3" title="Returns the internal task structure associated with the given PID. " alt="" coords="629,145,701,171"/>
+<area shape="rect" id="node10" href="$group__tss.html#ga9ec424012b3e0b4d591f71ea6e927bc9" title="Sets the TSS&#39;s kernel stack which is used to handle interrupts. " alt="" coords="379,319,481,344"/>
+<area shape="rect" id="node11" href="$group__task.html#ga6105ae3197cd749ad0c177d5dbc22ea4" title="Returns a task&#39;s CPU state. " alt="" coords="380,220,481,245"/>
+<area shape="rect" id="node12" href="$group__vmm.html#gae21ea3cbc0bddb5ade0251b4bfb2946c" title="Loads a new page directory. " alt="" coords="341,368,520,393"/>
+<area shape="rect" id="node42" href="$group__task.html#ga83d2195f03198dcb3f223aa986360a0c" title="Returns a task&#39;s page directory. " alt="" coords="347,269,514,295"/>
+<area shape="rect" id="node13" href="$group__vmm.html#gae24357af46126c4386fa4799eb660854" title="Translates a virtual address into a physical address. " alt="" coords="1241,571,1428,596"/>
+<area shape="rect" id="node14" href="$group__mmu.html#gaaf33eb687179f89ce91453795e9a6884" title="Returns whether paging is enabled or disabled. " alt="" coords="1476,469,1600,495"/>
+<area shape="rect" id="node18" href="$group__vmm.html#ga83a06334c1c593e06779d150d1efc082" title="Refreshes the page directory entries that are shared across page directories. " alt="" coords="568,520,762,545"/>
+<area shape="rect" id="node40" href="$group__mmu.html#ga5a8c2a23e92f9d6eaa5e472c0fe9c98f" title="Loads a page directory into the CR3 register. " alt="" coords="818,292,997,317"/>
+<area shape="rect" id="node41" href="$group__mmu.html#ga3108646fd68a371f496027b8a899ea18" title="Loads a page directory and enables paging. " alt="" coords="592,267,738,292"/>
+<area shape="rect" id="node15" href="$group__vmm.html#gaca2ad6adc3d01b4f69741bb3063b44bb" title="Returns a virtual or physical address to a page table entry in memory. " alt="" coords="1661,773,1810,812"/>
+<area shape="rect" id="node17" href="$group__pmm.html#gad391adf0e0bfb5312b735ee87c0c7774" title="Returns a memory address belonging to a given page. " alt="" coords="2082,752,2214,777"/>
+<area shape="rect" id="node16" href="$group__vmm.html#ga4ec502fa0597ddc39ccefc5e41ed7068" title="Returns a virtual or physical address to a page table in memory. " alt="" coords="1877,780,2026,805"/>
+<area shape="rect" id="node19" href="$group__vmm.html#ga37cd05a420e7bbc80e9df22d1d7a8661" title="If necessary, maps the given page(s) somewhere into memory. " alt="" coords="810,621,1005,647"/>
+<area shape="rect" id="node38" href="$group__vmm.html#ga26bea35e9465b7d5f4cb6db78bcb3aff" title="If necessary, unmaps the given page(s) from memory. " alt="" coords="831,513,985,552"/>
+<area shape="rect" id="node20" href="$group__vmm.html#gac9b3b29083204cd04643f125d9cc4447" title="Finds unmapped pages. " alt="" coords="1068,621,1178,647"/>
+<area shape="rect" id="node22" href="$group__vmm.html#gab536804df3329c431fdf5c4486f09c23" title="Extracts a domain from the given flags. " alt="" coords="1888,1200,2015,1225"/>
+<area shape="rect" id="node23" href="$group__vmm.html#gafe1dd6fb39c3e7a95f03828bcf01bebe" title="Maps the given page(s) into memory. " alt="" coords="1061,760,1186,785"/>
+<area shape="rect" id="node21" href="$group__pmm.html#ga23e6a7808d715af89d32c53c006a4636" title="Returns to which page a given memory address belongs. " alt="" coords="2269,727,2383,752"/>
+<area shape="rect" id="node24" href="$group__vmm.html#ga36be7c83d887d2111b317b5ac796916f" title="Maps or unmaps the given page(s) into memory. " alt="" coords="1245,773,1424,799"/>
+<area shape="rect" id="node25" href="$group__vmm.html#ga408e67ff0d3c015f67a04d649a193677" title="Checks whether a virtual address might be accessed with the given flags. " alt="" coords="1664,1143,1807,1168"/>
+<area shape="rect" id="node28" href="$group__vmm.html#ga3e7053cfb721b4d0e489b95df9063ad5" title="Maps the given page into memory. " alt="" coords="1496,988,1580,1013"/>
+<area shape="rect" id="node35" href="$group__vmm.html#ga712a6069455f36990ea8af974ba0a1e3" title="Unmaps the given page from memory. " alt="" coords="1489,863,1587,888"/>
+<area shape="rect" id="node26" href="$group__vmm.html#gae814d9b3e619cc1b3acaa94a336157c8" title="Returns the domain a virtual address belongs to. " alt="" coords="1871,1137,2032,1176"/>
+<area shape="rect" id="node27" href="$group__vmm.html#gaa0f722ed8ab308a12be211f1ef561143" title="Returns whether a virtual address belongs to a given domain. " alt="" coords="2080,1144,2216,1169"/>
+<area shape="rect" id="node29" href="$group__pmm.html#gab88d4741ffdf121265ccc7a47aa06be3" title="Allocates page frames. " alt="" coords="1692,1039,1778,1064"/>
+<area shape="rect" id="node34" href="$group__mmu.html#gad103653c8eb7655d46156dff6c76b401" title="Flushes the Translation Lookaside Buffer for the given page. " alt="" coords="1681,937,1789,963"/>
+<area shape="rect" id="node30" href="$group__pmm.html#ga7fea33d2f72598f45f4e85f41534ccfa" title="Finds free page frames. " alt="" coords="1896,881,2007,907"/>
+<area shape="rect" id="node32" href="$group__pmm.html#ga71675c8083936fe4c7066c9eda8c5a53" title="Marks page frames for a given memory range as used or unused. " alt="" coords="2108,931,2188,956"/>
+<area shape="rect" id="node31" href="$group__pmm.html#gafa8dcde21f682f3a42a163781152a68b" title="Returns a bitmap entry. " alt="" coords="2086,881,2210,907"/>
+<area shape="rect" id="node33" href="$group__pmm.html#ga2af94bf7238dce2d9292635e69cbc56e" title="Sets a bitmap entry to a value. " alt="" coords="2264,931,2388,956"/>
+<area shape="rect" id="node36" href="$group__vmm.html#ga29929b27b1ddfc99ab409bb3149df217" title="Destroys a page table in the current page directory. " alt="" coords="1648,888,1823,913"/>
+<area shape="rect" id="node37" href="$group__pmm.html#ga71cab475c600b07e6ae2c34af4b65843" title="Frees page frames. " alt="" coords="1911,931,1992,956"/>
+<area shape="rect" id="node39" href="$group__vmm.html#ga76fc2abe20698540ecc6ab14ac393785" title="Unmaps the given page(s) from memory. " alt="" coords="1053,697,1193,723"/>
+</map>

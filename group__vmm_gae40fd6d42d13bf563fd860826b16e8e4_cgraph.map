@@ -1,0 +1,7 @@
+<map id="vmm_dump" name="vmm_dump">
+<area shape="rect" id="node2" href="$group__vmm.html#gae24357af46126c4386fa4799eb660854" title="Translates a virtual address into a physical address. " alt="" coords="144,58,331,83"/>
+<area shape="rect" id="node5" href="$group__vmm.html#ga4ec502fa0597ddc39ccefc5e41ed7068" title="Returns a virtual or physical address to a page table in memory. " alt="" coords="576,86,726,111"/>
+<area shape="rect" id="node3" href="$group__mmu.html#gaaf33eb687179f89ce91453795e9a6884" title="Returns whether paging is enabled or disabled. " alt="" coords="392,30,516,55"/>
+<area shape="rect" id="node4" href="$group__vmm.html#gaca2ad6adc3d01b4f69741bb3063b44bb" title="Returns a virtual or physical address to a page table entry in memory. " alt="" coords="379,79,528,118"/>
+<area shape="rect" id="node6" href="$group__pmm.html#gad391adf0e0bfb5312b735ee87c0c7774" title="Returns a memory address belonging to a given page. " alt="" coords="774,33,906,58"/>
+</map>

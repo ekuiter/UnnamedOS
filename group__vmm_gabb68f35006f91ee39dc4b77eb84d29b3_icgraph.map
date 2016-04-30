@@ -1,0 +1,5 @@
+<map id="vmm_enable_domain_check" name="vmm_enable_domain_check">
+<area shape="rect" id="node2" href="$group__vmm.html#gadef373f9b9c3be4e9176224263fa4335" title="Initializes the VMM. " alt="" coords="272,5,347,31"/>
+<area shape="rect" id="node3" href="$group__vm86.html#gadc3f4bd03c6bdafbdef4df17f1b7c19d" title="Creates a VM86 task. " alt="" coords="244,55,375,80"/>
+<area shape="rect" id="node4" href="$group__vm86.html#gace8fed2c01cb34bf58e81e0648586e14" title="Calls a BIOS interrupt. " alt="" coords="423,55,536,80"/>
+</map>

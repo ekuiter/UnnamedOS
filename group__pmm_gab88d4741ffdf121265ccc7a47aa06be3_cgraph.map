@@ -1,0 +1,8 @@
+<map id="pmm_alloc" name="pmm_alloc">
+<area shape="rect" id="node2" href="$group__pmm.html#ga7fea33d2f72598f45f4e85f41534ccfa" title="Finds free page frames. " alt="" coords="139,55,249,80"/>
+<area shape="rect" id="node5" href="$group__pmm.html#ga71675c8083936fe4c7066c9eda8c5a53" title="Marks page frames for a given memory range as used or unused. " alt="" coords="154,104,234,129"/>
+<area shape="rect" id="node3" href="$group__pmm.html#gafa8dcde21f682f3a42a163781152a68b" title="Returns a bitmap entry. " alt="" coords="301,5,425,31"/>
+<area shape="rect" id="node4" href="$group__pmm.html#gad391adf0e0bfb5312b735ee87c0c7774" title="Returns a memory address belonging to a given page. " alt="" coords="297,55,429,80"/>
+<area shape="rect" id="node6" href="$group__pmm.html#ga23e6a7808d715af89d32c53c006a4636" title="Returns to which page a given memory address belongs. " alt="" coords="306,104,420,129"/>
+<area shape="rect" id="node7" href="$group__pmm.html#ga2af94bf7238dce2d9292635e69cbc56e" title="Sets a bitmap entry to a value. " alt="" coords="301,153,425,179"/>
+</map>

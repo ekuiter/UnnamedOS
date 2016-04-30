@@ -1,0 +1,4 @@
+<map id="gdt_init_entry" name="gdt_init_entry">
+<area shape="rect" id="node2" href="$group__gdt.html#gaaa7a7d6a41843f8a0c64fd66967feef4" title="Initializes the GDT. " alt="" coords="266,5,330,31"/>
+<area shape="rect" id="node3" href="$group__tss.html#ga8329e9521c7069b04f78c18dac292d2a" title="Initializes the TSS. " alt="" coords="155,31,218,56"/>
+</map>

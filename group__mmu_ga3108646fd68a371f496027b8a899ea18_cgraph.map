@@ -1,0 +1,3 @@
+<map id="mmu_enable_paging" name="mmu_enable_paging">
+<area shape="rect" id="node2" href="$group__mmu.html#ga5a8c2a23e92f9d6eaa5e472c0fe9c98f" title="Loads a page directory into the CR3 register. " alt="" coords="199,5,378,31"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="vmm_find_free" name="vmm_find_free">
+<area shape="rect" id="node2" href="$group__pmm.html#ga23e6a7808d715af89d32c53c006a4636" title="Returns to which page a given memory address belongs. " alt="" coords="199,41,313,67"/>
+<area shape="rect" id="node3" href="$group__vmm.html#gae24357af46126c4386fa4799eb660854" title="Translates a virtual address into a physical address. " alt="" coords="163,91,349,116"/>
+<area shape="rect" id="node7" href="$group__pmm.html#gad391adf0e0bfb5312b735ee87c0c7774" title="Returns a memory address belonging to a given page. " alt="" coords="793,119,924,144"/>
+<area shape="rect" id="node4" href="$group__mmu.html#gaaf33eb687179f89ce91453795e9a6884" title="Returns whether paging is enabled or disabled. " alt="" coords="410,5,534,31"/>
+<area shape="rect" id="node5" href="$group__vmm.html#gaca2ad6adc3d01b4f69741bb3063b44bb" title="Returns a virtual or physical address to a page table entry in memory. " alt="" coords="397,55,547,93"/>
+<area shape="rect" id="node6" href="$group__vmm.html#ga4ec502fa0597ddc39ccefc5e41ed7068" title="Returns a virtual or physical address to a page table in memory. " alt="" coords="595,65,745,91"/>
+</map>

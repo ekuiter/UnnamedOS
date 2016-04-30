@@ -1,0 +1,6 @@
+<map id="vmm_free" name="vmm_free">
+<area shape="rect" id="node2" href="$group__elf.html#ga3f7773dbbddb1093ffe601fac1856b75" title="Frees the segments of an ELF file in memory. " alt="" coords="141,5,224,31"/>
+<area shape="rect" id="node5" href="$group__task.html#gac141a8f668ca44faf8f2cee286bdcf9d" title="Destroys a task. " alt="" coords="134,55,231,80"/>
+<area shape="rect" id="node3" href="$group__elf.html#ga75bec924ac71c3508f102cac452c67b3" title="Destroys a user task running the code of an ELF file. " alt="" coords="279,5,397,31"/>
+<area shape="rect" id="node4" href="$group__schedule.html#ga02fdfade63241289317a425497eb3927" title="Destroys tasks marked for removal. " alt="" coords="445,31,607,56"/>
+</map>

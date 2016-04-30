@@ -1,0 +1,10 @@
+<map id="vm86_get_farptr" name="vm86_get_farptr">
+<area shape="rect" id="node2" href="$group__vm86.html#gadc3f4bd03c6bdafbdef4df17f1b7c19d" title="Creates a VM86 task. " alt="" coords="179,5,309,31"/>
+<area shape="rect" id="node4" href="$group__vm86.html#ga4d4693ff0e30f0f617d47282e7ad1c7f" title="Emulates a PUSH instruction. " alt="" coords="199,55,289,80"/>
+<area shape="rect" id="node5" href="$group__vm86.html#ga6782fcbda03f1415e656d951f764f6b6" title="Monitors a VM86 task by emulating sensitive instructions. " alt="" coords="369,131,474,156"/>
+<area shape="rect" id="node8" href="$group__vm86.html#ga3e03a7c1532cfd10daa3b44cec6d17b4" title="Emulates a POP instruction. " alt="" coords="203,156,286,181"/>
+<area shape="rect" id="node9" href="$group__vm86.html#ga3095919424e99ca406a3252e974b86d9" title="Emulates the completion of an instruction. " alt="" coords="172,205,317,231"/>
+<area shape="rect" id="node3" href="$group__vm86.html#gace8fed2c01cb34bf58e81e0648586e14" title="Calls a BIOS interrupt. " alt="" coords="365,5,478,31"/>
+<area shape="rect" id="node6" href="$group__vm86.html#gaf5c9879c84edccf22a667fe2672bf647" title="Handles general protection faults. " alt="" coords="526,131,653,156"/>
+<area shape="rect" id="node7" href="$group__vm86.html#ga27b2421e58df36b74005f433a4649a54" title="Initializes VM86 mode. " alt="" coords="701,131,780,156"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="src/kernel/interrupts/syscall.h" name="src/kernel/interrupts/syscall.h">
+<area shape="rect" id="node2" href="$isr_8c.html" title="src/kernel/interrupts\l/isr.c" alt="" coords="5,92,144,131"/>
+<area shape="rect" id="node3" href="$kernel_2interrupts_2syscall_8c.html" title="src/kernel/interrupts\l/syscall.c" alt="" coords="168,92,306,131"/>
+<area shape="rect" id="node4" href="$vm86_8c.html" title="src/kernel/tasks/vm86.c" alt="" coords="330,99,491,124"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="src/kernel/mem/gdt.c" name="src/kernel/mem/gdt.c">
+<area shape="rect" id="node2" href="$common_8h_source.html" title="common.h" alt="" coords="184,79,268,104"/>
+<area shape="rect" id="node7" href="$gdt_8h.html" title="mem/gdt.h" alt="" coords="317,152,402,177"/>
+<area shape="rect" id="node8" href="$tss_8h.html" title="tasks/tss.h" alt="" coords="349,79,434,104"/>
+<area shape="rect" id="node3" href="$output_8h_source.html" title="hardware/io/output.h" alt="" coords="5,152,148,177"/>
+<area shape="rect" id="node4" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="205,299,269,324"/>
+<area shape="rect" id="node6" href="$port_8h_source.html" title="hardware/io/port.h" alt="" coords="223,225,352,251"/>
+<area shape="rect" id="node5" href="$io_8h_source.html" title="io.h" alt="" coords="106,225,149,251"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="Memory" name="Memory">
+<area shape="rect" id="node1" href="$group__pmm.html" title="Physical Memory Manager. " alt="" coords="231,5,284,31"/>
+<area shape="rect" id="node2" href="$group__kernel.html" title="Kernel" alt="" coords="5,80,65,105"/>
+<area shape="rect" id="node4" href="$group__mmu.html" title="Memory Management Unit. " alt="" coords="231,55,284,80"/>
+<area shape="rect" id="node5" href="$group__vmm.html" title="Virtual Memory Manager. " alt="" coords="231,104,284,129"/>
+<area shape="rect" id="node6" href="$group__gdt.html" title="Global Descriptor Table. " alt="" coords="233,153,282,179"/>
+</map>

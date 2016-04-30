@@ -1,0 +1,5 @@
+<map id="src/kernel/mem/mmu.h" name="src/kernel/mem/mmu.h">
+<area shape="rect" id="node2" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="60,225,124,251"/>
+<area shape="rect" id="node3" href="$vmm_8h.html" title="mem/vmm.h" alt="" coords="79,79,174,104"/>
+<area shape="rect" id="node4" href="$pmm_8h.html" title="mem/pmm.h" alt="" coords="129,152,225,177"/>
+</map>

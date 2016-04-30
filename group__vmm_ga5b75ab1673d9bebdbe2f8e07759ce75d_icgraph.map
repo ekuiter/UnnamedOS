@@ -1,0 +1,9 @@
+<map id="vmm_create_page_directory" name="vmm_create_page_directory">
+<area shape="rect" id="node2" href="$group__vmm.html#gadef373f9b9c3be4e9176224263fa4335" title="Initializes the VMM. " alt="" coords="278,5,353,31"/>
+<area shape="rect" id="node3" href="$group__elf.html#ga4bcec1f99a7491663c79aeb376a51878" title="Creates a user task running the code of an ELF file. " alt="" coords="618,107,730,132"/>
+<area shape="rect" id="node4" href="$group__task.html#ga6889ecd06c51d1debc57ba9e0317a734" title="Creates a task. " alt="" coords="244,107,388,132"/>
+<area shape="rect" id="node7" href="$group__vm86.html#gadc3f4bd03c6bdafbdef4df17f1b7c19d" title="Creates a VM86 task. " alt="" coords="251,180,381,205"/>
+<area shape="rect" id="node5" href="$group__task.html#gac3f74053067bb4dfb9298aeb8080dc44" title="Creates a kernel task. " alt="" coords="436,107,570,132"/>
+<area shape="rect" id="node6" href="$group__task.html#ga283a67e6d57dbd0f6c3c7eecc44e687a" title="Creates a user task. " alt="" coords="441,156,565,181"/>
+<area shape="rect" id="node8" href="$group__vm86.html#gace8fed2c01cb34bf58e81e0648586e14" title="Calls a BIOS interrupt. " alt="" coords="446,205,560,231"/>
+</map>

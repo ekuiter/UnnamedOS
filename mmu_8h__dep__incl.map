@@ -1,0 +1,7 @@
+<map id="src/kernel/mem/mmu.h" name="src/kernel/mem/mmu.h">
+<area shape="rect" id="node2" href="$kernel_2boot_2main_8c_source.html" title="src/kernel/boot/main.c" alt="" coords="5,79,157,104"/>
+<area shape="rect" id="node3" href="$mmu_8c.html" title="src/kernel/mem/mmu.c" alt="" coords="180,79,337,104"/>
+<area shape="rect" id="node4" href="$vmm_8c.html" title="src/kernel/mem/vmm.c" alt="" coords="361,79,516,104"/>
+<area shape="rect" id="node5" href="$schedule_8c.html" title="src/kernel/tasks/schedule.c" alt="" coords="540,79,721,104"/>
+<area shape="rect" id="node6" href="$task_8c.html" title="src/kernel/tasks/task.c" alt="" coords="745,79,897,104"/>
+</map>

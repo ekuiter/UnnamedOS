@@ -1,0 +1,8 @@
+<map id="src/kernel/tasks/schedule.h" name="src/kernel/tasks/schedule.h">
+<area shape="rect" id="node2" href="$kernel_2boot_2main_8c_source.html" title="src/kernel/boot/main.c" alt="" coords="5,85,157,111"/>
+<area shape="rect" id="node3" href="$pit_8c_source.html" title="src/kernel/hardware\l/pit.c" alt="" coords="181,79,320,117"/>
+<area shape="rect" id="node4" href="$kernel_2interrupts_2syscall_8c.html" title="src/kernel/interrupts\l/syscall.c" alt="" coords="344,79,482,117"/>
+<area shape="rect" id="node5" href="$schedule_8c.html" title="src/kernel/tasks/schedule.c" alt="" coords="507,85,688,111"/>
+<area shape="rect" id="node6" href="$task_8c.html" title="src/kernel/tasks/task.c" alt="" coords="712,85,864,111"/>
+<area shape="rect" id="node7" href="$vm86_8c.html" title="src/kernel/tasks/vm86.c" alt="" coords="888,85,1048,111"/>
+</map>

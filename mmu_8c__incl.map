@@ -1,0 +1,11 @@
+<map id="src/kernel/mem/mmu.c" name="src/kernel/mem/mmu.c">
+<area shape="rect" id="node2" href="$common_8h_source.html" title="common.h" alt="" coords="176,79,260,104"/>
+<area shape="rect" id="node7" href="$isr_8h.html" title="interrupts/isr.h" alt="" coords="298,152,403,177"/>
+<area shape="rect" id="node8" href="$mmu_8h.html" title="mem/mmu.h" alt="" coords="392,79,487,104"/>
+<area shape="rect" id="node3" href="$output_8h_source.html" title="hardware/io/output.h" alt="" coords="5,152,148,177"/>
+<area shape="rect" id="node4" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="306,299,370,324"/>
+<area shape="rect" id="node6" href="$port_8h_source.html" title="hardware/io/port.h" alt="" coords="223,225,352,251"/>
+<area shape="rect" id="node5" href="$io_8h_source.html" title="io.h" alt="" coords="106,225,149,251"/>
+<area shape="rect" id="node9" href="$vmm_8h.html" title="mem/vmm.h" alt="" coords="477,152,572,177"/>
+<area shape="rect" id="node10" href="$pmm_8h.html" title="mem/pmm.h" alt="" coords="528,225,623,251"/>
+</map>

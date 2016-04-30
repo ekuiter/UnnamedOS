@@ -1,0 +1,46 @@
+<map id="pmm_get_page" name="pmm_get_page">
+<area shape="rect" id="node2" href="$group__pmm.html#ga71675c8083936fe4c7066c9eda8c5a53" title="Marks page frames for a given memory range as used or unused. " alt="" coords="173,177,253,202"/>
+<area shape="rect" id="node6" href="$group__vmm.html#ga5b75ab1673d9bebdbe2f8e07759ce75d" title="Creates an empty page directory. " alt="" coords="1806,106,1996,131"/>
+<area shape="rect" id="node14" href="$group__vmm.html#ga3e7053cfb721b4d0e489b95df9063ad5" title="Maps the given page into memory. " alt="" coords="764,409,848,434"/>
+<area shape="rect" id="node15" href="$group__vmm.html#ga36be7c83d887d2111b317b5ac796916f" title="Maps or unmaps the given page(s) into memory. " alt="" coords="903,409,1083,434"/>
+<area shape="rect" id="node43" href="$group__pmm.html#ga8b4f247d3f70f48faf4b1d884880b4f4" title="Returns whether a page frame is used or unused. " alt="" coords="946,711,1040,737"/>
+<area shape="rect" id="node44" href="$group__pmm.html#ga2952365c8cc7d2dd925fb01f85b1fb2c" title="Dumps information on page frames for a given memory range. " alt="" coords="167,459,259,485"/>
+<area shape="rect" id="node45" href="$group__vmm.html#gac9b3b29083204cd04643f125d9cc4447" title="Finds unmapped pages. " alt="" coords="1146,247,1255,273"/>
+<area shape="rect" id="node3" href="$group__pmm.html#ga2f6438db5921dbcccfee2f4f40a030bc" title="Marks all kernel memory as used. " alt="" coords="307,101,486,126"/>
+<area shape="rect" id="node4" href="$group__pmm.html#gad393172de809c66a5037e4b4e505e3f8" title="Initializes the PMM. " alt="" coords="584,151,659,177"/>
+<area shape="rect" id="node5" href="$group__pmm.html#gab88d4741ffdf121265ccc7a47aa06be3" title="Allocates page frames. " alt="" coords="579,102,665,127"/>
+<area shape="rect" id="node33" href="$group__vmm.html#gad1e8bf6d477409b2365a056c29afafd9" title="Marks the given page(s) as used and maps them into memory. " alt="" coords="1376,194,1455,219"/>
+<area shape="rect" id="node40" href="$group__pmm.html#ga71cab475c600b07e6ae2c34af4b65843" title="Frees page frames. " alt="" coords="356,485,437,510"/>
+<area shape="rect" id="node35" href="$group__vmm.html#ga10b915c633d54e1f9284277256611276" title="Marks some page(s) as used and maps them into memory. " alt="" coords="1327,395,1505,421"/>
+<area shape="rect" id="node36" href="$group__vmm.html#ga8fa0f3af01af3d3ba544031afafa2d5f" title="Marks some page(s) as used and maps them somewhere into memory. " alt="" coords="1373,145,1458,170"/>
+<area shape="rect" id="node7" href="$group__vmm.html#gadef373f9b9c3be4e9176224263fa4335" title="Initializes the VMM. " alt="" coords="2109,699,2184,725"/>
+<area shape="rect" id="node8" href="$group__elf.html#ga4bcec1f99a7491663c79aeb376a51878" title="Creates a user task running the code of an ELF file. " alt="" coords="2696,146,2807,171"/>
+<area shape="rect" id="node9" href="$group__task.html#ga6889ecd06c51d1debc57ba9e0317a734" title="Creates a task. " alt="" coords="2296,170,2441,195"/>
+<area shape="rect" id="node12" href="$group__vm86.html#gadc3f4bd03c6bdafbdef4df17f1b7c19d" title="Creates a VM86 task. " alt="" coords="2303,297,2433,322"/>
+<area shape="rect" id="node10" href="$group__task.html#gac3f74053067bb4dfb9298aeb8080dc44" title="Creates a kernel task. " alt="" coords="2489,195,2623,221"/>
+<area shape="rect" id="node11" href="$group__task.html#ga283a67e6d57dbd0f6c3c7eecc44e687a" title="Creates a user task. " alt="" coords="2494,146,2617,171"/>
+<area shape="rect" id="node13" href="$group__vm86.html#gace8fed2c01cb34bf58e81e0648586e14" title="Calls a BIOS interrupt. " alt="" coords="2499,297,2612,322"/>
+<area shape="rect" id="node16" href="$group__vmm.html#gafe1dd6fb39c3e7a95f03828bcf01bebe" title="Maps the given page(s) into memory. " alt="" coords="1138,297,1263,322"/>
+<area shape="rect" id="node37" href="$group__vmm.html#ga76fc2abe20698540ecc6ab14ac393785" title="Unmaps the given page(s) from memory. " alt="" coords="1131,451,1270,477"/>
+<area shape="rect" id="node17" href="$group__vmm.html#ga37cd05a420e7bbc80e9df22d1d7a8661" title="If necessary, maps the given page(s) somewhere into memory. " alt="" coords="1318,346,1513,371"/>
+<area shape="rect" id="node18" href="$group__vmm.html#gaab7f4a02de246b1d5d5728f19b25a5e6" title="Destroys a page directory. " alt="" coords="1561,499,1758,525"/>
+<area shape="rect" id="node22" href="$group__vmm.html#ga83a06334c1c593e06779d150d1efc082" title="Refreshes the page directory entries that are shared across page directories. " alt="" coords="1562,398,1757,423"/>
+<area shape="rect" id="node19" href="$group__task.html#gac141a8f668ca44faf8f2cee286bdcf9d" title="Destroys a task. " alt="" coords="2320,498,2417,523"/>
+<area shape="rect" id="node20" href="$group__elf.html#ga75bec924ac71c3508f102cac452c67b3" title="Destroys a user task running the code of an ELF file. " alt="" coords="2496,447,2615,473"/>
+<area shape="rect" id="node21" href="$group__schedule.html#ga02fdfade63241289317a425497eb3927" title="Destroys tasks marked for removal. " alt="" coords="2671,473,2833,498"/>
+<area shape="rect" id="node23" href="$group__vmm.html#gae21ea3cbc0bddb5ade0251b4bfb2946c" title="Loads a new page directory. " alt="" coords="1812,447,1991,473"/>
+<area shape="rect" id="node24" href="$group__vmm.html#gab011b4635615c4046c5d0afc72c5ef25" title="Loads a page directory for temporary modification. " alt="" coords="2050,447,2243,473"/>
+<area shape="rect" id="node27" href="$group__vmm.html#gaa4627b5873ec19276ccf28f254227c01" title="Ends a page directory modification. " alt="" coords="2044,398,2248,423"/>
+<area shape="rect" id="node28" href="$group__schedule.html#gac59d1d10987a51bef5b01671b6a62c7f" title="Switches to a given task. " alt="" coords="2071,650,2222,675"/>
+<area shape="rect" id="node25" href="$group__elf.html#gaea989585797c9844fdefd0ee9608045d" title="Loads the segments of an ELF file into memory. " alt="" coords="2334,385,2402,410"/>
+<area shape="rect" id="node26" href="$group__elf.html#ga3f7773dbbddb1093ffe601fac1856b75" title="Frees the segments of an ELF file in memory. " alt="" coords="2327,447,2410,473"/>
+<area shape="rect" id="node29" href="$group__syscall.html#gaffd7e43e2a985f84ce5db41e84012e36" title="Exits the current task. " alt="" coords="2324,674,2413,699"/>
+<area shape="rect" id="node32" href="$group__schedule.html#ga65f91e59df9210da417db34e224044a2" title="Returns the next task to run. " alt="" coords="2331,625,2406,650"/>
+<area shape="rect" id="node30" href="$group__syscall.html#ga581ed37968ead91b6d3a0b3b7a71da9d" title="Initializes the syscall interface. " alt="" coords="2513,674,2598,699"/>
+<area shape="rect" id="node31" href="$group__isr.html#ga2ea31f33125954459edbe7f4d7971ffa" title="Initializes syscalls and enables interrupts. " alt="" coords="2722,674,2782,699"/>
+<area shape="rect" id="node34" href="$group__vmm.html#ga7555fa9d1cba25633588a82d2622f55f" title="Marks the given page(s) as used and maps them somewhere into memory. " alt="" coords="1565,195,1755,221"/>
+<area shape="rect" id="node38" href="$group__vmm.html#ga26bea35e9465b7d5f4cb6db78bcb3aff" title="If necessary, unmaps the given page(s) from memory. " alt="" coords="1339,445,1493,483"/>
+<area shape="rect" id="node39" href="$group__vmm.html#ga75aa07ed605b2e381cdd80fdae0ee126" title="Frees the given page(s) and unmaps them from memory. " alt="" coords="1861,579,1942,605"/>
+<area shape="rect" id="node41" href="$group__vmm.html#ga29929b27b1ddfc99ab409bb3149df217" title="Destroys a page table in the current page directory. " alt="" coords="534,485,709,510"/>
+<area shape="rect" id="node42" href="$group__vmm.html#ga712a6069455f36990ea8af974ba0a1e3" title="Unmaps the given page from memory. " alt="" coords="757,458,855,483"/>
+</map>

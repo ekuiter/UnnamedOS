@@ -1,0 +1,9 @@
+<map id="schedule_get_current_task" name="schedule_get_current_task">
+<area shape="rect" id="node2" href="$group__syscall.html#gaffd7e43e2a985f84ce5db41e84012e36" title="Exits the current task. " alt="" coords="243,5,332,31"/>
+<area shape="rect" id="node5" href="$group__syscall.html#ga696d96c220f81db7d646610dc5c77e39" title="Returns the current task&#39;s PID. " alt="" coords="235,55,340,80"/>
+<area shape="rect" id="node6" href="$group__vm86.html#ga6782fcbda03f1415e656d951f764f6b6" title="Monitors a VM86 task by emulating sensitive instructions. " alt="" coords="235,104,341,129"/>
+<area shape="rect" id="node3" href="$group__syscall.html#ga581ed37968ead91b6d3a0b3b7a71da9d" title="Initializes the syscall interface. " alt="" coords="409,31,495,56"/>
+<area shape="rect" id="node4" href="$group__isr.html#ga2ea31f33125954459edbe7f4d7971ffa" title="Initializes syscalls and enables interrupts. " alt="" coords="573,31,633,56"/>
+<area shape="rect" id="node7" href="$group__vm86.html#gaf5c9879c84edccf22a667fe2672bf647" title="Handles general protection faults. " alt="" coords="389,104,516,129"/>
+<area shape="rect" id="node8" href="$group__vm86.html#ga27b2421e58df36b74005f433a4649a54" title="Initializes VM86 mode. " alt="" coords="564,104,642,129"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="task_t" name="task_t">
+<area shape="rect" id="node2" href="$structcpu__state__t.html" title="The CPU&#39;s state when an interrupt occurs. " alt="" coords="65,92,155,117"/>
+<area shape="rect" id="node3" href="$unionisr__eflags__t.html" title="The EFLAGS register. " alt="" coords="5,5,95,31"/>
+<area shape="rect" id="node4" href="$structisr__registers__t.html" title="general purpose registers " alt="" coords="119,5,224,31"/>
+<area shape="rect" id="node5" href="$structpage__directory__entry__t.html" title="An entry in a page directory. " alt="" coords="179,92,337,117"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="isr_register_handler" name="isr_register_handler">
+<area shape="rect" id="node2" href="$group__isr.html#ga2ea31f33125954459edbe7f4d7971ffa" title="Initializes syscalls and enables interrupts. " alt="" coords="202,5,262,31"/>
+<area shape="rect" id="node3" href="$group__mmu.html#gabd7eba8cae99b9fb84685567d7f35242" title="Initializes the MMU. " alt="" coords="194,55,269,80"/>
+<area shape="rect" id="node5" href="$group__vm86.html#ga27b2421e58df36b74005f433a4649a54" title="Initializes VM86 mode. " alt="" coords="193,104,271,129"/>
+<area shape="rect" id="node4" href="$group__vmm.html#gadef373f9b9c3be4e9176224263fa4335" title="Initializes the VMM. " alt="" coords="319,55,394,80"/>
+</map>

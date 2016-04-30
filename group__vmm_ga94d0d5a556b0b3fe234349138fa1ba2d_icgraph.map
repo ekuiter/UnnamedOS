@@ -1,0 +1,13 @@
+<map id="vmm_get_pmm_flags" name="vmm_get_pmm_flags">
+<area shape="rect" id="node2" href="$group__vmm.html#gad1e8bf6d477409b2365a056c29afafd9" title="Marks the given page(s) as used and maps them into memory. " alt="" coords="251,7,331,32"/>
+<area shape="rect" id="node4" href="$group__vmm.html#ga10b915c633d54e1f9284277256611276" title="Marks some page(s) as used and maps them into memory. " alt="" coords="202,56,380,81"/>
+<area shape="rect" id="node7" href="$group__vmm.html#ga8fa0f3af01af3d3ba544031afafa2d5f" title="Marks some page(s) as used and maps them somewhere into memory. " alt="" coords="248,112,333,137"/>
+<area shape="rect" id="node3" href="$group__vmm.html#ga7555fa9d1cba25633588a82d2622f55f" title="Marks the given page(s) as used and maps them somewhere into memory. " alt="" coords="428,5,618,31"/>
+<area shape="rect" id="node5" href="$group__elf.html#gaea989585797c9844fdefd0ee9608045d" title="Loads the segments of an ELF file into memory. " alt="" coords="699,49,767,75"/>
+<area shape="rect" id="node6" href="$group__elf.html#ga4bcec1f99a7491663c79aeb376a51878" title="Creates a user task running the code of an ELF file. " alt="" coords="848,99,960,124"/>
+<area shape="rect" id="node8" href="$group__task.html#ga6889ecd06c51d1debc57ba9e0317a734" title="Creates a task. " alt="" coords="451,112,595,137"/>
+<area shape="rect" id="node11" href="$group__vm86.html#gadc3f4bd03c6bdafbdef4df17f1b7c19d" title="Creates a VM86 task. " alt="" coords="458,173,588,199"/>
+<area shape="rect" id="node9" href="$group__task.html#gac3f74053067bb4dfb9298aeb8080dc44" title="Creates a kernel task. " alt="" coords="666,99,800,124"/>
+<area shape="rect" id="node10" href="$group__task.html#ga283a67e6d57dbd0f6c3c7eecc44e687a" title="Creates a user task. " alt="" coords="671,148,795,173"/>
+<area shape="rect" id="node12" href="$group__vm86.html#gace8fed2c01cb34bf58e81e0648586e14" title="Calls a BIOS interrupt. " alt="" coords="676,197,790,223"/>
+</map>

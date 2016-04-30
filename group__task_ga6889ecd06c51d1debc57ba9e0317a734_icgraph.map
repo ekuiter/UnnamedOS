@@ -1,0 +1,5 @@
+<map id="task_create_detailed" name="task_create_detailed">
+<area shape="rect" id="node2" href="$group__task.html#gac3f74053067bb4dfb9298aeb8080dc44" title="Creates a kernel task. " alt="" coords="198,5,332,31"/>
+<area shape="rect" id="node3" href="$group__task.html#ga283a67e6d57dbd0f6c3c7eecc44e687a" title="Creates a user task. " alt="" coords="203,55,327,80"/>
+<area shape="rect" id="node4" href="$group__elf.html#ga4bcec1f99a7491663c79aeb376a51878" title="Creates a user task running the code of an ELF file. " alt="" coords="380,55,491,80"/>
+</map>

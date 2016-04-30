@@ -1,0 +1,4 @@
+<map id="tss_init" name="tss_init">
+<area shape="rect" id="node2" href="$group__gdt.html#ga79bb06d2528924f72cab1acf00b8b461" title="Sets basic parameters of a GDT entry. " alt="" coords="125,5,227,31"/>
+<area shape="rect" id="node3" href="$group__gdt.html#ga0e89291c03112255d6ebdadc0ba218e0" title="Returns a selector ready to be loaded in a segment register. " alt="" coords="116,55,236,80"/>
+</map>

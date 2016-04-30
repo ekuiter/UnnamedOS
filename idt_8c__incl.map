@@ -1,0 +1,9 @@
+<map id="src/kernel/interrupts/idt.c" name="src/kernel/interrupts/idt.c">
+<area shape="rect" id="node2" href="$common_8h_source.html" title="common.h" alt="" coords="143,92,227,117"/>
+<area shape="rect" id="node7" href="$idt_8h.html" title="interrupts/idt.h" alt="" coords="251,92,356,117"/>
+<area shape="rect" id="node8" href="$gdt_8h.html" title="mem/gdt.h" alt="" coords="349,165,434,191"/>
+<area shape="rect" id="node3" href="$output_8h_source.html" title="hardware/io/output.h" alt="" coords="5,165,148,191"/>
+<area shape="rect" id="node4" href="$stdint_8h_source.html" title="stdint.h" alt="" coords="154,312,218,337"/>
+<area shape="rect" id="node6" href="$port_8h_source.html" title="hardware/io/port.h" alt="" coords="223,239,352,264"/>
+<area shape="rect" id="node5" href="$io_8h_source.html" title="io.h" alt="" coords="106,239,149,264"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="vm86_monitor" name="vm86_monitor">
+<area shape="rect" id="node2" href="$group__vm86.html#gaf5c9879c84edccf22a667fe2672bf647" title="Handles general protection faults. " alt="" coords="159,5,286,31"/>
+<area shape="rect" id="node3" href="$group__vm86.html#ga27b2421e58df36b74005f433a4649a54" title="Initializes VM86 mode. " alt="" coords="334,5,413,31"/>
+</map>

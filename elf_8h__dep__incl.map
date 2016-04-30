@@ -1,0 +1,6 @@
+<map id="src/kernel/tasks/elf.h" name="src/kernel/tasks/elf.h">
+<area shape="rect" id="node2" href="$kernel_2boot_2main_8c_source.html" title="src/kernel/boot/main.c" alt="" coords="5,79,157,104"/>
+<area shape="rect" id="node3" href="$elf_8c.html" title="src/kernel/tasks/elf.c" alt="" coords="181,79,323,104"/>
+<area shape="rect" id="node4" href="$schedule_8c.html" title="src/kernel/tasks/schedule.c" alt="" coords="347,79,528,104"/>
+<area shape="rect" id="node5" href="$task_8c.html" title="src/kernel/tasks/task.c" alt="" coords="552,79,704,104"/>
+</map>

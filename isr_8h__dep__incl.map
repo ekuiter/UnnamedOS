@@ -1,0 +1,24 @@
+<map id="src/kernel/interrupts/isr.h" name="src/kernel/interrupts/isr.h">
+<area shape="rect" id="node2" href="$kernel_2boot_2main_8c_source.html" title="src/kernel/boot/main.c" alt="" coords="664,272,816,297"/>
+<area shape="rect" id="node3" href="$ps2_8h_source.html" title="src/kernel/hardware\l/io/ps2.h" alt="" coords="356,92,494,131"/>
+<area shape="rect" id="node9" href="$isr_8c.html" title="src/kernel/interrupts\l/isr.c" alt="" coords="463,179,601,217"/>
+<area shape="rect" id="node10" href="$pit_8h_source.html" title="src/kernel/hardware\l/pit.h" alt="" coords="679,92,817,131"/>
+<area shape="rect" id="node13" href="$kernel_2interrupts_2syscall_8c.html" title="src/kernel/interrupts\l/syscall.c" alt="" coords="1047,265,1185,304"/>
+<area shape="rect" id="node14" href="$mmu_8c.html" title="src/kernel/mem/mmu.c" alt="" coords="896,99,1053,124"/>
+<area shape="rect" id="node15" href="$vmm_8c.html" title="src/kernel/mem/vmm.c" alt="" coords="1077,99,1232,124"/>
+<area shape="rect" id="node16" href="$elf_8c.html" title="src/kernel/tasks/elf.c" alt="" coords="1774,272,1916,297"/>
+<area shape="rect" id="node17" href="$schedule_8h.html" title="src/kernel/tasks/schedule.h" alt="" coords="1278,185,1460,211"/>
+<area shape="rect" id="node19" href="$task_8c.html" title="src/kernel/tasks/task.c" alt="" coords="1598,272,1751,297"/>
+<area shape="rect" id="node20" href="$vm86_8c.html" title="src/kernel/tasks/vm86.c" alt="" coords="1209,272,1370,297"/>
+<area shape="rect" id="node21" href="$task_8h.html" title="src/kernel/tasks/task.h" alt="" coords="1257,99,1410,124"/>
+<area shape="rect" id="node4" href="$keyboard_8h_source.html" title="src/kernel/hardware\l/io/keyboard.h" alt="" coords="87,179,225,217"/>
+<area shape="rect" id="node6" href="$ps2_8c_source.html" title="src/kernel/hardware\l/io/ps2.c" alt="" coords="168,265,306,304"/>
+<area shape="rect" id="node7" href="$mouse_8h_source.html" title="src/kernel/hardware\l/io/mouse.h" alt="" coords="249,179,388,217"/>
+<area shape="rect" id="node5" href="$keyboard_8c_source.html" title="src/kernel/hardware\l/io/keyboard.c" alt="" coords="5,265,144,304"/>
+<area shape="rect" id="node8" href="$mouse_8c_source.html" title="src/kernel/hardware\l/io/mouse.c" alt="" coords="331,265,469,304"/>
+<area shape="rect" id="node11" href="$speaker_8c_source.html" title="src/kernel/hardware\l/io/speaker.c" alt="" coords="777,179,916,217"/>
+<area shape="rect" id="node12" href="$pit_8c_source.html" title="src/kernel/hardware\l/pit.c" alt="" coords="884,265,1022,304"/>
+<area shape="rect" id="node18" href="$schedule_8c.html" title="src/kernel/tasks/schedule.c" alt="" coords="1393,272,1575,297"/>
+<area shape="rect" id="node22" href="$elf_8h.html" title="src/kernel/tasks/elf.h" alt="" coords="1535,185,1678,211"/>
+<area shape="rect" id="node23" href="$vm86_8h.html" title="src/kernel/tasks/vm86.h" alt="" coords="1093,185,1254,211"/>
+</map>
